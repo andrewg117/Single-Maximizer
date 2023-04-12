@@ -1,27 +1,84 @@
 @import "profile_nav.css";
 
-#top-div {
-  justify-self: center;
-  width: 90%;
+#new-form {
+  display: flex;
+  justify-content: center;
+  /* width: 100%; */
+}
+
+.input-div {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 5em;
+}
+
+.input-div div {
   display: grid;
-  grid-template-columns: 20% 80%;
+  align-items: center;
+  width: 100%;
+}
+
+#top-div {
+  display: grid;
+  justify-self: center;
+  align-items: center;
   width: 90%;
+  grid-template-columns: 20% 80%;
+  width: 100%;
+  text-align: left;
 }
 
 #top-div h1 {
-  text-align: left;
   font-size: 3rem;
   margin: .5em 0;
 }
 
+#new-form-div {
+  width: 90%;
+  padding: 2rem;
+  text-align: left;
+}
 
-input[type=text], input[type=password], input[type=email], input[type=url] {
-  width: 80%;
-  height: 30px;
+#new-form-div input[type=text], input[type=password], input[type=email], input[type=url] {
+  width: 100%;
   margin: 1em 0 2em 0;
   display: inline-block;
   border: none;
   border-bottom: 1px solid #000;
   background-color: transparent;
-  color: #ffff;
+  color: black;
+  font-size: 20px;
+}
+
+#new-form-div label {
+  font-size: 80%;
+  font-weight: bold;
+}
+
+#new-form-div textarea {
+  margin: 1em 0;
+  color: black;
+  font-size: 20px;
+  resize: none;
+  overflow: auto;
+}
+
+::placeholder {
+  color: rgb(139, 139, 139);
+}
+
+#submit-div {
+  display: flex;
+  justify-content: left;
+  column-gap: 2rem;
+  align-items: center;
+}
+
+.profile-btn {
+  background-color: #8a1a1a;
+  color: white;
+  text-align: center;
+  padding: .5em 1.5em;
+  font-size: 1.5em;
+  border: none;
 }
