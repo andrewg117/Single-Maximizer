@@ -6,18 +6,18 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>New Release</title>
 </head>
 
 <body id="main">
   <section id="body-wrapper">
     <nav id="navbar-left">
       <div id="nav-links">
-        <a href="/content/profile_view.html" id="home-link">PROFILE</a>
+        <a href="/content/profile_view.html">PROFILE</a>
         <a href="/content/new_release_view.html">NEW RELEASE</a>
-        <a href="#">SINGLES</a>
-        <a href="#">ADMIN</a>
-        <a href="#">SETTINGS</a>
+        <a href="/content/singles.html">SINGLES</a>
+        <a href="/content/admin.html">ADMIN</a>
+        <a href="/content/settings.html">SETTINGS</a>
         <a href="/index.html" id="home-link">LOGOUT</a>
       </div>
     </nav>
@@ -28,8 +28,8 @@
             <h1>FMGMP3</h1>
             <div class="top-input-div">
               <div>
-                <label for="aname">ARTIST NAME</label>
-                <input type="text" id="aname" name="artistname" placeholder="Enter your artist name">
+                <label for="artname">ARTIST NAME</label>
+                <input type="text" id="artname" name="artname" placeholder="Enter your artist name">
               </div>
               <div>
                 <label for="trkname">TRACK NAME</label>
@@ -39,58 +39,64 @@
           </div>
           <div class="input-div">
             <div>
-              <label for="aname">ARTIST NAME</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="deldate">DELIVERY DATE</label>
+              <input type="text" id="deldate" name="deldate" placeholder="When do you want your Maximizer to run?">
             </div>
             <div>
-              <label for="email">EMAIL</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
-            </div>
-          </div>
-          <div class="input-div">
-            <div>
-              <label for="website">WEBSITE</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
-            </div>
-            <div>
-              <label for="scloud">SOUNDCLOUD</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="spoturi">SPOTIFY TRACK URI</label>
+              <input type="text" id="spoturi" name="spoturi" placeholder="Enter the URI of your track on Spotify">
             </div>
           </div>
           <div class="input-div">
             <div>
-              <label for="twitter">TWITTER</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="features">FEATURES</label>
+              <input type="text" id="features" name="features" placeholder="Enter the names of features">
             </div>
             <div>
-              <label for="igram">INSTAGRAM</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
-            </div>
-          </div>
-          <div class="input-div">
-            <div>
-              <label for="fbook">FACEBOOK</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
-            </div>
-            <div>
-              <label for="spotify">SPOTIFY</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="applelink">APPLE MUSIC TRACK LINK</label>
+              <input type="text" id="applelink" name="applelink" placeholder="Enter your Apple Music track link">
             </div>
           </div>
           <div class="input-div">
             <div>
-              <label for="ytube">YOUTUBE</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="producer">PRODUCER</label>
+              <input type="text" id="producer" name="producer" placeholder="Who produced the track?">
             </div>
             <div>
-              <label for="tiktok">TIKTOK</label>
-              <input type="text" id="trkname" name="trkname" placeholder="Enter the name of your track">
+              <label for="scloudlink">SOUNDCLOUD LINK</label>
+              <input type="text" id="scloudlink" name="scloudlink" placeholder="Enter the track's Soundcloud link">
             </div>
           </div>
           <div class="input-div">
             <div>
-              <label for="bio-text">BIO</label>
-              <textarea name="" id="bio-text" cols="30" rows="10"></textarea>
+              <label for="album">ALBUM</label>
+              <input type="text" id="album" name="album" placeholder="Is this song part of an album?">
+            </div>
+            <div>
+              <label for="ytubelink">YOUTUBE LINK</label>
+              <input type="text" id="ytubelink" name="ytubelink" placeholder="Enter the Youtube video link">
+            </div>
+          </div>
+          <div class="input-div">
+            <div>
+              <label for="albumdate">ALBUM RELEASE DATE</label>
+              <input type="text" id="albumdate" name="albumdate" placeholder="When will the album be released?">
+            </div>
+            <div>
+              <label for="genres">GENRES</label>
+              <input type="text" id="genres" name="genres" placeholder="Enter the genres that fit your song">
+            </div>
+          </div>
+          <div class="input-div">
+            <div>
+              <label for="tracksum">TRACK SUMMARY</label>
+              <textarea name="tracksum" id="tracksum" cols="30" rows="10" placeholder="Enter your track details here"></textarea>
+            </div>
+          </div>
+          <div class="input-div">
+            <div>
+              <label for="press">RECENT PRESS</label>
+              <textarea name="press" id="press" cols="30" rows="10" placeholder="Enter recent accomplishments"></textarea>
             </div>
           </div>
           <div id="submit-div">
