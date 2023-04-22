@@ -63,3 +63,20 @@
   padding: 1em;
   font-size: .8em;
 }
+
+@media only screen and (max-device-width: 500px) {
+  #top-block {
+    width: auto;
+  }
+
+  #bottom-block {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 40% 20% 40%;
+    justify-content: center;
+  }
+
+  .bot-box{
+    width: 90vw;
+  }
+}

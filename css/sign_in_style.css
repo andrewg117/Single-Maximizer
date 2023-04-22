@@ -98,3 +98,18 @@ input[type=text], input[type=password], input[type=email] {
   font-size: 1.2em;
   border: none;
 }
+
+@media only screen and (max-device-width: 500px) {
+  #sign-in-wrapper {
+    display: grid;
+    margin: 0;
+  }
+
+  #sign-in-content {
+    grid-template-columns: auto;
+  }
+
+  #block-left {
+    display: none;
+  }
+}

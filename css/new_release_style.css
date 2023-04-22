@@ -82,3 +82,13 @@
   font-size: 1.5em;
   border: none;
 }
+
+@media only screen and (max-device-width: 500px) {
+  #top-div {
+    display: inline;
+  }
+  
+  .input-div {
+    display: inline;
+  }
+}
