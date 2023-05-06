@@ -1,43 +1,54 @@
-#profile-title {
-  justify-self: center;
-  width: 90%;
+#content_right {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background-color: white;
+  color: black;
 }
 
-#profile-title h1 {
-  text-align: left;
-  font-size: 3rem;
-  margin: .5em 0;
-}
-
-
-#profile-form {
+#new_form {
   display: flex;
   justify-content: center;
   /* width: 100%; */
 }
 
-#profile-form-div {
-  width: 90%;
-  /* margin: 2rem; */
-  padding: 2rem;
-  text-align: left;
-}
-
-.input-div {
+.input_div {
   display: flex;
   justify-content: space-between;
   column-gap: 5em;
 }
 
-.input-div div {
+.input_div div {
   display: grid;
   align-items: center;
   width: 100%;
 }
 
-#profile-form-div input[type=text], input[type=password], input[type=email], input[type=url] {
+#top_div {
+  display: grid;
+  justify-self: center;
+  align-items: center;
+  width: 90%;
+  grid-template-columns: 20% 80%;
   width: 100%;
-  /* height: 30px; */
+  text-align: left;
+}
+
+#top_div h1 {
+  font-size: 3rem;
+  margin: .5em 0;
+}
+
+#new_form_div {
+  width: 90%;
+  padding: 2rem;
+  text-align: left;
+}
+
+#new_form_div input[type=text], input[type=password], input[type=email], input[type=url] {
+  width: 100%;
   margin: 1em 0 2em 0;
   display: inline-block;
   border: none;
@@ -47,12 +58,12 @@
   font-size: 20px;
 }
 
-#profile-form-div label {
+#new_form_div label {
   font-size: 80%;
   font-weight: bold;
 }
 
-#profile-form-div textarea {
+#new_form_div textarea {
   margin: 1em 0;
   color: black;
   font-size: 20px;
@@ -64,14 +75,14 @@
   color: rgb(139, 139, 139);
 }
 
-#submit-div {
+#submit_div {
   display: flex;
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
 }
 
-.profile-btn {
+.profile_btn {
   background-color: #8a1a1a;
   color: white;
   text-align: center;
@@ -81,7 +92,21 @@
 }
 
 @media only screen and (max-device-width: 500px) {
-  .input-div {
+  #top_div {
+    display: inline;
+  }
+  
+  .input_div {
+    display: inline;
+  }
+}
+
+@media only screen and (max-device-width: 1200px) {
+  #top_div {
+    display: inline;
+  }
+  
+  .input_div {
     display: inline;
   }
 }

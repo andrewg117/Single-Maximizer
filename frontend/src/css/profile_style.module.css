@@ -1,44 +1,53 @@
-#new-form {
+#content_right {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background-color: white;
+  color: black;
+}
+
+#profile_title {
+  justify-self: center;
+  width: 90%;
+}
+
+#profile_title h1 {
+  text-align: left;
+  font-size: 3rem;
+  margin: .5em 0;
+}
+
+
+#profile_form {
   display: flex;
   justify-content: center;
   /* width: 100%; */
 }
 
-.input-div {
+#profile_form_div {
+  width: 90%;
+  /* margin: 2rem; */
+  padding: 2rem;
+  text-align: left;
+}
+
+.profile_input_div {
   display: flex;
   justify-content: space-between;
   column-gap: 5em;
 }
 
-.input-div div {
+.profile_input_div div {
   display: grid;
   align-items: center;
   width: 100%;
 }
 
-#top-div {
-  display: grid;
-  justify-self: center;
-  align-items: center;
-  width: 90%;
-  grid-template-columns: 20% 80%;
+.profile_input {
   width: 100%;
-  text-align: left;
-}
-
-#top-div h1 {
-  font-size: 3rem;
-  margin: .5em 0;
-}
-
-#new-form-div {
-  width: 90%;
-  padding: 2rem;
-  text-align: left;
-}
-
-#new-form-div input[type=text], input[type=password], input[type=email], input[type=url] {
-  width: 100%;
+  /* height: 30px; */
   margin: 1em 0 2em 0;
   display: inline-block;
   border: none;
@@ -48,12 +57,12 @@
   font-size: 20px;
 }
 
-#new-form-div label {
+.profile_input_div label {
   font-size: 80%;
   font-weight: bold;
 }
 
-#new-form-div textarea {
+.profile_input_div textarea {
   margin: 1em 0;
   color: black;
   font-size: 20px;
@@ -65,14 +74,14 @@
   color: rgb(139, 139, 139);
 }
 
-#submit-div {
+#profile_submit_div {
   display: flex;
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
 }
 
-.profile-btn {
+.profile_btn {
   background-color: #8a1a1a;
   color: white;
   text-align: center;
@@ -82,21 +91,7 @@
 }
 
 @media only screen and (max-device-width: 500px) {
-  #top-div {
-    display: inline;
-  }
-  
-  .input-div {
-    display: inline;
-  }
-}
-
-@media only screen and (max-device-width: 1200px) {
-  #top-div {
-    display: inline;
-  }
-  
-  .input-div {
+  .profile_input_div {
     display: inline;
   }
 }

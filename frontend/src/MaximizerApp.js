@@ -7,7 +7,9 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import NavBar from './components/NavBar'
 import Profile from './pages/Profile'
+import NewRelease from './pages/NewRelease'
 import NavBarLeft from './components/NavBarLeft'
+import styles from './css/style.module.css';
 
 function MaximizerApp() {
   const { user } = useSelector(
@@ -16,8 +18,8 @@ function MaximizerApp() {
   return (
     <>
       <Router>
-        <div className='main'>
-          <section id={!user ? "body-wrapper": "profile-body-wrapper"}>
+        <div className={styles.body}>
+          <section id={!user ? styles.body_wrapper: styles.profile_body_wrapper}>
             {!user ? <NavBar /> : <NavBarLeft />}
             <Routes>
               {!user ? <Route path='*' element={<Home />} />: <Route path='*' element={<Profile />} />}
@@ -25,6 +27,7 @@ function MaximizerApp() {
               <Route path='/home/signup' element={<SignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
               <Route path='/profile' element={<Profile />} />
+              <Route path='/newrelease' element={<NewRelease />} />
             </Routes>
           </section>
         </div>

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { login, reset } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
-import '../css/sign_in_style.css'
+import styles from '../css/sign_in_style.module.css'
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -58,41 +58,43 @@ function SignIn() {
 
   return (
     <>
-      <section id="sign-in-content">
-        <div id="block-left">
-          <h1>Image</h1>
-        </div>
+      <section id={styles.sign_in_wrapper}>
+        <section id={styles.sign_in_content}>
+          <div id={styles.block_left}>
+            <h1>Image</h1>
+          </div>
 
-        <div id="block-right">
-          <h1>Sign In</h1>
-          <form id="signin-form" onSubmit={onSubmit}>
-            <div id="signin-form-div">
-              <label htmlFor="email">EMAIL</label>
-              <input
-                type="email"
-                className="form-control"
-                id='email'
-                name='email'
-                value={email}
-                placeholder='Enter Email'
-                onChange={onChange} />
-              <label htmlFor="pword">PASSWORD</label>
-              <input
-                type="password"
-                className="form-control"
-                id='password'
-                name='password'
-                value={password}
-                placeholder='Enter Password'
-                onChange={onChange} />
-              <Link className="signin-link">Forgot Username?</Link>
-              <Link className="signin-link">Forgot Password?</Link>
-              <div id="submit-div">
-                <input type="submit" id="signin-submit" value="SUBMIT" />
+          <div id={styles.block_right}>
+            <h1>Sign In</h1>
+            <form id={styles.signin_form} onSubmit={onSubmit}>
+              <div className={styles.signin_form_div}>
+                <label htmlFor="email">EMAIL</label>
+                <input
+                  type="email"
+                  className={styles.signin_input}
+                  id='email'
+                  name='email'
+                  value={email}
+                  placeholder='Enter Email'
+                  onChange={onChange} />
+                <label htmlFor="pword">PASSWORD</label>
+                <input
+                  type="password"
+                  className={styles.signin_input}
+                  id='password'
+                  name='password'
+                  value={password}
+                  placeholder='Enter Password'
+                  onChange={onChange} />
+                <Link className={styles.signin_link}>Forgot Username?</Link>
+                <Link className={styles.signin_link}>Forgot Password?</Link>
+                <div className={styles.submit_div}>
+                  <input type="submit" id={styles.signin_submit} value="SUBMIT" />
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
+            </form>
+          </div>
+        </section>
       </section>
     </>
   )
