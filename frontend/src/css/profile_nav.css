@@ -7,7 +7,7 @@ body {
   /* min-width: 1000px; */
 }
 
-#body-wrapper {
+#profile-body-wrapper {
   display: grid;
   grid-template-columns: 20% 80%;
   text-align: center;
@@ -17,6 +17,7 @@ body {
   height: 100vh;
   background-color: rgb(82, 82, 82);
 }
+
 
 #navbar-left {
   display: flex;
@@ -28,16 +29,15 @@ body {
   overflow: auto;
 }
 
-#nav-links {
+#navbar-left-links {
   display: grid;
   justify-content: center;
-  /* row-gap: 1em; */
   width: 50%;
   height: fit-content;
   text-align: left;
 }
 
-#nav-links a {
+#navbar-left-links a {
   padding: 1.5em;
   font-style: normal;
   font-weight: bold;
@@ -45,9 +45,10 @@ body {
   color: white;
 }
 
-#nav-links a:hover {
+#navbar-left-links a:hover {
   color: #8a1a1a;
 }
+
 
 #content-right {
   display: grid;

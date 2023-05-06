@@ -6,9 +6,21 @@ const trackSchema = mongoose.Schema({
     required: true,
     ref: 'User'
   },
-  text: {
+  trackTitle: {
     type: String,
-    required: [true, 'Add text value']
+    required: [true, 'Add track title']
+  },
+  artist: {
+    type: String,
+    required: false
+  },
+  deliveryDate: {
+    type: Date,
+    required: false
+  },
+  trackURL: {
+    type: String,
+    required: false
   }
 },
 {

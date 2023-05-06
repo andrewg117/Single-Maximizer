@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Track = require('../models/trackModel')
-const User = require('../models/userModel')
+// const User = require('../models/userModel')
 
 // @desc    Get track
 // @route   GET /api/track
@@ -15,13 +15,16 @@ const getTrack = asyncHandler(async (req, res) => {
 // @route   POST /api/track
 // @access  Private
 const setTrack = asyncHandler(async (req, res) => {
-  if (!req.body.text) {
+  if (!req.body.trackTitle) {
     res.status(400)
-    throw new Error('Add text field') 
+    throw new Error('Add track title') 
   }
 
   const track = await Track.create({
-    text: req.body.text,
+    trackTitle: req.body.trackTitle,
+    artist: req.body.artist,
+    deliveryDate: req.body.deliveryDate,
+    trackURL: req.body.trackURL,
     user: req.user.id
   })
 
@@ -40,14 +43,14 @@ const updateTrack = asyncHandler(async (req, res) => {
     throw new Error('Track not found')
   }
 
-  const user = await User.findById(req.user.id)
+  // const user = await User.findById(req.user.id)
 
-  if(!user) {
+  if(!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
-  if(track.user.toString() !== user.id) {
+  if(track.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -70,14 +73,14 @@ const deleteTrack = asyncHandler(async (req, res) => {
     throw new Error('Track not found')
   }
   
-  const user = await User.findById(req.user.id)
+  // const user = await User.findById(req.user.id)
 
-  if(!user) {
+  if(!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
-  if(track.user.toString() !== user.id) {
+  if(track.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
