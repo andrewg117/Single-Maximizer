@@ -90,7 +90,7 @@
   border: none;
 }
 
-@media only screen and (max-device-width: 500px) {
+@media (max-width: 500px) {
   .profile_input_div {
     display: inline;
   }

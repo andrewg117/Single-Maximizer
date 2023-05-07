@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   margin-top: 10vh;
   background-color: rgb(82, 82, 82);
 }
@@ -15,7 +15,8 @@
   grid-template-columns: 50% 50%;
   text-align: center;
   align-items: center;
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   background-color: rgb(82, 82, 82);
 }
 
@@ -23,7 +24,7 @@
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   background-color: darkgray;
 }
 
@@ -32,7 +33,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: rgb(37, 37, 37);
   color: #ffff;
 }
@@ -86,7 +87,7 @@
   border: none;
 }
 
-@media only screen and (max-device-width: 500px) {
+@media (max-width: 500px) {
   #sign_in_wrapper {
     display: grid;
     margin: 0;

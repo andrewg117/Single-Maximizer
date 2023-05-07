@@ -45,7 +45,7 @@ function Singles() {
               <tr>
                 <th>ARTIST</th>
                 <th>TITLE</th>
-                <th>DATE</th>
+                <th>DELIVERY DATE</th>
                 <th>STATUS</th>
                 <th>EDIT</th>
               </tr>
@@ -55,7 +55,7 @@ function Singles() {
                 <tr key={track._id}>
                   <td>{track.artist}</td>
                   <td>{track.trackTitle}</td>
-                  <td>01/01/2001</td>
+                  <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
                   <td><button className={styles.scheduled}>Scheduled</button></td>
                   <td><FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track}>X</FaEdit></td>
                 </tr>

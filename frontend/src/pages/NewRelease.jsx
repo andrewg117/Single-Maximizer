@@ -14,7 +14,20 @@ function NewRelease() {
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
   const [trackTitle, setTrackTitle] = useState('')
-  const [artist, setArtist] = useState('')
+  const [artist, setArtist] = useState(user.name)
+  
+  const minDate = () => {
+    const date = new Date()
+    const graceDate = new Date(date.setDate(date.getDate() + 7))
+
+    const year = graceDate.toLocaleString('default', {year: 'numeric'})
+    const month = graceDate.toLocaleString('default', {month: '2-digit'})
+    const day = graceDate.toLocaleString('default', {day: '2-digit'}) 
+  
+    return year + '-' + month + '-' + day + 'T00:00'
+  }
+
+  const [deliveryDate, setDeliveryDate] = useState(minDate())
 
   useEffect(() => {
     if (isError) {
@@ -29,9 +42,10 @@ function NewRelease() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    dispatch(createTrack({ trackTitle, artist }))
+    dispatch(createTrack({ trackTitle, artist, deliveryDate }))
     setTrackTitle('')
     setArtist('')
+    setDeliveryDate('')
   }
 
   if (isLoading) {
@@ -48,7 +62,7 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" value={artist} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={user.name} onChange={(e) => setArtist(e.target.value)} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
@@ -58,8 +72,8 @@ function NewRelease() {
             </div>
             <div className={styles.input_div} />
             <div>
-              <label htmlFor="deldate">DELIVERY DATE</label>
-              <input className={styles.new_input} type="text" id="deldate" name="deldate" placeholder="When do you want your Maximizer to run?" />
+              <label htmlFor="deliveryDate">DELIVERY DATE</label>
+              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate"  min={minDate()} defaultValue={minDate()} onChange={(e) => setDeliveryDate(e.target.value)} />
             </div>
             <div>
               <label htmlFor="spoturi">SPOTIFY TRACK URI</label>
@@ -119,7 +133,7 @@ function NewRelease() {
             </div>
             <div id={styles.submit_div}>
               <input type="submit" className={styles.profile_btn} value="SAVE" />
-              <button className={styles.profile_btn}>CANCEL</button>
+              <button className={styles.profile_btn} >CANCEL</button>
             </div>
 
           </div>

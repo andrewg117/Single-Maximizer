@@ -47,7 +47,7 @@
   text-align: left;
 }
 
-#new_form_div input[type=text], input[type=password], input[type=email], input[type=url] {
+.new_input {
   width: 100%;
   margin: 1em 0 2em 0;
   display: inline-block;
@@ -91,7 +91,7 @@
   border: none;
 }
 
-@media only screen and (max-device-width: 500px) {
+@media (max-width: 500px) {
   #top_div {
     display: inline;
   }
@@ -101,7 +101,7 @@
   }
 }
 
-@media only screen and (max-device-width: 1200px) {
+@media (max-width: 1200px) {
   #top_div {
     display: inline;
   }

@@ -54,16 +54,25 @@
   font-style: normal;
   font-weight: bold;
   text-decoration: none;
-  color: white;
+  /* color: white; */
 }
 
 .navbar_left_links a:hover {
   color: #8a1a1a;
 }
 
-@media only screen and (max-device-width: 500px) {
-  .navbar_left {
+.active {
+  color: #8a1a1a;
+}
+
+.inactive {
+  color: white;
+}
+
+@media (max-width: 500px) {
+  #navbar_container {
     display: none;
+    grid-template-rows: 100%;
   }
 
   #body-wrapper {
