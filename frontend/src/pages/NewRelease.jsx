@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { createTrack } from '../features/tracks/trackSlice'
+import Spinner from '../components/Spinner'
+import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
 function NewRelease() {
@@ -9,15 +11,20 @@ function NewRelease() {
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
+  const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
   const [trackTitle, setTrackTitle] = useState('')
   const [artist, setArtist] = useState('')
 
   useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
     if (!user) {
       navigate('/home')
     }
-  }, [user, navigate])
+  }, [user, navigate, isError, message])
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -25,6 +32,10 @@ function NewRelease() {
     dispatch(createTrack({ trackTitle, artist }))
     setTrackTitle('')
     setArtist('')
+  }
+
+  if (isLoading) {
+    return <Spinner />
   }
 
   return (

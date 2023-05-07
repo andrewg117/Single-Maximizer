@@ -26,7 +26,7 @@ function NavBarLeft() {
           <div className={styles.navbar_left_links}>
             <Link to='/profile'>PROFILE</Link>
             <Link to='/newrelease'>NEW RELEASE</Link>
-            <Link to='/'>SINGLES</Link>
+            <Link to='/singles'>SINGLES</Link>
           </div>
         </div>
         <div id={styles.navbar_footer}>
