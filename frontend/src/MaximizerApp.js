@@ -8,6 +8,7 @@ import SignIn from './pages/SignIn'
 import NavBar from './components/NavBar'
 import Profile from './pages/Profile'
 import Singles from './pages/Singles'
+// import Email from './pages/Email'
 import NewRelease from './pages/NewRelease'
 import NavBarLeft from './components/NavBarLeft'
 import styles from './css/style.module.css';
@@ -30,6 +31,7 @@ function MaximizerApp() {
               <Route path='/profile' element={<Profile />} />
               <Route path='/newrelease' element={<NewRelease />} />
               <Route path='/singles' element={<Singles />} />
+              {/* <Route path='/email' element={<Email />} /> */}
             </Routes>
           </section>
         </div>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+// import Notification from '../components/Notification'
+import { sendEmail } from '../features/email/emailSlice';
 import { createTrack } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
@@ -15,15 +17,15 @@ function NewRelease() {
 
   const [trackTitle, setTrackTitle] = useState('')
   const [artist, setArtist] = useState(user.name)
-  
+
   const minDate = () => {
     const date = new Date()
     const graceDate = new Date(date.setDate(date.getDate() + 7))
 
-    const year = graceDate.toLocaleString('default', {year: 'numeric'})
-    const month = graceDate.toLocaleString('default', {month: '2-digit'})
-    const day = graceDate.toLocaleString('default', {day: '2-digit'}) 
-  
+    const year = graceDate.toLocaleString('default', { year: 'numeric' })
+    const month = graceDate.toLocaleString('default', { month: '2-digit' })
+    const day = graceDate.toLocaleString('default', { day: '2-digit' })
+
     return year + '-' + month + '-' + day + 'T00:00'
   }
 
@@ -39,8 +41,17 @@ function NewRelease() {
     }
   }, [user, navigate, isError, message])
 
+  const recipient = process.env.REACT_APP_RECEMAIL
+  const subject = `Track ${trackTitle} is scheduled.`
+  const emailMessage = `Track ${trackTitle} will be sent by ${new Date(deliveryDate).toLocaleString('en-us')}.`
+
   const onSubmit = (e) => {
     e.preventDefault()
+
+    if (trackTitle) {
+      console.log(recipient)
+      dispatch(sendEmail({ recipient, subject, emailMessage }))
+    }
 
     dispatch(createTrack({ trackTitle, artist, deliveryDate }))
     setTrackTitle('')
@@ -73,7 +84,7 @@ function NewRelease() {
             <div className={styles.input_div} />
             <div>
               <label htmlFor="deliveryDate">DELIVERY DATE</label>
-              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate"  min={minDate()} defaultValue={minDate()} onChange={(e) => setDeliveryDate(e.target.value)} />
+              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate" min={minDate()} defaultValue={minDate()} onChange={(e) => setDeliveryDate(e.target.value)} />
             </div>
             <div>
               <label htmlFor="spoturi">SPOTIFY TRACK URI</label>
@@ -133,6 +144,13 @@ function NewRelease() {
             </div>
             <div id={styles.submit_div}>
               <input type="submit" className={styles.profile_btn} value="SAVE" />
+              {/* <Notification
+                type="submit"
+                trackTitle={trackTitle}
+                artist={artist}
+                deliveryDate={deliveryDate}
+                style={styles.profile_btn}
+              /> */}
               <button className={styles.profile_btn} >CANCEL</button>
             </div>
 
