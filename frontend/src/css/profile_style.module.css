@@ -1,3 +1,14 @@
+#profile_content_right {
+  display: grid;
+  grid-template-rows: 10% auto;
+  /* align-items: center; */
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background-color: white;
+  color: black;
+}
+
 #content_right {
   display: grid;
   align-items: center;
@@ -11,6 +22,7 @@
 #profile_title {
   justify-self: center;
   width: 90%;
+  height: auto;
 }
 
 #profile_title h1 {
@@ -19,6 +31,20 @@
   margin: .5em 0;
 }
 
+#profile_view_div {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  justify-content: space-evenly;
+  text-align: left;
+  width: 90%;
+  height: 100%;
+}
+
+.profile_data_div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
 
 #profile_form {
   display: flex;
@@ -79,6 +105,10 @@
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
+}
+
+#profile_submit_div a {
+  text-decoration: none;
 }
 
 .profile_btn {

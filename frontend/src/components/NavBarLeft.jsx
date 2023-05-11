@@ -20,8 +20,8 @@ function NavBarLeft() {
 
   const menuItems = [
     { name: 'PROFILE', path: "/profile", position: 'top' },
-    { name: 'NEW RELEASE', path: "newrelease", position: 'top' },
-    { name: 'SINGLES', path: "/singles", position: 'top' },
+    { name: 'NEW RELEASE', path: "/profile/newrelease", position: 'top' },
+    { name: 'SINGLES', path: "/profile/singles", position: 'top' },
     // { name: 'EMAIL', path: "/email", position: 'top' },
     { name: 'ADMIN', path: "/", position: 'bot' },
     { name: 'SETTINGS', path: "/", position: 'bot' },

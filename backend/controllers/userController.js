@@ -68,18 +68,47 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   // const { _id, name, email } = await User.findById(req.user.id)
-  res.json(req.json)
+  res.json(req.user)
 })
+
+// @desc    Update user data
+// @route   PUT /api/users/me
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
+  if(!req.user) {
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  if(req.user.isAdmin){
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true
+    })
+  
+    res.json(updatedUser)
+  } else if(!req.body.isAdmin){
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true
+    }).select(['-isAdmin'])
+  
+    res.json(updatedUser)
+  } else {
+    res.status(400)
+    throw new Error('Invalid user access')
+  }
+})
+
 
 // Generate JWT 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d'
+    expiresIn: '2h'
   })
 }
 
 module.exports = {
   registerUser,
   loginUser,
+  updateUser,
   getMe
 }

@@ -29,7 +29,9 @@ function SignUp() {
     }
 
     if (isSuccess || user) {
-      navigate('/')
+      navigate('/profile')
+    } else {
+      navigate('/home/signup')
     }
 
     dispatch(reset())
