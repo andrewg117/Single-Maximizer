@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { getTrack, setTrack, updateTrack, deleteTrack } = require('../controllers/trackController')
+const { getTracks, getSingle, setTrack, updateTrack, deleteTrack } = require('../controllers/trackController')
 const { protect } = require('../middleware/authMiddleware')
 
-router.route('/').get(protect, getTrack).post(protect, setTrack)
-router.route('/:id').put(protect, updateTrack).delete(protect, deleteTrack)
+router.route('/').get(protect, getTracks).post(protect, setTrack)
+router.route('/:id').get(protect, getSingle).put(protect, updateTrack).delete(protect, deleteTrack)
 
 module.exports = router

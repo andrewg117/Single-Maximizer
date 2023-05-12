@@ -2,13 +2,39 @@ const asyncHandler = require('express-async-handler')
 const Track = require('../models/trackModel')
 // const User = require('../models/userModel')
 
-// @desc    Get track
+// @desc    Get tracks
 // @route   GET /api/track
 // @access  Private
-const getTrack = asyncHandler(async (req, res) => {
+const getTracks = asyncHandler(async (req, res) => {
   const tracks = await Track.find({ user: req.user.id })
 
   res.json(tracks)
+})
+
+// @desc    Get track
+// @route   GET /api/track/:id
+// @access  Private
+const getSingle = asyncHandler(async (req, res) => {
+  const track = await Track.findById(req.params.id)
+  
+  if(!track) {
+    res.status(400)
+    throw new Error('Track not found')
+  }
+
+  // const user = await User.findById(req.user.id)
+
+  if(!req.user) {
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  if(track.user.toString() !== req.user.id) {
+    res.status(401)
+    throw new Error('User not authorized')
+  }
+
+  res.json(track)
 })
 
 // @desc    Set track
@@ -91,7 +117,8 @@ const deleteTrack = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-  getTrack,
+  getTracks,
+  getSingle,
   setTrack,
   updateTrack,
   deleteTrack

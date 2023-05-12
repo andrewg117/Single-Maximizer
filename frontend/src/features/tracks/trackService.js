@@ -24,6 +24,17 @@ const getTrack = async (token) => {
   return response.data
 }
 
+const getSingle = async (trackId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  const response = await axios.get(API_URL + trackId, config)
+
+  return response.data
+}
+
 const deleteTrack = async (trackId, token) => {
   const config = {
     headers: {
@@ -38,6 +49,7 @@ const deleteTrack = async (trackId, token) => {
 const trackService = {
   createTrack,
   getTrack,
+  getSingle,
   deleteTrack
 }
 

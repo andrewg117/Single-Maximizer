@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: generateToken(user._id)
     })
   } else {
@@ -55,6 +56,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: generateToken(user._id)
     })
   } else {
@@ -89,7 +91,8 @@ const updateUser = asyncHandler(async (req, res) => {
   } else if(!req.body.isAdmin){
     const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
       new: true
-    }).select(['-isAdmin'])
+    })
+    // .select(['-isAdmin'])
   
     res.json(updatedUser)
   } else {

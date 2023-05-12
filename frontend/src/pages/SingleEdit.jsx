@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 // import Notification from '../components/Notification'
-import { sendEmail } from '../features/email/emailSlice';
-import { createTrack } from '../features/tracks/trackSlice'
+// import { sendEmail } from '../features/email/emailSlice';
+import { getSingle } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
-function NewRelease() {
+function SingleEdit() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
-  const { isLoading, isError, message } = useSelector((state) => state.tracks)
+  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const [trackTitle, setTrackTitle] = useState('')
-  const [artist, setArtist] = useState(user.name)
+  const [trackTitle, setTrackTitle] = useState(single.trackTitle)
+  const [artist, setArtist] = useState(single.artist)
+
+  const {id} = useParams() 
 
   const minDate = () => {
     const date = new Date()
@@ -29,7 +31,9 @@ function NewRelease() {
     return year + '-' + month + '-' + day + 'T00:00'
   }
 
-  const [deliveryDate, setDeliveryDate] = useState(minDate())
+  // const defaultDate = new String(single.deliveryDate).slice(0, -8)
+  const defaultDate = single.deliveryDate
+  const [deliveryDate, setDeliveryDate] = useState()
 
   useEffect(() => {
     if (isError) {
@@ -38,22 +42,25 @@ function NewRelease() {
 
     if (user === null) {
       navigate('/home')
+    } else {
+      dispatch(getSingle(id))
     }
-  }, [user, navigate, isError, message])
+    
+  }, [user, navigate, isError, message, id, dispatch])
 
-  const recipient = process.env.REACT_APP_RECEMAIL
-  const subject = `Track ${trackTitle} is scheduled.`
-  const emailMessage = `Track ${trackTitle} will be sent by ${new Date(deliveryDate).toLocaleString('en-us')}.`
+  // const recipient = process.env.REACT_APP_RECEMAIL
+  // const subject = `Track ${trackTitle} is scheduled.`
+  // const emailMessage = `Track ${trackTitle} will be sent by ${new Date(deliveryDate).toLocaleString('en-us')}.`
 
   const onSubmit = (e) => {
     e.preventDefault()
 
     if (trackTitle) {
-      console.log(recipient)
-      dispatch(sendEmail({ recipient, subject, emailMessage }))
+      // console.log(recipient)
+      // dispatch(sendEmail({ recipient, subject, emailMessage }))
     }
 
-    dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+    // dispatch(createTrack({ trackTitle, artist, deliveryDate }))
     setTrackTitle('')
     setArtist('')
     setDeliveryDate('')
@@ -73,17 +80,18 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={user.name} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={single.artist} onChange={(e) => setArtist(e.target.value)} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
-                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={(e) => setTrackTitle(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={single.trackTitle} onChange={(e) => setTrackTitle(e.target.value)} />
                 </div>
               </div>
             </div>
             <div className={styles.input_div} />
             <div>
-              <label htmlFor="deliveryDate">DELIVERY DATE</label>
+              <label htmlFor="deliveryDate">DELIVERY DATE</label> 
+              {defaultDate}
               <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate" min={minDate()} defaultValue={minDate()} onChange={(e) => setDeliveryDate(e.target.value)} />
             </div>
             <div>
@@ -162,4 +170,4 @@ function NewRelease() {
   )
 }
 
-export default NewRelease
+export default SingleEdit

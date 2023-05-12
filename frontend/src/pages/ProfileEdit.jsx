@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset } from '../features/auth/authSlice'
@@ -14,6 +14,10 @@ function ProfileEdit() {
     (state) => state.auth
   )
 
+  const [name, setUsername] = useState(userData.name)
+  const [email, setEmail] = useState(userData.email)
+  const [website, setWebsite] = useState(userData.website)
+
   useEffect(() => {
     if (isError) {
       toast.error(message)
@@ -21,10 +25,10 @@ function ProfileEdit() {
       dispatch(getUser())
     }
 
-    if (!user) {
+    if (user === null) {
       navigate('/home/signin')
     }
-    
+
     return () => {
       dispatch(reset())
     }
@@ -33,7 +37,7 @@ function ProfileEdit() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    dispatch(updateUser({  }))
+    dispatch(updateUser({ name, email, website }))
 
     navigate('/profile')
   }
@@ -59,23 +63,32 @@ function ProfileEdit() {
                   id='name'
                   name='name'
                   placeholder="Enter your artist name"
-                  defaultValue={userData.name} />
+                  defaultValue={name}
+                  onChange={(e) => setUsername(e.target.value)} />
               </div>
               <div>
                 <label htmlFor="email">EMAIL</label>
-                <input 
-                  className={styles.profile_input} 
-                  type="email" 
-                  id="email" 
-                  name="email" 
+                <input
+                  className={styles.profile_input}
+                  type="email"
+                  id="email"
+                  name="email"
                   placeholder="Enter your email address"
-                  defaultValue={userData.email} />
+                  defaultValue={email}
+                  onChange={(e) => setEmail(e.target.value)} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="website">WEBSITE</label>
-                <input className={styles.profile_input} type="url" id="website" name="website" placeholder="Enter your website starting with http://" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="website"
+                  name="website"
+                  placeholder="Enter your website starting with http://"
+                  defaultValue={website}
+                  onChange={(e) => setWebsite(e.target.value)} />
               </div>
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>

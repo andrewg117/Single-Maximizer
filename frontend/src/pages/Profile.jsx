@@ -26,7 +26,7 @@ const Profile = () => {
       toast.error(message)
     }
     
-    if (!user) {
+    if (user === null) {
       navigate('/home/signin')
     } else {
       dispatch(getUser())

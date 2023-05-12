@@ -23,7 +23,7 @@ function NavBarLeft() {
     { name: 'NEW RELEASE', path: "/profile/newrelease", position: 'top' },
     { name: 'SINGLES', path: "/profile/singles", position: 'top' },
     // { name: 'EMAIL', path: "/email", position: 'top' },
-    { name: 'ADMIN', path: "/", position: 'bot' },
+    { name: 'ADMIN', path: "/admin", position: 'bot' },
     { name: 'SETTINGS', path: "/", position: 'bot' },
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ];

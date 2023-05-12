@@ -9,6 +9,8 @@ import NavBar from './components/NavBar'
 import Profile from './pages/Profile'
 import ProfileEdit from './pages/ProfileEdit'
 import Singles from './pages/Singles'
+import SingleEdit from './pages/SingleEdit'
+import Admin from './pages/Admin'
 import NewRelease from './pages/NewRelease'
 import NavBarLeft from './components/NavBarLeft'
 import styles from './css/style.module.css';
@@ -21,8 +23,8 @@ function MaximizerApp() {
     <>
       <Router>
         <div className={styles.body}>
-          <section id={!user ? styles.body_wrapper: styles.profile_body_wrapper}>
-            {!user ? <NavBar /> : <NavBarLeft />}
+          <section id={user === null ? styles.body_wrapper: styles.profile_body_wrapper}>
+            {user === null ? <NavBar /> : <NavBarLeft />}
             <Routes>
               {user === null ? <Route path='*' element={<Home />} />: <Route path='*' element={<Profile />} />}
               <Route path='/home' element={<Home />} />
@@ -32,6 +34,8 @@ function MaximizerApp() {
               <Route path='/profile/editprofile' element={<ProfileEdit />} />
               <Route path='/profile/newrelease' element={<NewRelease />} />
               <Route path='/profile/singles' element={<Singles />} />
+              <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
+              <Route path='/admin' element={<Admin />} />
             </Routes>
           </section>
         </div>

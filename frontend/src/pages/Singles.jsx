@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getTracks, deleteTrack, reset } from '../features/tracks/trackSlice'
+import { getTracks, reset } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { FaEdit } from 'react-icons/fa'
 import styles from '../css/singles_style.module.css'
@@ -14,7 +14,7 @@ function Singles() {
   const { tracks, isLoading } = useSelector((state) => state.tracks)
 
   useEffect(() => {
-    if (!user) {
+    if (user === null) {
       navigate('/home')
     } else {
       dispatch(getTracks())
@@ -28,7 +28,8 @@ function Singles() {
   const editTrack = (e, id) => {
     e.preventDefault()
 
-    dispatch(deleteTrack(id))
+    // dispatch(deleteTrack(id))
+    navigate(`/profile/singleedit/${id}`)
   }
 
   if (isLoading) {
