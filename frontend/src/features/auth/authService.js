@@ -1,4 +1,5 @@
 import axios from "axios"
+import jwt_decode from 'jwt-decode'
 
 const API_URL = '/api/users/'
 
@@ -44,6 +45,17 @@ const update = async  (userData, token) => {
   return response.data
 }
 
+const checkToken = (token) => {
+  if (!token) {
+    return true;
+  }
+
+  const decodedToken = jwt_decode(token);
+  const currentTime = Date.now() / 1000;
+  // console.log(decodedToken.exp < currentTime)
+
+  return decodedToken.exp < currentTime;
+}
 
 const logout = () => {
   localStorage.removeItem('user')
@@ -54,6 +66,7 @@ const authService = {
   login,
   getUser,
   update,
+  checkToken,
   logout,
 }
 

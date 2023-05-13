@@ -44,6 +44,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
+const expire = '30s'
+
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
@@ -51,13 +53,17 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
 
   const user = await User.findOne({email})
+
   if(user && (await bcrypt.compare(password, user.password))) {
+    const userBody = {
+      ...user['_doc'],
+    }
+    delete userBody['password']
+    delete userBody['__v']
+
     res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id)
+      ...userBody,
+      token: generateToken(user._id),
     })
   } else {
     res.status(400)
@@ -105,7 +111,7 @@ const updateUser = asyncHandler(async (req, res) => {
 // Generate JWT 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '2h'
+    expiresIn: expire
   })
 }
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import authService from "./authService"
+import { trusted } from "mongoose"
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -9,6 +10,7 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  isExpired: false,
   message: '',
 }
 
@@ -54,6 +56,17 @@ export const updateUser = createAsyncThunk('auth/update', async (userData, thunk
   }
 })
 
+export const getTokenResult = createAsyncThunk('auth/token', async (_, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token
+    return await authService.checkToken(token)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
 export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout()
 })
@@ -78,6 +91,7 @@ export const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
+        state.isExpired = false
         state.user = action.payload
       })
       .addCase(register.rejected, (state, action) => {
@@ -92,6 +106,7 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
+        state.isExpired = false
         state.user = action.payload
       })
       .addCase(login.rejected, (state, action) => {
@@ -127,8 +142,22 @@ export const authSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
+      .addCase(getTokenResult.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getTokenResult.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isExpired = action.payload
+      })
+      .addCase(getTokenResult.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
       .addCase(logout.fulfilled, (state) => {
         state.user = null
+        state.isExpired = true
       })
   }
 })
