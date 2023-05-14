@@ -23,7 +23,7 @@ function Singles() {
     return () => {
       dispatch(reset())
     }
-  }, [user, navigate, isExpired, dispatch])
+  }, [navigate, isExpired, dispatch])
 
   const editTrack = (e, id) => {
     e.preventDefault()

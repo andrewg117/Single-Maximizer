@@ -41,7 +41,7 @@ function SingleEdit() {
       dispatch(getSingle(id))
     }
     
-  }, [user, isExpired, navigate, isError, message, id, dispatch])
+  }, [isExpired, navigate, isError, message, id, dispatch])
 
   // const recipient = process.env.REACT_APP_RECEMAIL
   // const subject = `Track ${trackTitle} is scheduled.`

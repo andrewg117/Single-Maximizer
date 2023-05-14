@@ -42,7 +42,7 @@ const Profile = () => {
     return () => {
       dispatch(reset())
     }
-  }, [user, isExpired, isError, message, navigate, dispatch])
+  }, [isExpired, isError, message, navigate, dispatch])
 
   if (isLoading) {
     return <Spinner />

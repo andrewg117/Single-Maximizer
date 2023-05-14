@@ -44,8 +44,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
-const expire = '30s'
-
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
@@ -87,7 +85,6 @@ const updateUser = asyncHandler(async (req, res) => {
     res.status(401)
     throw new Error('User not found')
   }
-  
 
   if(req.user.isAdmin){
     const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
@@ -108,6 +105,7 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 })
 
+const expire = '2h'
 
 // Generate JWT 
 const generateToken = (id) => {

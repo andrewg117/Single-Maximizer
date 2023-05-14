@@ -26,21 +26,21 @@ function ProfileEdit() {
     return () => {
       dispatch(reset())
     }
-  }, [user, isExpired, navigate, isError, message, dispatch])
+  }, [isExpired, navigate, isError, message, dispatch])
 
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if(name === '') {
-      toast.error('Empty')
-    }
-
     if (isError) {
       toast.error(message)
     } else if(name.trim() === '' || email.trim() === '') {
-      toast.error('Empty')
+      toast.error('Empty field')
     } else {
-      dispatch(updateUser({ name, email, website }))
+      dispatch(updateUser({
+        name, 
+        email, 
+        website
+      }))
   
       navigate('/profile')
     }

@@ -40,7 +40,7 @@ function NewRelease() {
     if (user === null) {
       navigate('/home')
     }
-  }, [user, navigate, isError, message])
+  }, [navigate, isError, message])
 
   const recipient = process.env.REACT_APP_RECEMAIL
   const subject = `Track ${trackTitle} is scheduled.`
