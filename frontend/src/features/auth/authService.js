@@ -29,7 +29,12 @@ const getUser = async  (token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.get(API_URL + 'me', config)
+  
+  let response
+
+  if (!checkToken(token)){
+    response = await axios.get(API_URL + 'me', config)
+  }
 
   return response.data
 }
@@ -40,7 +45,11 @@ const update = async  (userData, token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.put(API_URL + 'me', userData, config)
+
+  let response
+  if (!checkToken(token)){
+    response = await axios.put(API_URL + 'me', userData, config)
+  }
 
   return response.data
 }

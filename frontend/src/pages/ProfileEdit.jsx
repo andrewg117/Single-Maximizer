@@ -10,36 +10,40 @@ function ProfileEdit() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, userData, isLoading, isError, message } = useSelector(
+  const { user, isExpired, isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
 
-  const [name, setUsername] = useState(userData.name)
-  const [email, setEmail] = useState(userData.email)
-  const [website, setWebsite] = useState(userData.website)
+  const [name, setUsername] = useState(user !== null ? user.name : "N/A")
+  const [email, setEmail] = useState(user !== null ? user.email : "N/A")
+  const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message)
-    } else {
+    if (!isExpired) {
       dispatch(getUser())
-    }
-
-    if (user === null) {
-      navigate('/home/signin')
     }
 
     return () => {
       dispatch(reset())
     }
-  }, [user, navigate, isError, message, dispatch])
+  }, [user, isExpired, navigate, isError, message, dispatch])
 
   const onSubmit = (e) => {
     e.preventDefault()
 
-    dispatch(updateUser({ name, email, website }))
+    if(name === '') {
+      toast.error('Empty')
+    }
 
-    navigate('/profile')
+    if (isError) {
+      toast.error(message)
+    } else if(name.trim() === '' || email.trim() === '') {
+      toast.error('Empty')
+    } else {
+      dispatch(updateUser({ name, email, website }))
+  
+      navigate('/profile')
+    }
   }
 
   if (isLoading) {

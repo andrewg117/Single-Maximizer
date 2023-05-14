@@ -8,10 +8,12 @@ const trackSchema = mongoose.Schema({
   },
   trackTitle: {
     type: String,
+    trim: true,
     required: [true, 'Add track title']
   },
   artist: {
     type: String,
+    trim: true,
     required: false
   },
   deliveryDate: {

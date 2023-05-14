@@ -15,8 +15,9 @@ function NewRelease() {
   const { user } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
+  const stateUser = user !== null ? user : "N/A"
   const [trackTitle, setTrackTitle] = useState('')
-  const [artist, setArtist] = useState(user.name)
+  const [artist, setArtist] = useState(stateUser.name)
 
   const minDate = () => {
     const date = new Date()
@@ -73,7 +74,7 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={user.name} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={stateUser.name} onChange={(e) => setArtist(e.target.value)} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>

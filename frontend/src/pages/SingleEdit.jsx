@@ -12,11 +12,11 @@ function SingleEdit() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user } = useSelector((state) => state.auth)
+  const { user, isExpired } = useSelector((state) => state.auth)
   const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const [trackTitle, setTrackTitle] = useState(single.trackTitle)
-  const [artist, setArtist] = useState(single.artist)
+  const [trackTitle, setTrackTitle] = useState(user !== null ? single.trackTitle : "N/A")
+  const [artist, setArtist] = useState(user !== null ? single.artist : "N/A")
 
   const {id} = useParams() 
 
@@ -36,17 +36,12 @@ function SingleEdit() {
   const [deliveryDate, setDeliveryDate] = useState()
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message)
-    }
 
-    if (user === null) {
-      navigate('/home')
-    } else {
+    if (!isExpired) {
       dispatch(getSingle(id))
     }
     
-  }, [user, navigate, isError, message, id, dispatch])
+  }, [user, isExpired, navigate, isError, message, id, dispatch])
 
   // const recipient = process.env.REACT_APP_RECEMAIL
   // const subject = `Track ${trackTitle} is scheduled.`
@@ -55,12 +50,17 @@ function SingleEdit() {
   const onSubmit = (e) => {
     e.preventDefault()
 
+    if (isError) {
+      toast.error(message)
+    }
+
     if (trackTitle) {
       // console.log(recipient)
       // dispatch(sendEmail({ recipient, subject, emailMessage }))
     }
 
     // dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+    navigate('/profile/singles')
     setTrackTitle('')
     setArtist('')
     setDeliveryDate('')
@@ -80,11 +80,11 @@ function SingleEdit() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={single.artist} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={artist} onChange={(e) => setArtist(e.target.value)} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
-                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={single.trackTitle} onChange={(e) => setTrackTitle(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={(e) => setTrackTitle(e.target.value)} />
                 </div>
               </div>
             </div>

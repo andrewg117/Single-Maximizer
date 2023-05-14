@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { logout, reset, getTokenResult } from '../features/auth/authSlice'
+import { reset, getTokenResult } from '../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
@@ -27,12 +27,7 @@ const Profile = () => {
     }
     if (!isExpired){
       dispatch(getTokenResult())
-    } else if(isExpired || !user) {
-      toast.error("Login Expired")
-      dispatch(reset())
-      dispatch(logout())
-      navigate('/home/signin')
-    }
+    } 
     // if (!user) {
     //   dispatch(logout())
     //   dispatch(reset())

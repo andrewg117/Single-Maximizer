@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import authService from "./authService"
-import { trusted } from "mongoose"
 
 const user = JSON.parse(localStorage.getItem('user'))
 

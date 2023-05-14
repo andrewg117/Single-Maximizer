@@ -13,6 +13,7 @@ import SingleEdit from './pages/SingleEdit'
 import Admin from './pages/Admin'
 import NewRelease from './pages/NewRelease'
 import NavBarLeft from './components/NavBarLeft'
+import TokenCheck from './components/TokenCheck'
 import styles from './css/style.module.css';
 
 function MaximizerApp() {
@@ -30,12 +31,14 @@ function MaximizerApp() {
               <Route path='/home' element={<Home />} />
               <Route path='/home/signup' element={<SignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
-              <Route path='/profile' element={<Profile />} />
-              <Route path='/profile/editprofile' element={<ProfileEdit />} />
-              <Route path='/profile/newrelease' element={<NewRelease />} />
-              <Route path='/profile/singles' element={<Singles />} />
-              <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
-              <Route path='/admin' element={<Admin />} />
+              <Route element={<TokenCheck />}>
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/profile/editprofile' element={<ProfileEdit />} />
+                <Route path='/profile/newrelease' element={<NewRelease />} />
+                <Route path='/profile/singles' element={<Singles />} />
+                <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
+                <Route path='/admin' element={<Admin />} />
+              </Route>
             </Routes>
           </section>
         </div>

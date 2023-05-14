@@ -1,4 +1,5 @@
 import axios from "axios"
+import authService from "../auth/authService"
 
 const API_URL = '/api/tracks/'
 
@@ -8,7 +9,12 @@ const createTrack = async (trackData, token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.post(API_URL, trackData, config)
+
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.post(API_URL, trackData, config)
+  }
 
   return response.data
 }
@@ -19,7 +25,12 @@ const getTrack = async (token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.get(API_URL, config)
+  
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.get(API_URL, config)
+  }
 
   return response.data
 }
@@ -30,7 +41,12 @@ const getSingle = async (trackId, token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.get(API_URL + trackId, config)
+
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.get(API_URL + trackId, config)
+  }
 
   return response.data
 }
@@ -41,7 +57,12 @@ const deleteTrack = async (trackId, token) => {
       Authorization: `Bearer ${token}`
     }
   }
-  const response = await axios.delete(API_URL + trackId, config)
+
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.delete(API_URL + trackId, config)
+  }
 
   return response.data
 }

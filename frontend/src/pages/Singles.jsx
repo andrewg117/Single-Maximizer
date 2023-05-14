@@ -10,20 +10,20 @@ function Singles() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user } = useSelector((state) => state.auth)
+  const { user, isExpired } = useSelector((state) => state.auth)
   const { tracks, isLoading } = useSelector((state) => state.tracks)
 
+  const stateTracks = user !== null ? tracks : []
+
   useEffect(() => {
-    if (user === null) {
-      navigate('/home')
-    } else {
+    if (!isExpired) {
       dispatch(getTracks())
-    }
+    } 
 
     return () => {
       dispatch(reset())
     }
-  }, [user, navigate, dispatch])
+  }, [user, navigate, isExpired, dispatch])
 
   const editTrack = (e, id) => {
     e.preventDefault()
@@ -52,7 +52,7 @@ function Singles() {
               </tr>
             </thead>
             <tbody id={styles.singles_content}>
-              {tracks.length > 0 ? (tracks.map((track) => (
+              {stateTracks.length > 0 ? (stateTracks.map((track) => (
                 <tr key={track._id}>
                   <td>{track.artist}</td>
                   <td>{track.trackTitle}</td>
