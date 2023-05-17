@@ -15,7 +15,7 @@ function NewRelease() {
   const { user } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const stateUser = user !== null ? user : "N/A"
+  const stateUser = user !== null ? user : {}
   const [trackTitle, setTrackTitle] = useState('')
   const [artist, setArtist] = useState(stateUser.name)
 

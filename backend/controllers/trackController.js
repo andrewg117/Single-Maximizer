@@ -69,7 +69,10 @@ const updateTrack = asyncHandler(async (req, res) => {
     throw new Error('Track not found')
   }
 
-  // const user = await User.findById(req.user.id)
+  // if(!Date(track.req.deliveryDate)){
+  //   res.status(400)
+  //   throw new Error('Invalid Date')
+  // }
 
   if(!req.user) {
     res.status(401)

@@ -16,14 +16,25 @@ function Singles() {
   const stateTracks = user !== null ? tracks : []
 
   useEffect(() => {
-    if (!isExpired) {
-      dispatch(getTracks())
-    } 
+    const timer = setTimeout(() => {
+      if (!isExpired) {
+        dispatch(getTracks())
+      }
+    }, 500)
 
     return () => {
       dispatch(reset())
+      clearTimeout(timer)
     }
-  }, [navigate, isExpired, dispatch])
+  }, [dispatch, navigate, isExpired])
+
+  const currentTime = new Date().getTime() / 1000
+  const isDeliverd = (date) => {
+    const d = new Date(date).getTime() / 1000
+    return (
+      d < currentTime ? true : false
+    )
+  }
 
   const editTrack = (e, id) => {
     e.preventDefault()
@@ -32,7 +43,7 @@ function Singles() {
     navigate(`/profile/singleedit/${id}`)
   }
 
-  if (isLoading) {
+  if (isLoading || tracks.length <= 0 ) {
     return <Spinner />
   }
 
@@ -57,12 +68,12 @@ function Singles() {
                   <td>{track.artist}</td>
                   <td>{track.trackTitle}</td>
                   <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
-                  <td><button className={styles.scheduled}>Scheduled</button></td>
+                  <td><button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button></td>
                   <td><FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track}>X</FaEdit></td>
                 </tr>
               ))
               ) : (
-                <tr><td>You have no tracks</td></tr>
+                <tr><td>No Tracks</td></tr>
               )}
             </tbody>
           </table>

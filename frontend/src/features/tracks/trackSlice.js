@@ -43,6 +43,19 @@ export const getSingle = createAsyncThunk('tracks/single', async (id, thunkAPI) 
   }
 })
 
+export const updateSingle = createAsyncThunk('tracks/putSingle', async (args, thunkAPI) => {
+  try {
+    const {id, ...trackData } = args
+
+    const token = thunkAPI.getState().auth.user.token
+    return await trackService.updateSingle(id, trackData, token)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
 export const deleteTrack = createAsyncThunk('tracks/delete', async (id, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
@@ -97,6 +110,23 @@ export const trackSlice = createSlice({
         state.single = action.payload
       })
       .addCase(getSingle.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(updateSingle.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(updateSingle.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isExpired = false
+        state.single = {
+          ...state.single,
+          ...action.payload
+        }
+      })
+      .addCase(updateSingle.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

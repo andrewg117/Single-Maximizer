@@ -56,14 +56,13 @@ const update = async  (userData, token) => {
 
 const checkToken = (token) => {
   if (!token) {
-    return true;
+    return true
   }
 
-  const decodedToken = jwt_decode(token);
-  const currentTime = Date.now() / 1000;
-  // console.log(decodedToken.exp < currentTime)
+  const decodedToken = jwt_decode(token)
+  const currentTime = Date.now() / 1000
 
-  return decodedToken.exp < currentTime;
+  return decodedToken.exp < currentTime
 }
 
 const logout = () => {
