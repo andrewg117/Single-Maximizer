@@ -78,7 +78,6 @@ function SignIn() {
                   id='email'
                   name='email'
                   value={email}
-                  placeholder='Enter Email'
                   onChange={onChange} />
                 <label htmlFor="pword">PASSWORD</label>
                 <input
@@ -87,7 +86,6 @@ function SignIn() {
                   id='password'
                   name='password'
                   value={password}
-                  placeholder='Enter Password'
                   onChange={onChange} />
                 <Link className={styles.signin_link}>Forgot Username?</Link>
                 <Link className={styles.signin_link}>Forgot Password?</Link>

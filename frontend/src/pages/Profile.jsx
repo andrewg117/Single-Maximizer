@@ -28,16 +28,6 @@ const Profile = () => {
     if (!isExpired){
       dispatch(getTokenResult())
     } 
-    // if (!user) {
-    //   dispatch(logout())
-    //   dispatch(reset())
-    //   navigate('/home/signin')
-    // } 
-    // else if(userData === null) {
-    //   throw new Error("No Data")
-    // } else {
-    //   // dispatch(getUser())
-    // }
     
     return () => {
       dispatch(reset())
@@ -57,9 +47,21 @@ const Profile = () => {
         <div id={styles.profile_view_div}>
           <div className={styles.profile_data_div}>
             <ProfileDiv
-              labelID='name'
-              text='NAME'
-              userData={!isExpired ? user.name : "No data"}
+              labelID='fname'
+              text='FIRST NAME'
+              userData={!isExpired ? user.fname : "No data"}
+            />
+            <ProfileDiv
+              labelID='lname'
+              text='LAST NAME'
+              userData={!isExpired ? user.lname : "No data"}
+            />
+          </div>
+          <div className={styles.profile_data_div}>
+            <ProfileDiv
+              labelID='username'
+              text='USERNAME'
+              userData={!isExpired ? user.username : "No data"}
             />
             <ProfileDiv
               labelID='email'

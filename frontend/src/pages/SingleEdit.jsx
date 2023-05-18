@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 // import Notification from '../components/Notification'
 // import { sendEmail } from '../features/email/emailSlice';
-import { getSingle, updateSingle } from '../features/tracks/trackSlice'
+import { getSingle, updateSingle, deleteTrack } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -21,8 +21,6 @@ function SingleEdit() {
 
   const { id } = useParams()
 
-  //"2023-05-28T04:00:00.000Z"
-  // 2023-05-28T00:00:00
   const convertDate = (date, isDefault) => {
 
     const year = date.toLocaleString('default', { year: 'numeric' })
@@ -70,6 +68,18 @@ function SingleEdit() {
     } else {
       toast.error("Update Fields")
     }
+  }
+
+  const deleteSingle = (e) => {
+    e.preventDefault()
+    dispatch(deleteTrack(id))
+    toast.success("Single Deleted")
+    navigate('/profile/singles')
+  }
+  
+  const goBackToSingles = (e) => {
+    e.preventDefault()
+    navigate('/profile/singles')
   }
 
 
@@ -198,8 +208,8 @@ function SingleEdit() {
                 deliveryDate={deliveryDate}
                 style={styles.profile_btn}
               /> */}
-              <button className={styles.profile_btn} >DELETE</button>
-              <button className={styles.profile_btn} >CANCEL</button>
+              <button className={styles.profile_btn} onClick={deleteSingle}>DELETE</button>
+              <button className={styles.profile_btn} onClick={goBackToSingles}>CANCEL</button>
             </div>
 
           </div>

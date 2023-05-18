@@ -17,7 +17,7 @@ function NewRelease() {
 
   const stateUser = user !== null ? user : {}
   const [trackTitle, setTrackTitle] = useState('')
-  const [artist, setArtist] = useState(stateUser.name)
+  const [artist, setArtist] = useState(stateUser.username)
 
   const minDate = () => {
     const date = new Date()
@@ -35,10 +35,6 @@ function NewRelease() {
   useEffect(() => {
     if (isError) {
       toast.error(message)
-    }
-
-    if (user === null) {
-      navigate('/home')
     }
   }, [navigate, isError, message])
 
@@ -74,7 +70,7 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={stateUser.name} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={stateUser.username} onChange={(e) => setArtist(e.target.value)} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>

@@ -14,7 +14,9 @@ function ProfileEdit() {
     (state) => state.auth
   )
 
-  const [name, setUsername] = useState(user !== null ? user.name : "N/A")
+  const [fname, setFname] = useState(user !== null ? user.fname : "N/A")
+  const [lname, setLname] = useState(user !== null ? user.lname : "N/A")
+  const [username, setUsername] = useState(user !== null ? user.username : "N/A")
   const [email, setEmail] = useState(user !== null ? user.email : "N/A")
   const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
 
@@ -33,11 +35,13 @@ function ProfileEdit() {
 
     if (isError) {
       toast.error(message)
-    } else if(name.trim() === '' || email.trim() === '') {
+    } else if(username.trim() === '' || email.trim() === '') {
       toast.error('Empty field')
     } else {
       dispatch(updateUser({
-        name, 
+        fname, 
+        lname, 
+        username, 
         email, 
         website
       }))
@@ -60,14 +64,38 @@ function ProfileEdit() {
           <div id={styles.profile_form_div}>
             <div className={styles.profile_input_div}>
               <div>
-                <label htmlFor="name">USERNAME</label>
+                <label htmlFor="fname">FIRST NAME</label>
                 <input
                   type="text"
                   className={styles.profile_input}
-                  id='name'
-                  name='name'
-                  placeholder="Enter your artist name"
-                  defaultValue={name}
+                  id='fname'
+                  name='fname'
+                  placeholder="Enter your first name"
+                  defaultValue={fname}
+                  onChange={(e) => setFname(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="fname">LAST NAME</label>
+                <input
+                  type="text"
+                  className={styles.profile_input}
+                  id='lname'
+                  name='lname'
+                  placeholder="Enter your last name"
+                  defaultValue={lname}
+                  onChange={(e) => setLname(e.target.value)} />
+              </div>
+            </div>
+            <div className={styles.profile_input_div}>
+              <div>
+                <label htmlFor="username">USERNAME</label>
+                <input
+                  type="text"
+                  className={styles.profile_input}
+                  id='username'
+                  name='username'
+                  placeholder="Enter your username"
+                  defaultValue={username}
                   onChange={(e) => setUsername(e.target.value)} />
               </div>
               <div>

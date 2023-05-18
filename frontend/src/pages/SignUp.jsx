@@ -8,13 +8,15 @@ import styles from '../css/sign_in_style.module.css'
 
 function SignUp() {
   const [formData, setFormData] = useState({
-    name: '',
+    fname: '',
+    lname: '',
+    username: '',
     email: '',
     password: '',
     password2: '',
   })
 
-  const { name, email, password, password2 } = formData
+  const {  fname,  lname, username, email, password, password2 } = formData
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -51,7 +53,7 @@ function SignUp() {
       toast.error('Passwords do not match')
     } else {
       const userData = {
-        name, email, password
+        fname, lname, username, email, password
       }
 
       dispatch(register(userData))
@@ -75,13 +77,35 @@ function SignUp() {
 
             <form id={styles.signin_form} onSubmit={onSubmit}>
               <div className={styles.signin_form_div}>
-                <label htmlFor="name">USERNAME</label>
+                <div id={styles.f_lname_div}>
+                  <div>
+                    <label htmlFor="fname">FIRST NAME</label>
+                    <input
+                      className={styles.signin_input}
+                      type="text"
+                      id="fname"
+                      name="fname"
+                      value={fname}
+                      onChange={onChange} />
+                  </div>
+                  <div>
+                    <label htmlFor="lname">LAST NAME</label>
+                    <input
+                      className={styles.signin_input}
+                      type="text"
+                      id="lname"
+                      name="lname"
+                      value={lname}
+                      onChange={onChange} />
+                  </div>
+                </div>
+                <label htmlFor="username">USERNAME</label>
                 <input
                   type="text"
                   className={styles.signin_input}
-                  id='name'
-                  name='name'
-                  value={name}
+                  id='username'
+                  name='username'
+                  value={username}
                   onChange={onChange} />
                 <label htmlFor="email">EMAIL</label>
                 <input

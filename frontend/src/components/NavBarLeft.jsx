@@ -32,7 +32,7 @@ function NavBarLeft() {
     <>
       <section id={styles.navbar_container}>
         <div id={styles.navbar_header}>
-          <h1>{'Welcome, ' + user.name}</h1>
+          <h1>{'Welcome, ' + user.username}</h1>
         </div>
         <div className={styles.navbar_left}>
           <div className={styles.navbar_left_links}>

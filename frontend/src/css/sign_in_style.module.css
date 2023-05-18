@@ -57,6 +57,18 @@
   text-decoration: none;
 }
 
+#f_lname_div {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 5em;
+}
+
+#f_lname_div div {
+  display: grid;
+  align-items: center;
+  width: 100%;
+}
+
 .signin_input {
   width: 100%;
   height: 30px;

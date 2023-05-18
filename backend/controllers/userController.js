@@ -7,9 +7,9 @@ const User = require('../models/userModel')
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body
+  const { fname, lname, username, email, password } = req.body
 
-  if (!name || !email || !password) {
+  if (!fname || !lname || !username || !email || !password) {
     res.status(400)
     throw new Error('Add all fields')
   }
@@ -25,7 +25,9 @@ const registerUser = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt)
 
   const user = await User.create({
-    name,
+    fname,
+    lname,
+    username,
     email,
     password: hashedPassword
   })
@@ -33,7 +35,9 @@ const registerUser = asyncHandler(async (req, res) => {
   if(user) {
     res.status(201).json({
       _id: user.id,
-      name: user.name,
+      fname: user.fname,
+      lname: user.lname,
+      username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id)
@@ -73,7 +77,6 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  // const { _id, name, email } = await User.findById(req.user.id)
   res.json(req.user)
 })
 

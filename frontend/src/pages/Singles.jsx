@@ -20,7 +20,7 @@ function Singles() {
       if (!isExpired) {
         dispatch(getTracks())
       }
-    }, 500)
+    }, 200)
 
     return () => {
       dispatch(reset())
@@ -43,7 +43,7 @@ function Singles() {
     navigate(`/profile/singleedit/${id}`)
   }
 
-  if (isLoading || tracks.length <= 0 ) {
+  if (isLoading && tracks.length === 0) {
     return <Spinner />
   }
 
@@ -68,8 +68,12 @@ function Singles() {
                   <td>{track.artist}</td>
                   <td>{track.trackTitle}</td>
                   <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
-                  <td><button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button></td>
-                  <td><FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track}>X</FaEdit></td>
+                  <td>
+                    <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button>
+                  </td>
+                  <td>
+                    {!isDeliverd(track.deliveryDate) ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
+                  </td>
                 </tr>
               ))
               ) : (
