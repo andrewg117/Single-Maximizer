@@ -66,7 +66,7 @@ function NewRelease() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <h1>FMGMP3</h1>
+              <img src="" alt="Upload Track Cover" />
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

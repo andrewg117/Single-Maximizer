@@ -20,12 +20,15 @@
 }
 
 #profile_title {
+  display: flex;
   justify-self: center;
+  justify-content: left;
+  align-content: center;
   width: 90%;
   height: auto;
 }
 
-#profile_title h1 {
+#profile_title img {
   text-align: left;
   font-size: 3rem;
   margin: .5em 0;

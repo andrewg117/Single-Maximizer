@@ -25,10 +25,10 @@ const Profile = () => {
     if (isError) {
       toast.error(message)
     }
-    if (!isExpired){
+    if (!isExpired) {
       dispatch(getTokenResult())
-    } 
-    
+    }
+
     return () => {
       dispatch(reset())
     }
@@ -42,7 +42,7 @@ const Profile = () => {
     <>
       <div id={styles.profile_content_right}>
         <div id={styles.profile_title}>
-          <h1>FMGMP3</h1>
+          <img src="" alt="Upload Profile Avatar" />
         </div>
         <div id={styles.profile_view_div}>
           <div className={styles.profile_data_div}>
@@ -78,50 +78,50 @@ const Profile = () => {
             <ProfileDiv
               labelID='scloud'
               text='SOUNDCLOUD'
-              // userData={user.email}
+            // userData={user.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='twitter'
               text='TWITTER'
-              // userData={user.email}
+            // userData={user.email}
             />
             <ProfileDiv
               labelID='igram'
               text='INSTAGRAM'
-              // userData={user.email}
+            // userData={user.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='fbook'
               text='FACEBOOK'
-              // userData={user.email}
+            // userData={user.email}
             />
             <ProfileDiv
               labelID='spotify'
               text='SPOTIFY'
-              // userData={user.email}
+            // userData={user.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='ytube'
               text='YOUTUBE'
-              // userData={user.email}
+            // userData={user.email}
             />
             <ProfileDiv
               labelID='tiktok'
               text='TIKTOK'
-              // userData={user.email}
+            // userData={user.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='bio-text'
               text='BIO'
-              // userData={user.email}
+            // userData={user.email}
             />
           </div>
           <div id={styles.profile_submit_div}>
