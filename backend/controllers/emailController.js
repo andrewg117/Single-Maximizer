@@ -24,7 +24,8 @@ const sendEmail = asyncHandler(async (req, res) => {
       recipient: req.body.recipient,
       subject: req.body.subject,
       emailMessage: req.body.emailMessage,
-      user: req.user.id
+      user: req.user.id,
+      trackID: req.body.trackID
     })
 
     // create reusable transporter object using the default SMTP transport

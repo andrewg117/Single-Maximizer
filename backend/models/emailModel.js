@@ -6,6 +6,11 @@ const emailSchema = mongoose.Schema({
     required: true,
     ref: 'User'
   },
+  trackID: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Track'
+  },
   recipient: {
     type: String,
     required: [true, 'Add recipient']

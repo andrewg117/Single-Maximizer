@@ -81,6 +81,7 @@ export const trackSlice = createSlice({
       .addCase(createTrack.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
+        state.single = action.payload
         state.tracks.push(action.payload)
       })
       .addCase(createTrack.rejected, (state, action) => {

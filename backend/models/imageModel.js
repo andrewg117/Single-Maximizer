@@ -6,8 +6,8 @@ const imageSchema = mongoose.Schema({
     required: true,
     ref: 'User'
   },
-  track: {
-    type: mongoose.Schema.Types.ObjectId,
+  trackID: {
+    type: String,
     required: false,
     ref: 'Track'
   },

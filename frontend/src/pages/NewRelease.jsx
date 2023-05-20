@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendEmail } from '../features/email/emailSlice';
@@ -11,9 +11,10 @@ import styles from '../css/new_release_style.module.css'
 function NewRelease() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
-  const { user } = useSelector((state) => state.auth)
-  const { isLoading, isError, message } = useSelector((state) => state.tracks)
+  const { user, isExpired } = useSelector((state) => state.auth)
+  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
 
   const stateUser = user !== null ? user : {}
   const [trackTitle, setTrackTitle] = useState('')
@@ -32,11 +33,17 @@ function NewRelease() {
 
   const [deliveryDate, setDeliveryDate] = useState(minDate())
 
+  let timer
+
   useEffect(() => {
     if (isError) {
       toast.error(message)
     }
-  }, [navigate, isError, message])
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [single, timer, isError, message])
 
   const recipient = process.env.REACT_APP_RECEMAIL
   const subject = `Track ${trackTitle} is scheduled.`
@@ -45,15 +52,22 @@ function NewRelease() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if (trackTitle) {
-      console.log(recipient)
-      dispatch(sendEmail({ recipient, subject, emailMessage }))
-    }
+    if (trackTitle && !isExpired) {
+      dispatch(createTrack({ trackTitle, artist, deliveryDate }))
 
-    dispatch(createTrack({ trackTitle, artist, deliveryDate }))
-    setTrackTitle('')
-    setArtist('')
-    setDeliveryDate('')
+      timer = setTimeout(() => {
+        const trackID = store.getState().tracks['single']._id
+        dispatch(sendEmail({ recipient, subject, emailMessage, trackID }))
+      }, 200)
+
+      // Change state to formData
+      setTrackTitle('')
+      setArtist('')
+      setDeliveryDate('')
+
+      toast.success('Email Sent')
+      navigate('/profile/singles')
+    }
   }
 
   if (isLoading) {
