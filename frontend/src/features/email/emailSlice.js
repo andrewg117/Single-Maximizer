@@ -9,9 +9,14 @@ const initialState = {
   message: '',
 }
 
-export const sendEmail = createAsyncThunk('email/send', async (emailData, thunkAPI) => {
+export const sendNewTrackEmail = createAsyncThunk('email/newTrack', async (emailData, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
+    // const trackID = thunkAPI.getState().tracks['single']._id
+    // emailData = {
+    //   ...emailData,
+    //   trackID: trackID
+    // }
     return await emailService.sendEmail(emailData, token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -28,15 +33,15 @@ export const emailSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(sendEmail.pending, (state) => {
+      .addCase(sendNewTrackEmail.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(sendEmail.fulfilled, (state, action) => {
+      .addCase(sendNewTrackEmail.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
         state.email.push(action.payload)
       })
-      .addCase(sendEmail.rejected, (state, action) => {
+      .addCase(sendNewTrackEmail.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

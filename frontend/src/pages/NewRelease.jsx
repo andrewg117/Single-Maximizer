@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useCallback, useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
-import { sendEmail } from '../features/email/emailSlice';
-import { createTrack } from '../features/tracks/trackSlice'
+import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
+import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -11,7 +11,6 @@ import styles from '../css/new_release_style.module.css'
 function NewRelease() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const store = useStore()
 
   const { user, isExpired } = useSelector((state) => state.auth)
   const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
@@ -33,40 +32,39 @@ function NewRelease() {
 
   const [deliveryDate, setDeliveryDate] = useState(minDate())
 
-  let timer
+  const trackEmail = useCallback((title, date, trackID) => {
+    const recipient = process.env.REACT_APP_RECEMAIL
+    const subject = `Track ${title} is scheduled.`
+    const emailMessage = `Track ${title} will be sent by ${new Date(date).toLocaleString('en-us')}.`
+
+    dispatch(sendNewTrackEmail({ recipient, subject, emailMessage, trackID }))
+    navigate('/profile/singles')
+  }, [dispatch, navigate])
 
   useEffect(() => {
     if (isError) {
       toast.error(message)
     }
 
-    return () => {
-      clearTimeout(timer)
+    if (single.length !== 0 && !isExpired) {
+      console.log(single)
+      const trackID = single._id
+      trackEmail(trackTitle, deliveryDate, trackID)
+      // toast.success('Email Sent')
     }
-  }, [single, timer, isError, message])
 
-  const recipient = process.env.REACT_APP_RECEMAIL
-  const subject = `Track ${trackTitle} is scheduled.`
-  const emailMessage = `Track ${trackTitle} will be sent by ${new Date(deliveryDate).toLocaleString('en-us')}.`
+    return () => {
+      dispatch(resetTracks())
+      dispatch(resetEmail())
+    }
+  }, [single, trackTitle, deliveryDate, trackEmail, isExpired, isError, message, dispatch])
+
 
   const onSubmit = (e) => {
     e.preventDefault()
 
     if (trackTitle && !isExpired) {
       dispatch(createTrack({ trackTitle, artist, deliveryDate }))
-
-      timer = setTimeout(() => {
-        const trackID = store.getState().tracks['single']._id
-        dispatch(sendEmail({ recipient, subject, emailMessage, trackID }))
-      }, 200)
-
-      // Change state to formData
-      setTrackTitle('')
-      setArtist('')
-      setDeliveryDate('')
-
-      toast.success('Email Sent')
-      navigate('/profile/singles')
     }
   }
 
