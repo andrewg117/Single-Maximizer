@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
+import  ImageUpload  from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -50,7 +51,6 @@ function NewRelease() {
       console.log(single)
       const trackID = single._id
       trackEmail(trackTitle, deliveryDate, trackID)
-      // toast.success('Email Sent')
     }
 
     return () => {
@@ -65,6 +65,7 @@ function NewRelease() {
 
     if (trackTitle && !isExpired) {
       dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+      toast.success('Email Sent')
     }
   }
 
@@ -78,7 +79,8 @@ function NewRelease() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <img src="" alt="Upload Track Cover" />
+              <ImageUpload type={''} />
+              {/* <img src="" alt="Upload Track Cover" /> */}
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
