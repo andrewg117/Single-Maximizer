@@ -1,23 +1,42 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 // import Notification from '../components/Notification'
 // import { sendEmail } from '../features/email/emailSlice';
 import { getSingle, updateSingle, deleteTrack } from '../features/tracks/trackSlice'
+import ImageUpload from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
+import {Buffer} from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
   const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const singleState = isExpired !== true ? single : {}
+  // const singleState = isExpired !== true ? single : {}
+  const singleState = useMemo(() => isExpired !== true ? single : {}, [single, isExpired])
+
   const [trackTitle, setTrackTitle] = useState(singleState.trackTitle)
   const [artist, setArtist] = useState(singleState.artist)
+  const [trackCover, setCover] = useState()
+
+  const getCover = useCallback(() => {
+    // const cover = store.getState().tracks['single'].trackCover
+    const cover = single.trackCover
+    const buffer = Buffer.from(cover.buffer, 'base64')
+    // const formData = new FormData()
+    // formData.append("trackCover", buffer, { filename: cover.originalname })
+    
+    // setCover(formData)
+
+    console.log(cover)
+  }, [single])
+
 
   const { id } = useParams()
 
@@ -44,13 +63,9 @@ function SingleEdit() {
 
   const [deliveryDate, setDeliveryDate] = useState()
 
-
-  // const recipient = process.env.REACT_APP_RECEMAIL
-  // const subject = `Track ${trackTitle} is scheduled.`
-  // const emailMessage = `Track ${trackTitle} will be sent by ${new Date(deliveryDate).toLocaleString('en-us')}.`
-
   const onSubmit = (e) => {
     e.preventDefault()
+    getCover()
 
     if (isError) {
       toast.error(message)
@@ -59,11 +74,11 @@ function SingleEdit() {
     if (trackTitle !== '' && artist !== '' && !isExpired) {
       // console.log(recipient)
       // dispatch(sendEmail({ recipient, subject, emailMessage }))
-      dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
+      // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
 
       // dispatch(getTracks())
-      toast.success("Update Successful")
-      navigate('/profile/singles')
+      // toast.success("Update Successful")
+      // navigate('/profile/singles')
 
     } else {
       toast.error("Update Fields")
@@ -101,7 +116,7 @@ function SingleEdit() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <h1>FMGMP3</h1>
+              {/* <ImageUpload changeFile={setCover} file={singleState.trackCover} /> */}
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
@@ -131,7 +146,7 @@ function SingleEdit() {
             </div>
             <div className={styles.input_div} />
             <div>
-              <label htmlFor="deliveryDate">DELIVERY DATE {defaultDate}</label>
+              <label htmlFor="deliveryDate">DELIVERY DATE</label>
 
               <input
                 className={styles.new_input}

@@ -1,18 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import emailService from "./emailService"
+import imageService from "./imageService"
 
 const initialState = {
-  email: [],
+  image: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
 }
 
-export const sendNewTrackEmail = createAsyncThunk('email/newTrack', async (emailData, thunkAPI) => {
+export const postNewCover = createAsyncThunk('image/newCover', async (imageData, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
-    return await emailService.sendEmail(emailData, token)
+    return await imageService.postImage(imageData, token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -20,23 +20,23 @@ export const sendNewTrackEmail = createAsyncThunk('email/newTrack', async (email
   }
 })
 
-export const emailSlice = createSlice({
-  name: 'email',
+export const imageSlice = createSlice({
+  name: 'image',
   initialState,
   reducers: {
     reset: (state) => initialState
   },
   extraReducers: (builder) => {
     builder
-      .addCase(sendNewTrackEmail.pending, (state) => {
+      .addCase(postNewCover.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(sendNewTrackEmail.fulfilled, (state, action) => {
+      .addCase(postNewCover.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.email.push(action.payload)
+        state.image.push(action.payload)
       })
-      .addCase(sendNewTrackEmail.rejected, (state, action) => {
+      .addCase(postNewCover.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
@@ -44,5 +44,5 @@ export const emailSlice = createSlice({
   }
 })
 
-export const { reset } = emailSlice.actions
-export default emailSlice.reducer
+export const { reset } = imageSlice.actions
+export default imageSlice.reducer

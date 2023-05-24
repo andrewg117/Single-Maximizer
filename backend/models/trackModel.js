@@ -23,6 +23,10 @@ const trackSchema = mongoose.Schema({
   trackURL: {
     type: String,
     required: false
+  },
+  trackCover: {
+    type: mongoose.Schema.Types.Mixed,
+    required: false
   }
 },
 {

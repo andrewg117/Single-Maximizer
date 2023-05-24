@@ -1,19 +1,19 @@
 // ImageUpload.js
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
+import styles from '../css/new_release_style.module.css'
 
-const ImageUpload = ({ type }) => {
-  const [selectedImage, setSelectedImage] = useState(null)
+const ImageUpload = ({ changeFile, file }) => {
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/jpeg': ['.jpeg', '.png']
     },
     onDrop: (acceptedFiles) => {
-      setSelectedImage({
-        file: acceptedFiles[0],
-        url: URL.createObjectURL(acceptedFiles[0])
-      })
+      let formData = new FormData();
+      formData.append('trackCover', acceptedFiles[0])
+      // console.log(formData.get('trackCover'))
+      changeFile(formData)
     }
   });
 
@@ -21,12 +21,12 @@ const ImageUpload = ({ type }) => {
   //   e.preventDefault()
   //   try {
   //     const formData = new FormData()
-  //     formData.append('image', selectedImage)
+  //     formData.append('image', file)
 
   //     // await axios.post('/upload', formData)
 
   //     // Reset selected image state
-  //     setSelectedImage(null)
+  //     changeFile(null)
 
   //     alert('Image uploaded successfully.')
   //   } catch (error) {
@@ -36,24 +36,31 @@ const ImageUpload = ({ type }) => {
   // }
 
   useEffect(() => {
-    if (selectedImage) {
-      console.log(selectedImage)
+    if (file) {
 
       return () => {
-        URL.revokeObjectURL(selectedImage.url)
+        URL.revokeObjectURL(URL.createObjectURL(file.get('trackCover')))
+        changeFile(null)
       }
     }
-  }, [selectedImage])
+  }, [file, changeFile])
 
   return (
-    <div>
-      <div {...getRootProps()} hidden={selectedImage}>
+    <div id={styles.image_div}>
+      <div {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
-        <p>Drag and drop an image here, or click to select an image</p>
+        <p>Drag and drop or click to upload cover art</p>
       </div>
       {
-        selectedImage !== null ?
-          <img src={selectedImage.url} alt="Upload Track Cover" disabled={!selectedImage} hidden={!selectedImage} onLoad={() => { URL.revokeObjectURL(selectedImage.url) }} />
+        file !== null ?
+          <>
+            <img src={URL.createObjectURL(file.get('trackCover'))} alt="Upload Track Cover" disabled={!file} hidden={!file} onLoad={() => { URL.revokeObjectURL(URL.createObjectURL(file.get('trackCover'))) }} />
+            <div
+              id={styles.remove_image}
+              onClick={(e) => changeFile(null)}>
+              X
+            </div>
+          </>
           :
           <></>
       }

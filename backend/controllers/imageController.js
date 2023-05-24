@@ -7,27 +7,30 @@ const uploadImage = asyncHandler(async (req, res) => {
     res.status(401)
     throw new Error('User not found')
   }
+
+  console.log(req.body)
+  console.log(req.file)
   
-  let image
+  // let image
 
-  if(req.body.section === 'avatar') {
-    image = await Image.create({
-      user: req.user.id,
-      name: req.body.name,
-      file: '',
-      section: req.body.section,
-    })
-  } else if(req.body.section === 'cover') {
-    image = await Image.create({
-      user: req.user.id,
-      track: req.body.trackID,
-      name: req.body.name,
-      file: '',
-      section: req.body.section
-    })
-  }
+  // if(req.body.section === 'avatar') {
+  //   image = await Image.create({
+  //     user: req.user.id,
+  //     name: req.body.name,
+  //     file: '',
+  //     section: req.body.section,
+  //   })
+  // } else if(req.body.section === 'cover') {
+  //   image = await Image.create({
+  //     user: req.user.id,
+  //     track: req.body.trackID,
+  //     name: req.body.name,
+  //     file: '',
+  //     section: req.body.section
+  //   })
+  // }
 
-  res.json(image)
+  // res.json(image)
 })
 
 module.exports = {

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
-import  ImageUpload  from '../components/ImageUpload'
+import ImageUpload from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -19,6 +19,7 @@ function NewRelease() {
   const stateUser = user !== null ? user : {}
   const [trackTitle, setTrackTitle] = useState('')
   const [artist, setArtist] = useState(stateUser.username)
+  const [trackCover, setCover] = useState(null)
 
   const minDate = () => {
     const date = new Date()
@@ -47,8 +48,8 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (single.length !== 0 && !isExpired) {
-      console.log(single)
+    if (trackTitle && single.length !== 0 && !isExpired) {
+      // console.log(single)
       const trackID = single._id
       trackEmail(trackTitle, deliveryDate, trackID)
     }
@@ -64,7 +65,19 @@ function NewRelease() {
     e.preventDefault()
 
     if (trackTitle && !isExpired) {
-      dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+      let formData = trackCover
+      formData.append("trackTitle", trackTitle)
+      formData.append("artist", artist)
+      formData.append("deliveryDate", deliveryDate)
+      setCover(formData)
+
+      console.log(trackCover)
+      dispatch(createTrack(trackCover))
+      // dispatch(createTrack({ 
+      //   trackTitle, 
+      //   artist, 
+      //   deliveryDate
+      // }))
       toast.success('Email Sent')
     }
   }
@@ -79,8 +92,7 @@ function NewRelease() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <ImageUpload type={''} />
-              {/* <img src="" alt="Upload Track Cover" /> */}
+              <ImageUpload changeFile={setCover} file={trackCover} />
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

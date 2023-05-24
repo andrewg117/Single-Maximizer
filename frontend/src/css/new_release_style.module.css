@@ -36,9 +36,28 @@
   text-align: left;
 }
 
-#top_div img {
+#image_div {
+  position: relative;
+  padding: 1em;
+}
+
+#image_div p {
+  cursor: pointer;
+  text-align: left;
+}
+
+#image_div img {
+  max-width: 100%;
+  max-height: 100%;
   font-size: 3rem;
   margin: .5em 0;
+}
+
+#remove_image {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
 }
 
 #new_form_div {
