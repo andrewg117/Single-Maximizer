@@ -12,7 +12,7 @@ const ImageUpload = ({ changeFile, file }) => {
     onDrop: (acceptedFiles) => {
       let formData = new FormData();
       formData.append('trackCover', acceptedFiles[0])
-      // console.log(formData.get('trackCover'))
+      console.log(formData.get('trackCover'))
       changeFile(formData)
     }
   });

@@ -7,7 +7,7 @@ import { getSingle, updateSingle, deleteTrack } from '../features/tracks/trackSl
 import ImageUpload from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
-import {Buffer} from 'buffer'
+import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
@@ -23,19 +23,24 @@ function SingleEdit() {
 
   const [trackTitle, setTrackTitle] = useState(singleState.trackTitle)
   const [artist, setArtist] = useState(singleState.artist)
-  const [trackCover, setCover] = useState()
+  const [trackCover, setCover] = useState(null)
 
   const getCover = useCallback(() => {
-    // const cover = store.getState().tracks['single'].trackCover
-    const cover = single.trackCover
-    const buffer = Buffer.from(cover.buffer, 'base64')
-    // const formData = new FormData()
-    // formData.append("trackCover", buffer, { filename: cover.originalname })
-    
-    // setCover(formData)
 
-    console.log(cover)
-  }, [single])
+    if (store.getState().tracks['single'].trackCover) {
+      const cover = store.getState().tracks['single'].trackCover
+      
+      const buffer = Buffer.from(cover.buffer)
+      const blob = new Blob(buffer, { type: cover.mimetype })
+      
+      const formData = new FormData()
+      formData.append(cover.fieldname, blob, cover.originalname)
+
+      setCover(formData)
+
+      console.log(formData.get('trackCover'))
+    }
+  }, [store])
 
 
   const { id } = useParams()
@@ -65,7 +70,6 @@ function SingleEdit() {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    getCover()
 
     if (isError) {
       toast.error(message)
@@ -76,7 +80,6 @@ function SingleEdit() {
       // dispatch(sendEmail({ recipient, subject, emailMessage }))
       // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
 
-      // dispatch(getTracks())
       // toast.success("Update Successful")
       // navigate('/profile/singles')
 
@@ -91,7 +94,7 @@ function SingleEdit() {
     toast.success("Single Deleted")
     navigate('/profile/singles')
   }
-  
+
   const goBackToSingles = (e) => {
     e.preventDefault()
     navigate('/profile/singles')
@@ -104,7 +107,11 @@ function SingleEdit() {
     if (!isExpired) {
       dispatch(getSingle(id))
     }
-  }, [defaultDate, isExpired, navigate, isError, message, id, dispatch])
+
+    getCover()
+
+
+  }, [defaultDate, getCover, isExpired, navigate, isError, message, id, dispatch])
 
   if (isLoading) {
     return <Spinner />
@@ -116,7 +123,8 @@ function SingleEdit() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              {/* <ImageUpload changeFile={setCover} file={singleState.trackCover} /> */}
+              <ImageUpload changeFile={setCover} file={trackCover} />
+              {/* <img src={URL.createObjectURL(trackCover)} alt='test' onLoad={() => { URL.revokeObjectURL(URL.createObjectURL(trackCover)) }} /> */}
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

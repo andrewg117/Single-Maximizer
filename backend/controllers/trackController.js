@@ -46,7 +46,7 @@ const setTrack = asyncHandler(async (req, res) => {
     throw new Error('Add track title') 
   }
 
-  // console.log(req.file)
+  console.log(req.file)
   // console.log(req.body)
 
   const track = await Track.create({
