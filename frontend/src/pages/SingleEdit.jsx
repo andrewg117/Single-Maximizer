@@ -24,21 +24,22 @@ function SingleEdit() {
   const [trackTitle, setTrackTitle] = useState(singleState.trackTitle)
   const [artist, setArtist] = useState(singleState.artist)
   const [trackCover, setCover] = useState(null)
+  const [isEdit, setEdit] = useState(true)
 
   const getCover = useCallback(() => {
 
     if (store.getState().tracks['single'].trackCover) {
       const cover = store.getState().tracks['single'].trackCover
-      
-      const buffer = Buffer.from(cover.buffer)
-      const blob = new Blob(buffer, { type: cover.mimetype })
-      
-      const formData = new FormData()
-      formData.append(cover.fieldname, blob, cover.originalname)
 
-      setCover(formData)
+      const buffer = Buffer.from(cover.buffer, 'ascii')
+      // const blob = new Blob(buffer, { type: cover.mimetype })
 
-      console.log(formData.get('trackCover'))
+      // const formData = new FormData()
+      // formData.append(cover.fieldname, blob, cover.originalname)
+
+      // console.log(buffer)
+
+      setCover(buffer)
     }
   }, [store])
 
@@ -74,17 +75,34 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
+    if(trackTitle !== '' && artist !== '' && !isExpired) {
+    
+      if(isEdit === true) {
+        dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
+  
+        // toast.success("Update Successful")
+        // navigate('/profile/singles')
+  
+      } else if (isEdit === false) {
+        let formData = new FormData()
+        formData.append("trackCover", trackCover)
+        formData.append("id", id)
+        formData.append("trackTitle", trackTitle)
+        formData.append("artist", artist)
+        formData.append("deliveryDate", deliveryDate)
+        console.log(formData)
+        // console.log(recipient)
+        // dispatch(sendEmail({ recipient, subject, emailMessage }))
+        // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
+        dispatch(updateSingle(formData))
+  
+        // toast.success("Update Successful")
+        // navigate('/profile/singles')
+  
+      } else {
+        toast.error("Update Fields")
+      }
 
-    if (trackTitle !== '' && artist !== '' && !isExpired) {
-      // console.log(recipient)
-      // dispatch(sendEmail({ recipient, subject, emailMessage }))
-      // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
-
-      // toast.success("Update Successful")
-      // navigate('/profile/singles')
-
-    } else {
-      toast.error("Update Fields")
     }
   }
 
@@ -106,9 +124,9 @@ function SingleEdit() {
 
     if (!isExpired) {
       dispatch(getSingle(id))
-    }
 
-    getCover()
+      getCover()
+    }
 
 
   }, [defaultDate, getCover, isExpired, navigate, isError, message, id, dispatch])
@@ -123,8 +141,9 @@ function SingleEdit() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <ImageUpload changeFile={setCover} file={trackCover} />
-              {/* <img src={URL.createObjectURL(trackCover)} alt='test' onLoad={() => { URL.revokeObjectURL(URL.createObjectURL(trackCover)) }} /> */}
+              {/* {trackCover !== null ? <img src={`data:image/jpeg;base64,${trackCover}`} alt='Cover'  /> : <ImageUpload changeFile={setCover} file={trackCover} />} */}
+              <ImageUpload changeFile={setCover} file={trackCover} isEdit={isEdit} setEdit={setEdit} />
+              {/* <img src={`data:image/jpeg;base64,${trackCover}`} alt='test'  /> */}
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

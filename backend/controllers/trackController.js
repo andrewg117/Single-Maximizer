@@ -73,11 +73,6 @@ const updateTrack = asyncHandler(async (req, res) => {
     throw new Error('Track not found')
   }
 
-  // if(!Date(track.req.deliveryDate)){
-  //   res.status(400)
-  //   throw new Error('Invalid Date')
-  // }
-
   if(!req.user) {
     res.status(401)
     throw new Error('User not found')
@@ -88,11 +83,15 @@ const updateTrack = asyncHandler(async (req, res) => {
     throw new Error('User not authorized')
   }
 
-  const updatedTrack = await Track.findByIdAndUpdate(req.params.id, req.body, {
-    new: true
-  })
+  
+  console.log(req.file)
+  console.log(req.body)
 
-  res.json(updatedTrack)
+  // const updatedTrack = await Track.findByIdAndUpdate(req.params.id, req.body, {
+  //   new: true
+  // })
+
+  // res.json(updatedTrack)
 })
 
 // @desc    Delete track
