@@ -51,7 +51,7 @@ const getSingle = async (trackId, token) => {
   return response.data
 }
 
-const updateSingle = async (id, trackData, token) => {
+const updateSingle = async (trackData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
@@ -61,8 +61,9 @@ const updateSingle = async (id, trackData, token) => {
   let response
 
   if (!authService.checkToken(token)){
-    response = await axios.put(API_URL + id, trackData, config)
+    response = await axios.put(API_URL + trackData, trackData, config)
   }
+
 
   return response.data
 }

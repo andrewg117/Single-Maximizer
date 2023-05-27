@@ -16,20 +16,20 @@ const getTracks = asyncHandler(async (req, res) => {
 // @access  Private
 const getSingle = asyncHandler(async (req, res) => {
   const track = await Track.findById(req.params.id)
-  
-  if(!track) {
+
+  if (!track) {
     res.status(400)
     throw new Error('Track not found')
   }
 
   // const user = await User.findById(req.user.id)
 
-  if(!req.user) {
+  if (!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
-  if(track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -43,7 +43,7 @@ const getSingle = asyncHandler(async (req, res) => {
 const setTrack = asyncHandler(async (req, res) => {
   if (!req.body.trackTitle) {
     res.status(400)
-    throw new Error('Add track title') 
+    throw new Error('Add track title')
   }
 
   console.log(req.file)
@@ -63,35 +63,61 @@ const setTrack = asyncHandler(async (req, res) => {
 
 
 // @desc    Update track
-// @route   PUT /api/tracks/:id
+// @route   PUT /api/tracks/:file
 // @access  Private
 const updateTrack = asyncHandler(async (req, res) => {
-  const track = await Track.findById(req.params.id)
+  const track = await Track.findById(req.body.id)
 
-  if(!track) {
+  if (!track) {
     res.status(400)
-    throw new Error('Track not found')
+    throw new Error('Tacrk not found')
   }
 
-  if(!req.user) {
+  if (!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
-  if(track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
 
-  
-  console.log(req.file)
-  console.log(req.body)
+  // console.log('Track: ' + track)
+  // console.log('Params: ' + JSON.stringify(req.params))
+  // console.log('File: ' + JSON.stringify(req.files))
 
-  // const updatedTrack = await Track.findByIdAndUpdate(req.params.id, req.body, {
-  //   new: true
-  // })
+  let updatedTrack
 
-  // res.json(updatedTrack)
+  if (req.files) {
+    // console.log('File: ' + JSON.stringify(req.file))
+    let trackCover
+
+    req.files.map((file) => {
+      if (file.fieldname === 'trackCover') {
+        trackCover = file
+        // console.log(file.fieldname)
+      }
+    })
+
+    const newBody = {
+      ...req.body,
+      trackCover: trackCover
+    }
+
+    updatedTrack = await Track.findByIdAndUpdate(req.body.id, newBody, {
+      new: true
+    })
+    // console.log('New Body: ' + JSON.stringify(newBody))
+  } else {
+    updatedTrack = await Track.findByIdAndUpdate(req.body.id, req.body, {
+      new: true
+    })
+    // console.log('Body: ' + JSON.stringify(req.body))
+
+  }
+
+  res.json(updatedTrack)
 })
 
 // @desc    Delete track
@@ -100,19 +126,19 @@ const updateTrack = asyncHandler(async (req, res) => {
 const deleteTrack = asyncHandler(async (req, res) => {
   const track = await Track.findById(req.params.id)
 
-  if(!track) {
+  if (!track) {
     res.status(400)
     throw new Error('Track not found')
   }
-  
+
   // const user = await User.findById(req.user.id)
 
-  if(!req.user) {
+  if (!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
-  if(track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }

@@ -26,7 +26,7 @@ function SingleEdit() {
   const [trackCover, setCover] = useState(null)
   const [isEdit, setEdit] = useState(true)
 
-  const getCover = useCallback(() => {
+  const singleCallback = useCallback(() => {
 
     if (store.getState().tracks['single'].trackCover) {
       const cover = store.getState().tracks['single'].trackCover
@@ -39,6 +39,8 @@ function SingleEdit() {
 
       // console.log(buffer)
 
+      setTrackTitle(store.getState().tracks['single'].trackTitle)
+      setArtist(store.getState().tracks['single'].artist)
       setCover(buffer)
     }
   }, [store])
@@ -75,34 +77,40 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
-    if(trackTitle !== '' && artist !== '' && !isExpired) {
+    if(trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
     
       if(isEdit === true) {
         dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
   
-        // toast.success("Update Successful")
-        // navigate('/profile/singles')
+        toast.success("Update Successful")
+        navigate('/profile/singles')
   
       } else if (isEdit === false) {
-        let formData = new FormData()
-        formData.append("trackCover", trackCover)
+        e.preventDefault()
+
+        let formData = trackCover
+        // Add MP3 here
+        // formData.append("trackAudio", trackCover.get('trackCover'))
         formData.append("id", id)
         formData.append("trackTitle", trackTitle)
         formData.append("artist", artist)
         formData.append("deliveryDate", deliveryDate)
-        console.log(formData)
+        setCover(formData)
+
+        console.log(trackCover)
+        dispatch(updateSingle(trackCover))
+
         // console.log(recipient)
         // dispatch(sendEmail({ recipient, subject, emailMessage }))
         // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
-        dispatch(updateSingle(formData))
   
-        // toast.success("Update Successful")
-        // navigate('/profile/singles')
+        toast.success("Update Successful")
+        navigate('/profile/singles')
   
-      } else {
-        toast.error("Update Fields")
-      }
+      } 
 
+    } else {
+      toast.error("Update Fields")
     }
   }
 
@@ -125,11 +133,11 @@ function SingleEdit() {
     if (!isExpired) {
       dispatch(getSingle(id))
 
-      getCover()
+      singleCallback()
     }
 
 
-  }, [defaultDate, getCover, isExpired, navigate, isError, message, id, dispatch])
+  }, [defaultDate, singleCallback, isExpired, navigate, isError, message, id, dispatch])
 
   if (isLoading) {
     return <Spinner />
