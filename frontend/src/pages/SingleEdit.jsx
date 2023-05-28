@@ -149,9 +149,17 @@ function SingleEdit() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              {/* {trackCover !== null ? <img src={`data:image/jpeg;base64,${trackCover}`} alt='Cover'  /> : <ImageUpload changeFile={setCover} file={trackCover} />} */}
-              <ImageUpload changeFile={setCover} file={trackCover} isEdit={isEdit} setEdit={setEdit} />
-              {/* <img src={`data:image/jpeg;base64,${trackCover}`} alt='test'  /> */}
+              <div id={styles.image_div}>
+                <label>COVER ART</label>
+                <ImageUpload
+                  changeFile={setCover}
+                  file={trackCover}
+                  fieldname={'trackCover'}
+                  altText={'Upload Track Cover'}
+                  isEdit={isEdit}
+                  setEdit={setEdit}
+                />
+              </div>
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

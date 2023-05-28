@@ -28,35 +28,45 @@
 
 #top_div {
   display: grid;
+  /* gap: 1em; */
   justify-self: center;
   align-items: center;
-  width: 90%;
   grid-template-columns: 20% 80%;
   width: 100%;
   text-align: left;
 }
 
 #image_div {
+  display: grid;
   position: relative;
-  padding: 1em;
+  /* padding: 1em; */
+  text-align: left;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+  width: 90%;
+}
+
+#image_div label {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 #image_div p {
   cursor: pointer;
-  text-align: left;
 }
 
 #image_div img {
   max-width: 100%;
   max-height: 100%;
-  font-size: 3rem;
   margin: .5em 0;
 }
 
 #remove_image {
   position: absolute;
   top: 5px;
-  left: 5px;
+  right: 5px;
   cursor: pointer;
 }
 

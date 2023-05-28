@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if(user) {
     res.status(201).json({
       _id: user.id,
+      profileImage: user.profileImage,
       fname: user.fname,
       lname: user.lname,
       username: user.username,
@@ -81,7 +82,7 @@ const getMe = asyncHandler(async (req, res) => {
 })
 
 // @desc    Update user data
-// @route   PUT /api/users/me
+// @route   PUT /api/users/:file
 // @access  Private
 const updateUser = asyncHandler(async (req, res) => {
   if(!req.user) {
@@ -89,23 +90,38 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  if(req.user.isAdmin){
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+  let updatedUser
+
+  
+  if (req.files) {
+    // console.log('File: ' + JSON.stringify(req.file))
+    let profileImage
+
+    req.files.map((file) => {
+      if (file.fieldname === 'profileImage') {
+        profileImage = file
+        // console.log(file.fieldname)
+      }
+    })
+
+    const newBody = {
+      ...req.body,
+      profileImage: profileImage
+    }
+
+    updatedUser = await User.findByIdAndUpdate(req.user.id, newBody, {
       new: true
     })
-  
-    res.json(updatedUser)
-  } else if(!req.body.isAdmin){
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
-      new: true
-    })
-    // .select(['-isAdmin'])
-  
-    res.json(updatedUser)
+    // console.log('New Body: ' + JSON.stringify(newBody))
   } else {
-    res.status(400)
-    throw new Error('Invalid user access')
+    updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true
+    })
+    // console.log('Body: ' + JSON.stringify(req.body))
+
   }
+  
+  res.json(updatedUser)
 })
 
 const expire = '2h'

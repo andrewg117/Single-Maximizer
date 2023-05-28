@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState, useCallback } from 'react'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset } from '../features/auth/authSlice'
+import ImageUpload from '../components/ImageUpload'
+import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
@@ -9,6 +11,7 @@ import styles from '../css/profile_style.module.css'
 function ProfileEdit() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
   const { user, isExpired, isLoading, isError, message } = useSelector(
     (state) => state.auth
@@ -20,33 +23,72 @@ function ProfileEdit() {
   const [email, setEmail] = useState(user !== null ? user.email : "N/A")
   const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
 
+  const [profileImage, setProfileImage] = useState(null)
+  const [isEdit, setEdit] = useState(true)
+
+  const userCallback = useCallback(() => {
+
+    if (store.getState().auth['user'].profileImage) {
+      const image = store.getState().auth['user'].profileImage
+
+      const buffer = Buffer.from(image.buffer, 'ascii')
+
+
+      // setTrackTitle(store.getState().auth['user'].trackTitle)
+      // setArtist(store.getState().auth['user'].artist)
+      setProfileImage(buffer)
+    }
+  }, [store])
+
   useEffect(() => {
     if (!isExpired) {
       dispatch(getUser())
-    }
 
-    return () => {
-      dispatch(reset())
+      userCallback()
     }
-  }, [isExpired, navigate, isError, message, dispatch])
+  }, [isExpired, userCallback, navigate, isError, message, dispatch])
 
   const onSubmit = (e) => {
     e.preventDefault()
 
     if (isError) {
       toast.error(message)
-    } else if(username.trim() === '' || email.trim() === '') {
-      toast.error('Empty field')
-    } else {
-      dispatch(updateUser({
-        fname, 
-        lname, 
-        username, 
-        email, 
-        website
-      }))
+    } 
+    
+    if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && !isExpired) {
+
+      if(isEdit === true) {
+        dispatch(updateUser({
+          fname,
+          lname,
+          username,
+          email,
+          website
+        }))
   
-      navigate('/profile')
+        toast.success("Update Successful")
+        navigate('/profile')
+
+  
+      } else if (isEdit === false) {
+        let formData = profileImage
+        formData.append("fname", fname)
+        formData.append("lname", lname)
+        formData.append("username", username)
+        formData.append("email", email)
+        formData.append("website", website)
+
+        setProfileImage(formData)
+        console.log(profileImage)
+  
+        dispatch(updateUser(profileImage))
+        
+        toast.success("Update Successful")
+        navigate('/profile')
+      } 
+
+    } else {
+      toast.error('Empty field')
     }
   }
 
@@ -56,12 +98,25 @@ function ProfileEdit() {
 
   return (
     <>
-      <div id={styles.content_right}>
-        <div id={styles.profile_title}>
-          <h1>FMGMP3</h1>
-        </div>
+      <div id={styles.profile_content_right}>
         <form id={styles.profile_form} onSubmit={onSubmit}>
           <div id={styles.profile_form_div}>
+
+            <div id={styles.top_div}>
+              <div id={styles.image_div}>
+                <label>PROFILE IMAGE</label>
+                <ImageUpload
+                  changeFile={setProfileImage}
+                  file={profileImage}
+                  fieldname={'profileImage'}
+                  altText={'Upload Profile Image'}
+                  isEdit={isEdit}
+                  setEdit={setEdit}
+                />
+              </div>
+              <div></div>
+            </div>
+
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="fname">FIRST NAME</label>

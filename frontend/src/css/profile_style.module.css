@@ -1,6 +1,6 @@
 #profile_content_right {
   display: grid;
-  grid-template-rows: 10% auto;
+  /* grid-template-rows: 10% auto; */
   /* align-items: center; */
   width: 100%;
   height: 100vh;
@@ -9,36 +9,12 @@
   color: black;
 }
 
-#content_right {
-  display: grid;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  overflow: auto;
-  background-color: white;
-  color: black;
-}
-
-#profile_title {
-  display: flex;
-  justify-self: center;
-  justify-content: left;
-  align-content: center;
-  width: 90%;
-  height: auto;
-}
-
-#profile_title img {
-  text-align: left;
-  font-size: 3rem;
-  margin: .5em 0;
-}
 
 #profile_view_div {
-  display: flex;
+  display: grid;
   flex-direction: column;
   justify-self: center;
-  justify-content: space-evenly;
+  /* justify-content: center; */
   text-align: left;
   width: 90%;
   height: 100%;
@@ -57,10 +33,58 @@
 
 #profile_form_div {
   width: 90%;
-  /* margin: 2rem; */
   padding: 2rem;
   text-align: left;
 }
+
+#top_div {
+  display: grid;
+  /* gap: 1em; */
+  justify-self: center;
+  align-items: center;
+  grid-template-columns: 20% 80%;
+  width: 100%;
+  /* padding: 1em 0; */
+  text-align: left;
+}
+
+#image_div {
+  display: grid;
+  position: relative;
+  text-align: left;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+  width: 90%;
+}
+
+#image_div label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 80%;
+  font-weight: bold;
+}
+
+#image_div p {
+  cursor: pointer;
+  padding-top: 1rem;
+  font-size: 90%;
+}
+
+#image_div img {
+  max-width: 100%;
+  max-height: 100%;
+  margin: .5em 0;
+}
+
+#remove_image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
 
 .profile_input_div {
   display: flex;

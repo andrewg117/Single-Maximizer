@@ -2,15 +2,15 @@ import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 
-const ImageUpload = ({ changeFile, file, isEdit, setEdit }) => {
+const ImageUpload = ({ changeFile, file, fieldname, altText, isEdit, setEdit }) => {
 
   const [blob, getBlob] = useState(useCallback(() => {
     if (file && !isEdit) {
-      return URL.createObjectURL(file.get('trackCover'))
+      return URL.createObjectURL(file.get(fieldname))
     } else if (isEdit === true) {
       return file
     }
-  }, [file, isEdit]))
+  }, [file, isEdit, fieldname]))
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -18,9 +18,11 @@ const ImageUpload = ({ changeFile, file, isEdit, setEdit }) => {
     },
     onDrop: async (acceptedFiles) => {
       let formData = new FormData()
-      formData.append('trackCover', acceptedFiles[0])
+      formData.append(fieldname, acceptedFiles[0])
+      
+      setEdit(false)
 
-      getBlob(URL.createObjectURL(formData.get('trackCover')))
+      getBlob(URL.createObjectURL(formData.get(fieldname)))
       changeFile(formData)
     }
   });
@@ -35,17 +37,15 @@ const ImageUpload = ({ changeFile, file, isEdit, setEdit }) => {
   }, [blob, file, isEdit])
 
   return (
-    <div id={styles.image_div}>
+    <>
       <div {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
-        <p>Drag and drop or click to upload cover art</p>
+        <p>Drag and drop or click to upload image</p>
       </div>
       {
         file !== null ?
           <>
-            {isEdit === true ? <img src={`data:image/*;base64,${blob}`} alt='Cover' /> : <img src={blob} alt="Upload Track Cover" disabled={!file} hidden={!file} onLoad={() => { URL.revokeObjectURL(blob) }} />}
-            {/* <img src={blob} alt="Upload Track Cover" disabled={!file} hidden={!file} onLoad={() => { URL.revokeObjectURL(blob) }} /> */}
-            {/* <img src={`data:image/*;base64,${blob}`} alt='Upload Track Cover'  /> */}
+            {isEdit === true ? <img src={`data:image/*;base64,${blob}`} alt={altText} /> : <img src={blob} alt={altText} disabled={!file} hidden={!file} onLoad={() => { URL.revokeObjectURL(blob) }} />}
             <div
               id={styles.remove_image}
               onClick={(e) => {
@@ -58,7 +58,7 @@ const ImageUpload = ({ changeFile, file, isEdit, setEdit }) => {
           :
           <></>
       }
-    </div>
+    </>
   )
 }
 

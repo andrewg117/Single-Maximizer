@@ -20,6 +20,7 @@ function NewRelease() {
   const [trackTitle, setTrackTitle] = useState('')
   const [artist, setArtist] = useState(stateUser.username)
   const [trackCover, setCover] = useState(null)
+  const [isEdit, setEdit] = useState(false)
 
   const minDate = () => {
     const date = new Date()
@@ -92,7 +93,17 @@ function NewRelease() {
         <form id={styles.new_form} onSubmit={onSubmit}>
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
-              <ImageUpload changeFile={setCover} file={trackCover} isEdit={false} />
+              <div id={styles.image_div}>
+                <label>COVER ART</label>
+                <ImageUpload
+                  changeFile={setCover}
+                  file={trackCover}
+                  fieldname={'trackCover'}
+                  altText={'Upload Track Cover'}
+                  isEdit={isEdit}
+                  setEdit={setEdit}
+                />
+              </div>
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>

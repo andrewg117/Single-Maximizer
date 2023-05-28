@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { reset, getTokenResult } from '../features/auth/authSlice'
+import ImageUpload from '../components/ImageUpload'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
@@ -41,10 +42,15 @@ const Profile = () => {
   return (
     <>
       <div id={styles.profile_content_right}>
-        <div id={styles.profile_title}>
-          <img src="" alt="Upload Profile Avatar" />
-        </div>
         <div id={styles.profile_view_div}>
+
+            <div id={styles.top_div}>
+              <div id={styles.image_div}>
+                <img src={`data:image/*;base64,${user.profileImage.buffer}`} alt='' />
+              </div>
+              <div></div>
+            </div>
+
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='fname'
