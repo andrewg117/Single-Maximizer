@@ -75,7 +75,6 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      state.userData = []
       state.isError = false
       state.isSuccess = false
       state.isLoading = false
@@ -120,13 +119,15 @@ export const authSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.userData = action.payload
+        state.user = {
+          ...state.user,
+          ...action.payload
+        }
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
-        state.userData = null
       })
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true

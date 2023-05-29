@@ -46,6 +46,10 @@ function ProfileEdit() {
 
       userCallback()
     }
+
+    return(() => {
+      dispatch(reset)
+    })
   }, [isExpired, userCallback, navigate, isError, message, dispatch])
 
   const onSubmit = (e) => {

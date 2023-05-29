@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { reset, getTokenResult } from '../features/auth/authSlice'
-import ImageUpload from '../components/ImageUpload'
+import { Link } from 'react-router-dom'
+import { getUser, reset} from '../features/auth/authSlice'
+import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
@@ -17,23 +17,54 @@ export const ProfileDiv = ({ labelID, text, userData }) => {
 }
 
 const Profile = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
   const { user, isExpired, isLoading, isError, message } = useSelector((state) => state.auth)
+
+
+  const [fname, setFname] = useState(user !== null ? user.fname : "N/A")
+  const [lname, setLname] = useState(user !== null ? user.lname : "N/A")
+  const [username, setUsername] = useState(user !== null ? user.username : "N/A")
+  const [email, setEmail] = useState(user !== null ? user.email : "N/A")
+  const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
+
+  const [profileImage, setProfileImage] = useState(null)
+
+  const userCallback = useCallback(() => {
+    if (store.getState().auth['user']) {
+      // console.log(store.getState().auth['user'])
+
+      const user = store.getState().auth['user']
+      // console.log(user)
+      const image = user.profileImage
+
+      const buffer = Buffer.from(image.buffer, 'ascii')
+
+
+      setProfileImage(buffer)
+      setFname(user.fname)
+      setLname(user.lname)
+      setUsername(user.username)
+      setEmail(user.email)
+      setWebsite(user.website)
+    }
+  }, [store])
 
   useEffect(() => {
     if (isError) {
       toast.error(message)
     }
+
     if (!isExpired) {
-      dispatch(getTokenResult())
+      dispatch(getUser())
+      userCallback()
     }
 
     return () => {
       dispatch(reset())
     }
-  }, [isExpired, isError, message, navigate, dispatch])
+  }, [isExpired, isError, message, userCallback, dispatch])
 
   if (isLoading) {
     return <Spinner />
@@ -44,90 +75,90 @@ const Profile = () => {
       <div id={styles.profile_content_right}>
         <div id={styles.profile_view_div}>
 
-            <div id={styles.top_div}>
-              <div id={styles.image_div}>
-                <img src={`data:image/*;base64,${user.profileImage.buffer}`} alt='' />
-              </div>
-              <div></div>
+          <div id={styles.top_div}>
+            <div id={styles.image_div}>
+              <img src={`data:image/*;base64,${profileImage}`} alt='N/A' />
             </div>
+            <div></div>
+          </div>
 
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='fname'
               text='FIRST NAME'
-              userData={!isExpired ? user.fname : "No data"}
+              userData={fname}
             />
             <ProfileDiv
               labelID='lname'
               text='LAST NAME'
-              userData={!isExpired ? user.lname : "No data"}
+              userData={lname}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='username'
               text='USERNAME'
-              userData={!isExpired ? user.username : "No data"}
+              userData={username}
             />
             <ProfileDiv
               labelID='email'
               text='EMAIL'
-              userData={!isExpired ? user.email : "No data"}
+              userData={email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='website'
               text='WEBSITE'
-              userData={!isExpired ? user.website : "No data"}
+              userData={!isExpired ? website : "No data"}
             />
             <ProfileDiv
               labelID='scloud'
               text='SOUNDCLOUD'
-            // userData={user.email}
+            // userData={userData.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='twitter'
               text='TWITTER'
-            // userData={user.email}
+            // userData={userData.email}
             />
             <ProfileDiv
               labelID='igram'
               text='INSTAGRAM'
-            // userData={user.email}
+            // userData={userData.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='fbook'
               text='FACEBOOK'
-            // userData={user.email}
+            // userData={userData.email}
             />
             <ProfileDiv
               labelID='spotify'
               text='SPOTIFY'
-            // userData={user.email}
+            // userData={userData.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='ytube'
               text='YOUTUBE'
-            // userData={user.email}
+            // userData={userData.email}
             />
             <ProfileDiv
               labelID='tiktok'
               text='TIKTOK'
-            // userData={user.email}
+            // userData={userData.email}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='bio-text'
               text='BIO'
-            // userData={user.email}
+            // userData={userData.email}
             />
           </div>
           <div id={styles.profile_submit_div}>

@@ -15,7 +15,7 @@ function NavBarLeft() {
   const onLogout = () => {
     dispatch(logout())
     dispatch(reset())
-    navigate('/')
+    navigate('/home')
   }
 
   const menuItems = [

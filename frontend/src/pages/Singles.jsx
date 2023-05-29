@@ -16,15 +16,12 @@ function Singles() {
   const stateTracks = user !== null ? tracks : []
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isExpired) {
-        dispatch(getTracks())
-      }
-    }, 200)
+    if (!isExpired) {
+      dispatch(getTracks())
+    }
 
     return () => {
       dispatch(reset())
-      clearTimeout(timer)
     }
   }, [dispatch, navigate, isExpired])
 

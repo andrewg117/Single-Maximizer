@@ -17,17 +17,17 @@ import TokenCheck from './components/TokenCheck'
 import styles from './css/style.module.css';
 
 function MaximizerApp() {
-  const { user } = useSelector(
+  const { user, isExpired } = useSelector(
     (state) => state.auth
   )
   return (
     <>
       <Router>
         <div className={styles.body}>
-          <section id={user === null ? styles.body_wrapper: styles.profile_body_wrapper}>
-            {user === null ? <NavBar /> : <NavBarLeft />}
+          <section id={user === null || isExpired ? styles.body_wrapper: styles.profile_body_wrapper}>
+            {user === null || isExpired ? <NavBar /> : <NavBarLeft />}
             <Routes>
-              {user === null ? <Route path='*' element={<Home />} />: <Route path='*' element={<Profile />} />}
+              {user === null || isExpired ? <Route path='*' element={<Home />} />: <Route path='*' element={<Profile />} />}
               <Route path='/home' element={<Home />} />
               <Route path='/home/signup' element={<SignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
