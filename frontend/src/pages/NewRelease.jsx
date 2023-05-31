@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
@@ -9,31 +9,54 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
+
+const minDate = () => {
+  const date = new Date()
+  const graceDate = new Date(date.setDate(date.getDate() + 7))
+
+  const year = graceDate.toLocaleString('default', { year: 'numeric' })
+  const month = graceDate.toLocaleString('default', { month: '2-digit' })
+  const day = graceDate.toLocaleString('default', { day: '2-digit' })
+
+  return year + '-' + month + '-' + day + 'T00:00'
+}
+
 function NewRelease() {
+  const [formState, setFormState] = useState({
+    trackTitle: '',
+    artist: '',
+    deliveryDate: minDate(),
+    trackCover: null,
+  })
+
+  const {  trackTitle,  artist, deliveryDate, trackCover } = formState
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
-  const { user, isExpired } = useSelector((state) => state.auth)
+  const { isExpired } = useSelector((state) => state.auth)
   const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const stateUser = user !== null ? user : {}
-  const [trackTitle, setTrackTitle] = useState('')
-  const [artist, setArtist] = useState(stateUser.username)
-  const [trackCover, setCover] = useState(null)
   const [isEdit, setEdit] = useState(false)
 
-  const minDate = () => {
-    const date = new Date()
-    const graceDate = new Date(date.setDate(date.getDate() + 7))
+  store.subscribe(() => {
+    const userState = store.getState().auth['user']
 
-    const year = graceDate.toLocaleString('default', { year: 'numeric' })
-    const month = graceDate.toLocaleString('default', { month: '2-digit' })
-    const day = graceDate.toLocaleString('default', { day: '2-digit' })
+    if(userState !== null) {
+  
+      setFormState((prevState) => ({
+        ...prevState,
+        artist: userState.username,
+      }))
 
-    return year + '-' + month + '-' + day + 'T00:00'
-  }
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+      }))
+    }
 
-  const [deliveryDate, setDeliveryDate] = useState(minDate())
+  })
 
   const trackEmail = useCallback((title, date, trackID) => {
     const recipient = process.env.REACT_APP_RECEMAIL
@@ -50,7 +73,6 @@ function NewRelease() {
     }
 
     if (trackTitle && single.length !== 0 && !isExpired) {
-      // console.log(single)
       const trackID = single._id
       trackEmail(trackTitle, deliveryDate, trackID)
     }
@@ -65,22 +87,48 @@ function NewRelease() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if (trackTitle && !isExpired) {
-      let formData = trackCover
-      formData.append("trackTitle", trackTitle)
-      formData.append("artist", artist)
-      formData.append("deliveryDate", deliveryDate)
-      setCover(formData)
-
-      console.log(trackCover)
-      dispatch(createTrack(trackCover))
-      // dispatch(createTrack({ 
-      //   trackTitle, 
-      //   artist, 
-      //   deliveryDate
-      // }))
-      toast.success('Email Sent')
+    if (isError) {
+      toast.error(message)
     }
+    if(trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+    
+      if(isEdit === true) {
+        dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+
+        toast.success('Email Sent')
+  
+      } else if (isEdit === false) {
+        e.preventDefault()
+
+        let formData = trackCover
+        // Add MP3 here
+        // formData.append("trackAudio", trackCover.get('trackCover'))
+        formData.append("trackTitle", trackTitle)
+        formData.append("artist", artist)
+        formData.append("deliveryDate", deliveryDate)
+        
+        setFormState((prevState) => ({
+          ...prevState,
+          trackCover: formData
+        }))
+
+        console.log(trackCover)
+        dispatch(createTrack(trackCover))
+
+        toast.success('Email Sent')
+  
+      } 
+
+    } else {
+      toast.error("Update Fields")
+    }
+  }
+
+  const onChange = (e) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
   }
 
   if (isLoading) {
@@ -96,7 +144,7 @@ function NewRelease() {
               <div id={styles.image_div}>
                 <label>COVER ART</label>
                 <ImageUpload
-                  changeFile={setCover}
+                  changeFile={setFormState}
                   file={trackCover}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
@@ -107,18 +155,18 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={stateUser.username} onChange={(e) => setArtist(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={artist} onChange={onChange} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
-                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={(e) => setTrackTitle(e.target.value)} />
+                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={onChange} />
                 </div>
               </div>
             </div>
             <div className={styles.input_div} />
             <div>
               <label htmlFor="deliveryDate">DELIVERY DATE</label>
-              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate" min={minDate()} defaultValue={minDate()} onChange={(e) => setDeliveryDate(e.target.value)} />
+              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate" min={minDate()} defaultValue={minDate()} onChange={onChange} />
             </div>
             <div>
               <label htmlFor="spoturi">SPOTIFY TRACK URI</label>

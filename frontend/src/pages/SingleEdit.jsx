@@ -1,9 +1,9 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 // import Notification from '../components/Notification'
 // import { sendEmail } from '../features/email/emailSlice';
-import { getSingle, updateSingle, deleteTrack } from '../features/tracks/trackSlice'
+import { getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
 import ImageUpload from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
@@ -11,65 +11,81 @@ import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
+  const [formState, setFormState] = useState({
+    trackTitle: '',
+    artist: '',
+    deliveryDate: '',
+    trackCover: null,
+  })
+
+  const { trackTitle, artist, deliveryDate, trackCover } = formState
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
-  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
+  const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  // const singleState = isExpired !== true ? single : {}
-  const singleState = useMemo(() => isExpired !== true ? single : {}, [single, isExpired])
-
-  const [trackTitle, setTrackTitle] = useState(singleState.trackTitle)
-  const [artist, setArtist] = useState(singleState.artist)
-  const [trackCover, setCover] = useState(null)
-  const [isEdit, setEdit] = useState(true)
-
-  const singleCallback = useCallback(() => {
-
-    if (store.getState().tracks['single'].trackCover) {
-      const cover = store.getState().tracks['single'].trackCover
-
-      const buffer = Buffer.from(cover.buffer, 'ascii')
-      // const blob = new Blob(buffer, { type: cover.mimetype })
-
-      // const formData = new FormData()
-      // formData.append(cover.fieldname, blob, cover.originalname)
-
-      // console.log(buffer)
-
-      setTrackTitle(store.getState().tracks['single'].trackTitle)
-      setArtist(store.getState().tracks['single'].artist)
-      setCover(buffer)
-    }
-  }, [store])
-
-
-  const { id } = useParams()
 
   const convertDate = (date, isDefault) => {
+    const d = new Date(date)
 
-    const year = date.toLocaleString('default', { year: 'numeric' })
-    const month = date.toLocaleString('default', { month: '2-digit' })
-    const day = date.toLocaleString('default', { day: '2-digit' })
-    const time = date.toLocaleTimeString("en-US", { hour12: false })
+    const year = d.toLocaleString('default', { year: 'numeric' })
+    const month = d.toLocaleString('default', { month: '2-digit' })
+    const day = d.toLocaleString('default', { day: '2-digit' })
+    const time = d.toLocaleTimeString("en-US", { hour12: false })
+
+    let returnDate
 
     if (isDefault) {
-      return year + '-' + month + '-' + day + 'T' + time + '.000Z'
+      returnDate = year + '-' + month + '-' + day + 'T' + time + '.000Z'
     } else {
-      return year + '-' + month + '-' + day + 'T' + time.slice(0, -3)
+      returnDate = year + '-' + month + '-' + day + 'T' + time.slice(0, -3)
     }
-  }
 
+    return returnDate
+  }
 
   const today = new Date()
   const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
-  const localDate = new Date(singleState.deliveryDate).toString()
-  const stringDate = convertDate(new Date(localDate), false)
-  const defaultDate = convertDate(new Date(localDate), true)
+  const [stringDate, setStringDate] = useState(graceDate)
 
-  const [deliveryDate, setDeliveryDate] = useState()
+
+  store.subscribe(() => {
+    const singleState = store.getState().tracks['single']
+
+    if (singleState !== null) {
+      // console.log(singleState)
+
+      // const image = singleState.profileImage
+
+      // const buffer = Buffer.from(image.buffer, 'ascii')
+      setStringDate(convertDate(singleState.deliveryDate, false))
+      const defaultDate = convertDate(singleState.deliveryDate, true)
+
+      setFormState((prevState) => ({
+        ...prevState,
+        trackTitle: singleState.trackTitle,
+        artist: singleState.artist,
+        deliveryDate: defaultDate,
+        // trackCover: buffer,
+      }))
+
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+      }))
+      setStringDate(graceDate)
+    }
+
+  })
+
+  const [isEdit, setEdit] = useState(true)
+
+  const { id } = useParams()
+
+
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -77,14 +93,14 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
-    if(trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
-    
-      if(isEdit === true) {
+    if (trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+
+      if (isEdit === true) {
         dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
-  
+
         toast.success("Update Successful")
         navigate('/profile/singles')
-  
+
       } else if (isEdit === false) {
         e.preventDefault()
 
@@ -95,7 +111,11 @@ function SingleEdit() {
         formData.append("trackTitle", trackTitle)
         formData.append("artist", artist)
         formData.append("deliveryDate", deliveryDate)
-        setCover(formData)
+
+        setFormState((prevState) => ({
+          ...prevState,
+          trackCover: formData
+        }))
 
         console.log(trackCover)
         dispatch(updateSingle(trackCover))
@@ -103,11 +123,11 @@ function SingleEdit() {
         // console.log(recipient)
         // dispatch(sendEmail({ recipient, subject, emailMessage }))
         // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
-  
+
         toast.success("Update Successful")
         navigate('/profile/singles')
-  
-      } 
+
+      }
 
     } else {
       toast.error("Update Fields")
@@ -126,18 +146,25 @@ function SingleEdit() {
     navigate('/profile/singles')
   }
 
+  const onChange = (e) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+  }
 
   useEffect(() => {
-    setDeliveryDate(defaultDate)
 
     if (!isExpired) {
       dispatch(getSingle(id))
-
-      singleCallback()
     }
 
+    return (() => {
+      dispatch(reset)
+    })
 
-  }, [defaultDate, singleCallback, isExpired, navigate, isError, message, id, dispatch])
+
+  }, [isExpired, isError, message, id, dispatch])
 
   if (isLoading) {
     return <Spinner />
@@ -152,7 +179,7 @@ function SingleEdit() {
               <div id={styles.image_div}>
                 <label>COVER ART</label>
                 <ImageUpload
-                  changeFile={setCover}
+                  changeFile={setFormState}
                   file={trackCover}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
@@ -169,8 +196,8 @@ function SingleEdit() {
                     id="artist"
                     name="artist"
                     placeholder="Enter your artist name"
-                    defaultValue={singleState.artist}
-                    onChange={(e) => setArtist(e.target.value)}
+                    defaultValue={artist}
+                    onChange={onChange}
                   />
                 </div>
                 <div>
@@ -181,8 +208,8 @@ function SingleEdit() {
                     id="trackTitle"
                     name="trackTitle"
                     placeholder="Enter the name of your track"
-                    defaultValue={singleState.trackTitle}
-                    onChange={(e) => setTrackTitle(e.target.value)}
+                    defaultValue={trackTitle}
+                    onChange={onChange}
                   />
                 </div>
               </div>
@@ -198,7 +225,7 @@ function SingleEdit() {
                 name="deliveryDate"
                 min={graceDate}
                 defaultValue={stringDate}
-                onChange={(e) => setDeliveryDate(e.target.value)}
+                onChange={onChange}
               />
             </div>
             <div>

@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getTracks, reset } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
@@ -7,13 +7,22 @@ import { FaEdit } from 'react-icons/fa'
 import styles from '../css/singles_style.module.css'
 
 function Singles() {
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const store = useStore()
 
-  const { user, isExpired } = useSelector((state) => state.auth)
-  const { tracks, isLoading } = useSelector((state) => state.tracks)
+  const { isExpired } = useSelector((state) => state.auth)
+  const { isLoading } = useSelector((state) => state.tracks)
 
-  const stateTracks = user !== null ? tracks : []
+  const [trackState, setTrackState] = useState([])
+  
+  store.subscribe(() => { 
+    if(store.getState().tracks['tracks'] !== null){
+      setTrackState(store.getState().tracks['tracks'])
+
+    }
+  })
 
   useEffect(() => {
     if (!isExpired) {
@@ -40,7 +49,7 @@ function Singles() {
     navigate(`/profile/singleedit/${id}`)
   }
 
-  if (isLoading && tracks.length === 0) {
+  if (isLoading && trackState.length === 0) {
     return <Spinner />
   }
 
@@ -60,7 +69,7 @@ function Singles() {
               </tr>
             </thead>
             <tbody id={styles.singles_content}>
-              {stateTracks.length > 0 ? (stateTracks.map((track) => (
+              {trackState.length > 0 ? (trackState.map((track) => (
                 <tr key={track._id}>
                   <td>{track.artist}</td>
                   <td>{track.trackTitle}</td>

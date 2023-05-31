@@ -23,7 +23,10 @@ const ImageUpload = ({ changeFile, file, fieldname, altText, isEdit, setEdit }) 
       setEdit(false)
 
       getBlob(URL.createObjectURL(formData.get(fieldname)))
-      changeFile(formData)
+      changeFile((prevState) => ({
+        ...prevState,
+        [fieldname]: formData
+      }))
     }
   });
 
@@ -50,7 +53,10 @@ const ImageUpload = ({ changeFile, file, fieldname, altText, isEdit, setEdit }) 
               id={styles.remove_image}
               onClick={(e) => {
                 setEdit(false)
-                changeFile(null)
+                changeFile((prevState) => ({
+                  ...prevState,
+                  [fieldname]: null
+                }))
               }}>
               X
             </div>

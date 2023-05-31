@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getUser, reset} from '../features/auth/authSlice'
@@ -17,39 +17,48 @@ export const ProfileDiv = ({ labelID, text, userData }) => {
 }
 
 const Profile = () => {
+  const [formState, setFormState] = useState({
+    fname: '',
+    lname: '',
+    username: '',
+    email: '',
+    website: '',
+    profileImage: null,
+  })
+
+  const {  fname,  lname, username, email, website, profileImage } = formState
+
   const dispatch = useDispatch()
   const store = useStore()
 
-  const { user, isExpired, isLoading, isError, message } = useSelector((state) => state.auth)
+  const { isExpired, isLoading, isError, message } = useSelector((state) => state.auth)
 
+  
+  store.subscribe(() => {
+    const userState = store.getState().auth['user']
 
-  const [fname, setFname] = useState(user !== null ? user.fname : "N/A")
-  const [lname, setLname] = useState(user !== null ? user.lname : "N/A")
-  const [username, setUsername] = useState(user !== null ? user.username : "N/A")
-  const [email, setEmail] = useState(user !== null ? user.email : "N/A")
-  const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
-
-  const [profileImage, setProfileImage] = useState(null)
-
-  const userCallback = useCallback(() => {
-    if (store.getState().auth['user']) {
-      // console.log(store.getState().auth['user'])
-
-      const user = store.getState().auth['user']
-      // console.log(user)
-      const image = user.profileImage
-
+    if(userState !== null) {
+      const image = userState.profileImage
+  
       const buffer = Buffer.from(image.buffer, 'ascii')
+  
+      setFormState((prevState) => ({
+        ...prevState,
+        fname: userState.fname,
+        lname: userState.lname,
+        username: userState.username,
+        email: userState.email,
+        website: userState.website,
+        profileImage: buffer,
+      }))
 
-
-      setProfileImage(buffer)
-      setFname(user.fname)
-      setLname(user.lname)
-      setUsername(user.username)
-      setEmail(user.email)
-      setWebsite(user.website)
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+      }))
     }
-  }, [store])
+
+  })
 
   useEffect(() => {
     if (isError) {
@@ -58,13 +67,11 @@ const Profile = () => {
 
     if (!isExpired) {
       dispatch(getUser())
-      userCallback()
-    }
-
+    } 
     return () => {
       dispatch(reset())
     }
-  }, [isExpired, isError, message, userCallback, dispatch])
+  }, [isExpired, isError, message, dispatch])
 
   if (isLoading) {
     return <Spinner />

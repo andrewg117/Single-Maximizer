@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset } from '../features/auth/authSlice'
@@ -9,48 +9,66 @@ import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
 
 function ProfileEdit() {
+  const [formState, setFormState] = useState({
+    fname: '',
+    lname: '',
+    username: '',
+    email: '',
+    website: '',
+    profileImage: null,
+  })
+
+  const {  fname,  lname, username, email, website, profileImage } = formState
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const store = useStore()
 
-  const { user, isExpired, isLoading, isError, message } = useSelector(
+  const { isExpired, isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
 
-  const [fname, setFname] = useState(user !== null ? user.fname : "N/A")
-  const [lname, setLname] = useState(user !== null ? user.lname : "N/A")
-  const [username, setUsername] = useState(user !== null ? user.username : "N/A")
-  const [email, setEmail] = useState(user !== null ? user.email : "N/A")
-  const [website, setWebsite] = useState(user !== null ? user.website : "N/A")
-
-  const [profileImage, setProfileImage] = useState(null)
   const [isEdit, setEdit] = useState(true)
 
-  const userCallback = useCallback(() => {
+  store.subscribe(() => {
+    const userState = store.getState().auth['user']
 
-    if (store.getState().auth['user'].profileImage) {
-      const image = store.getState().auth['user'].profileImage
-
+    if(userState !== null) {
+      const image = userState.profileImage
+  
       const buffer = Buffer.from(image.buffer, 'ascii')
+  
+      setFormState((prevState) => ({
+        ...prevState,
+        fname: userState.fname,
+        lname: userState.lname,
+        username: userState.username,
+        email: userState.email,
+        website: userState.website,
+        profileImage: buffer,
+      }))
 
-
-      // setTrackTitle(store.getState().auth['user'].trackTitle)
-      // setArtist(store.getState().auth['user'].artist)
-      setProfileImage(buffer)
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+      }))
     }
-  }, [store])
+
+  })
 
   useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
     if (!isExpired) {
       dispatch(getUser())
-
-      userCallback()
     }
 
     return(() => {
       dispatch(reset)
     })
-  }, [isExpired, userCallback, navigate, isError, message, dispatch])
+  }, [isExpired, navigate, isError, message, dispatch])
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -82,7 +100,11 @@ function ProfileEdit() {
         formData.append("email", email)
         formData.append("website", website)
 
-        setProfileImage(formData)
+        setFormState((prevState) => ({
+          ...prevState,
+          profileImage: formData
+        }))
+
         console.log(profileImage)
   
         dispatch(updateUser(profileImage))
@@ -94,6 +116,13 @@ function ProfileEdit() {
     } else {
       toast.error('Empty field')
     }
+  }
+
+  const onChange = (e) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
   }
 
   if (isLoading) {
@@ -110,7 +139,7 @@ function ProfileEdit() {
               <div id={styles.image_div}>
                 <label>PROFILE IMAGE</label>
                 <ImageUpload
-                  changeFile={setProfileImage}
+                  changeFile={setFormState}
                   file={profileImage}
                   fieldname={'profileImage'}
                   altText={'Upload Profile Image'}
@@ -130,8 +159,8 @@ function ProfileEdit() {
                   id='fname'
                   name='fname'
                   placeholder="Enter your first name"
-                  defaultValue={fname}
-                  onChange={(e) => setFname(e.target.value)} />
+                  value={fname}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="fname">LAST NAME</label>
@@ -141,8 +170,8 @@ function ProfileEdit() {
                   id='lname'
                   name='lname'
                   placeholder="Enter your last name"
-                  defaultValue={lname}
-                  onChange={(e) => setLname(e.target.value)} />
+                  value={lname}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -154,8 +183,8 @@ function ProfileEdit() {
                   id='username'
                   name='username'
                   placeholder="Enter your username"
-                  defaultValue={username}
-                  onChange={(e) => setUsername(e.target.value)} />
+                  value={username}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="email">EMAIL</label>
@@ -165,8 +194,8 @@ function ProfileEdit() {
                   id="email"
                   name="email"
                   placeholder="Enter your email address"
-                  defaultValue={email}
-                  onChange={(e) => setEmail(e.target.value)} />
+                  value={email}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -178,8 +207,8 @@ function ProfileEdit() {
                   id="website"
                   name="website"
                   placeholder="Enter your website starting with http://"
-                  defaultValue={website}
-                  onChange={(e) => setWebsite(e.target.value)} />
+                  value={website}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>
