@@ -13,14 +13,16 @@ function Singles() {
   const store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
-  const { isLoading } = useSelector((state) => state.tracks)
+  const { tracks, isLoading } = useSelector((state) => state.tracks)
 
   const [trackState, setTrackState] = useState([])
-  
-  store.subscribe(() => { 
-    if(store.getState().tracks['tracks'] !== null){
-      setTrackState(store.getState().tracks['tracks'])
+  // let trackState = []
 
+  store.subscribe(() => {
+    if (tracks.length !== 0) {
+      setTrackState(tracks)
+      // trackState = store.getState().tracks['tracks']
+      // console.log(trackState.length)
     }
   })
 
@@ -69,19 +71,20 @@ function Singles() {
               </tr>
             </thead>
             <tbody id={styles.singles_content}>
-              {trackState.length > 0 ? (trackState.map((track) => (
-                <tr key={track._id}>
-                  <td>{track.artist}</td>
-                  <td>{track.trackTitle}</td>
-                  <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
-                  <td>
-                    <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button>
-                  </td>
-                  <td>
-                    {!isDeliverd(track.deliveryDate) ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
-                  </td>
-                </tr>
-              ))
+              {trackState.length > 0 ? (
+                trackState.map((track) => (
+                  <tr key={track._id}>
+                    <td>{track.artist}</td>
+                    <td>{track.trackTitle}</td>
+                    <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
+                    <td>
+                      <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button>
+                    </td>
+                    <td>
+                      {!isDeliverd(track.deliveryDate) ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
+                    </td>
+                  </tr>
+                ))
               ) : (
                 <tr><td>No Tracks</td></tr>
               )}

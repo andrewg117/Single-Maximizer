@@ -3,7 +3,7 @@ import trackService from "./trackService"
 
 const initialState = {
   tracks: [],
-  single: [],
+  single: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -122,6 +122,7 @@ export const trackSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.isExpired = false
+        // console.log(action.payload._id)
         state.single = {
           ...state.single,
           ...action.payload

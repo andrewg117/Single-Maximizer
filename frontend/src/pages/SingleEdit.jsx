@@ -3,7 +3,7 @@ import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 // import Notification from '../components/Notification'
 // import { sendEmail } from '../features/email/emailSlice';
-import { getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
+import { getTracks, getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
 import ImageUpload from '../components/ImageUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
@@ -27,6 +27,11 @@ function SingleEdit() {
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
+  const [isEdit, setEdit] = useState(true)
+
+  const { id } = useParams()
+
+
 
   const convertDate = (date, isDefault) => {
     const d = new Date(date)
@@ -49,19 +54,19 @@ function SingleEdit() {
 
   const today = new Date()
   const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
-  const [stringDate, setStringDate] = useState(graceDate)
+  const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
 
+  let singleState = null
 
   store.subscribe(() => {
-    const singleState = store.getState().tracks['single']
+    singleState = store.getState().tracks['single']
 
-    if (singleState !== null) {
-      // console.log(singleState)
+    if (Object.keys(singleState).length > 0) {
+      // console.log(singleState.trackCover)
 
-      // const image = singleState.profileImage
+      const image = singleState.trackCover
+      const buffer = Buffer.from(image.buffer, 'ascii')
 
-      // const buffer = Buffer.from(image.buffer, 'ascii')
-      setStringDate(convertDate(singleState.deliveryDate, false))
       const defaultDate = convertDate(singleState.deliveryDate, true)
 
       setFormState((prevState) => ({
@@ -69,21 +74,16 @@ function SingleEdit() {
         trackTitle: singleState.trackTitle,
         artist: singleState.artist,
         deliveryDate: defaultDate,
-        // trackCover: buffer,
+        trackCover: buffer,
       }))
 
     } else {
       setFormState((prevState) => ({
         ...prevState,
       }))
-      setStringDate(graceDate)
     }
 
   })
-
-  const [isEdit, setEdit] = useState(true)
-
-  const { id } = useParams()
 
 
 
@@ -154,8 +154,12 @@ function SingleEdit() {
   }
 
   useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
 
     if (!isExpired) {
+      dispatch(getTracks())
       dispatch(getSingle(id))
     }
 
