@@ -68,7 +68,7 @@ export const deleteTrack = createAsyncThunk('tracks/delete', async (id, thunkAPI
 })
 
 export const trackSlice = createSlice({
-  name: 'track',
+  name: 'tracks',
   initialState,
   reducers: {
     reset: (state) => initialState

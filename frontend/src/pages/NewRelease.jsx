@@ -64,8 +64,7 @@ function NewRelease() {
     const emailMessage = `Track ${title} will be sent by ${new Date(date).toLocaleString('en-us')}.`
 
     dispatch(sendNewTrackEmail({ recipient, subject, emailMessage, trackID }))
-    navigate('/profile/singles')
-  }, [dispatch, navigate])
+  }, [dispatch])
 
   useEffect(() => {
     if (isError) {
@@ -74,11 +73,12 @@ function NewRelease() {
 
     if (trackTitle && single.length !== 0 && !isExpired) {
       const trackID = single._id
+      console.log(trackID)
       trackEmail(trackTitle, deliveryDate, trackID)
     }
 
     return () => {
-      dispatch(resetTracks())
+      // dispatch(resetTracks())
       dispatch(resetEmail())
     }
   }, [single, trackTitle, deliveryDate, trackEmail, isExpired, isError, message, dispatch])
@@ -116,6 +116,7 @@ function NewRelease() {
         dispatch(createTrack(trackCover))
 
         toast.success('Email Sent')
+        navigate('/profile/singles')
   
       } 
 

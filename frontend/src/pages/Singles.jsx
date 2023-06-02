@@ -10,21 +10,21 @@ function Singles() {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const store = useStore()
+  let store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
-  const { tracks, isLoading } = useSelector((state) => state.tracks)
+  const { isLoading } = useSelector((state) => state.tracks)
 
   const [trackState, setTrackState] = useState([])
   // let trackState = []
 
   store.subscribe(() => {
-    if (tracks.length !== 0) {
-      setTrackState(tracks)
+    if (store.getState().tracks['tracks'].length !== 0) {
+      setTrackState(store.getState().tracks['tracks'])
       // trackState = store.getState().tracks['tracks']
       // console.log(trackState.length)
     }
-  })
+  }, [store])
 
   useEffect(() => {
     if (!isExpired) {
@@ -51,7 +51,7 @@ function Singles() {
     navigate(`/profile/singleedit/${id}`)
   }
 
-  if (isLoading && trackState.length === 0) {
+  if (isLoading) {
     return <Spinner />
   }
 
