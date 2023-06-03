@@ -56,10 +56,11 @@ function SingleEdit() {
   const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
   const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
 
-  let singleState = null
+  // let singleState = {}
+  const [singleState, setSingleState] = useState({})
 
   store.subscribe(() => {
-    singleState = store.getState().tracks['single']
+    setSingleState(store.getState().tracks['single'])
 
     if (Object.keys(singleState).length > 0) {
       // console.log(singleState.trackCover)

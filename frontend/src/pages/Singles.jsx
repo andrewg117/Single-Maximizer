@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getTracks, reset } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
@@ -10,25 +10,19 @@ function Singles() {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  let store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
-  const { isLoading } = useSelector((state) => state.tracks)
+  const { tracks, isLoading } = useSelector((state) => state.tracks)
 
-  const [trackState, setTrackState] = useState([])
-  // let trackState = []
-
-  store.subscribe(() => {
-    if (store.getState().tracks['tracks'].length !== 0) {
-      setTrackState(store.getState().tracks['tracks'])
-      // trackState = store.getState().tracks['tracks']
-      // console.log(trackState.length)
-    }
-  }, [store])
+  const [trackState, setTrackState] = useState(tracks)
 
   useEffect(() => {
     if (!isExpired) {
       dispatch(getTracks())
+      .unwrap()
+      .then((data) => {
+          setTrackState(data)
+        })
     }
 
     return () => {

@@ -8,7 +8,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 
-router.route('/').get(protect, getTracks).post(protect).post(upload.single('trackCover'), setTrack)
+router.route('/').get(protect, getTracks).post(protect).post(upload.any(), setTrack)
 router.route('/:id').get(protect, getSingle).put(protect).put(upload.any(), updateTrack).delete(protect, deleteTrack)
 
 module.exports = router

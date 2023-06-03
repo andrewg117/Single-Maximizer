@@ -27,6 +27,10 @@ const trackSchema = mongoose.Schema({
   trackCover: {
     type: mongoose.Schema.Types.Mixed,
     required: false
+  },
+  trackAudio: {
+    type: mongoose.Schema.Types.Mixed,
+    required: false
   }
 },
 {

@@ -55,6 +55,7 @@ const setTrack = asyncHandler(async (req, res) => {
     deliveryDate: req.body.deliveryDate,
     trackURL: req.body.trackURL,
     trackCover: req.file,
+    trackCover: req.file,
     user: req.user.id
   })
 

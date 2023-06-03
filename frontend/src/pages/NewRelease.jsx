@@ -58,33 +58,28 @@ function NewRelease() {
 
   })
 
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    return () => {
+      dispatch(resetTracks())
+      dispatch(resetEmail())
+    }
+  }, [isExpired, isError, message, dispatch])
+
+
   const trackEmail = useCallback((title, date, trackID) => {
     const recipient = process.env.REACT_APP_RECEMAIL
     const subject = `Track ${title} is scheduled.`
     const emailMessage = `Track ${title} will be sent by ${new Date(date).toLocaleString('en-us')}.`
 
     dispatch(sendNewTrackEmail({ recipient, subject, emailMessage, trackID }))
+      
   }, [dispatch])
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message)
-    }
-
-    if (trackTitle && single.length !== 0 && !isExpired) {
-      const trackID = single._id
-      console.log(trackID)
-      trackEmail(trackTitle, deliveryDate, trackID)
-    }
-
-    return () => {
-      // dispatch(resetTracks())
-      dispatch(resetEmail())
-    }
-  }, [single, trackTitle, deliveryDate, trackEmail, isExpired, isError, message, dispatch])
-
-
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
 
     if (isError) {
@@ -112,8 +107,13 @@ function NewRelease() {
           trackCover: formData
         }))
 
-        console.log(trackCover)
-        dispatch(createTrack(trackCover))
+        // console.log(trackCover)
+
+        dispatch(createTrack(trackCover)).unwrap()
+          .then((data) => {
+            const trackID = data._id
+            trackEmail(data.trackTitle, data.deliveryDate, trackID)
+        })
 
         toast.success('Email Sent')
         navigate('/profile/singles')
