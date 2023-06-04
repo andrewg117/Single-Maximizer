@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useNavigate, Outlet } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { logout, reset, getTokenResult } from '../features/auth/authSlice'
+import { logout, reset as userReset, getTokenResult } from '../features/auth/authSlice'
+import { reset as trackReset } from '../features/tracks/trackSlice'
 import { toast } from 'react-toastify'
 
 const TokenCheck = ({ children }) => {
@@ -14,9 +15,10 @@ const TokenCheck = ({ children }) => {
 
   useEffect(() => {
     dispatch(getTokenResult())
-    if(isExpired) {
+    if (isExpired) {
       toast.error("Login Expired")
-      dispatch(reset())
+      dispatch(trackReset())
+      dispatch(userReset())
       dispatch(logout())
       navigate('/home/signin')
     }

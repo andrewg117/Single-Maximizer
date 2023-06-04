@@ -33,7 +33,7 @@ function ProfileEdit() {
   store.subscribe(() => {
     const userState = store.getState().auth['user']
 
-    if(userState !== null) {
+    if(userState !== null && !isExpired) {
       const image = userState.profileImage
   
       const buffer = Buffer.from(image.buffer, 'ascii')

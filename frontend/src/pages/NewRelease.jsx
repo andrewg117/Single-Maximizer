@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
 import ImageUpload from '../components/ImageUpload'
+import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -27,9 +28,10 @@ function NewRelease() {
     artist: '',
     deliveryDate: minDate(),
     trackCover: null,
+    trackAudio: null,
   })
 
-  const {  trackTitle,  artist, deliveryDate, trackCover } = formState
+  const { trackTitle, artist, deliveryDate, trackCover, trackAudio } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -40,23 +42,23 @@ function NewRelease() {
 
   const [isEdit, setEdit] = useState(false)
 
-  store.subscribe(() => {
-    const userState = store.getState().auth['user']
+  // store.subscribe(() => {
+  //   const userState = store.getState().auth['user']
 
-    if(userState !== null) {
-  
-      setFormState((prevState) => ({
-        ...prevState,
-        artist: userState.username,
-      }))
+  //   if(userState !== null) {
 
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-      }))
-    }
+  //     setFormState((prevState) => ({
+  //       ...prevState,
+  //       artist: userState.username,
+  //     }))
 
-  })
+  //   } else {
+  //     setFormState((prevState) => ({
+  //       ...prevState,
+  //     }))
+  //   }
+
+  // })
 
   useEffect(() => {
     if (isError) {
@@ -76,7 +78,7 @@ function NewRelease() {
     const emailMessage = `Track ${title} will be sent by ${new Date(date).toLocaleString('en-us')}.`
 
     dispatch(sendNewTrackEmail({ recipient, subject, emailMessage, trackID }))
-      
+
   }, [dispatch])
 
   const onSubmit = async (e) => {
@@ -85,23 +87,23 @@ function NewRelease() {
     if (isError) {
       toast.error(message)
     }
-    if(trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
-    
-      if(isEdit === true) {
+    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+
+      if (isEdit === true) {
         dispatch(createTrack({ trackTitle, artist, deliveryDate }))
 
         toast.success('Email Sent')
-  
+
       } else if (isEdit === false) {
         e.preventDefault()
 
         let formData = trackCover
         // Add MP3 here
-        // formData.append("trackAudio", trackCover.get('trackCover'))
+        formData.append("trackAudio", trackCover.get('trackCover'))
         formData.append("trackTitle", trackTitle)
         formData.append("artist", artist)
         formData.append("deliveryDate", deliveryDate)
-        
+
         setFormState((prevState) => ({
           ...prevState,
           trackCover: formData
@@ -113,12 +115,12 @@ function NewRelease() {
           .then((data) => {
             const trackID = data._id
             trackEmail(data.trackTitle, data.deliveryDate, trackID)
-        })
+          })
 
         toast.success('Email Sent')
         navigate('/profile/singles')
-  
-      } 
+
+      }
 
     } else {
       toast.error("Update Fields")
@@ -163,6 +165,14 @@ function NewRelease() {
                   <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={onChange} />
                 </div>
               </div>
+            </div>
+            <div>
+              <AudioUpload
+                changeFile={setFormState}
+                file={trackAudio}
+                fieldname={'trackAudio'}
+                altText={'Upload Track Audio'}
+              />
             </div>
             <div className={styles.input_div} />
             <div>

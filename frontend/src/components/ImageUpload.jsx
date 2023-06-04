@@ -28,7 +28,7 @@ const ImageUpload = ({ changeFile, file, fieldname, altText, isEdit, setEdit }) 
         [fieldname]: formData
       }))
     }
-  });
+  })
 
   useEffect(() => {
     if (isEdit === true) {

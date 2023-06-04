@@ -46,7 +46,22 @@ const setTrack = asyncHandler(async (req, res) => {
     throw new Error('Add track title')
   }
 
-  console.log(req.file)
+  let cover
+  let audio
+
+  if (req.files) {
+
+    req.files.map((file) => {
+      if (file.fieldname === 'trackCover') {
+        cover = file
+        // console.log(file.fieldname)
+      } else if (file.fieldname === 'trackAudio') {
+        audio = file
+      }
+    })
+  } 
+
+  // console.log(req.files)
   // console.log(req.body)
 
   const track = await Track.create({
@@ -54,8 +69,8 @@ const setTrack = asyncHandler(async (req, res) => {
     artist: req.body.artist,
     deliveryDate: req.body.deliveryDate,
     trackURL: req.body.trackURL,
-    trackCover: req.file,
-    trackCover: req.file,
+    trackCover: cover,
+    trackAudio: audio,
     user: req.user.id
   })
 

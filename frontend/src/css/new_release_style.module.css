@@ -70,6 +70,10 @@
   cursor: pointer;
 }
 
+#remove_audio {
+  cursor: pointer;
+}
+
 #new_form_div {
   width: 90%;
   padding: 2rem;

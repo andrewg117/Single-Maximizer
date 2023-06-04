@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 // import { sendEmail } from '../features/email/emailSlice';
 import { getTracks, getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
 import ImageUpload from '../components/ImageUpload'
+import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import { Buffer } from 'buffer'
@@ -16,9 +17,10 @@ function SingleEdit() {
     artist: '',
     deliveryDate: '',
     trackCover: null,
+    trackAudio: null,
   })
 
-  const { trackTitle, artist, deliveryDate, trackCover } = formState
+  const { trackTitle, artist, deliveryDate, trackCover, trackAudio } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -66,7 +68,11 @@ function SingleEdit() {
       // console.log(singleState.trackCover)
 
       const image = singleState.trackCover
-      const buffer = Buffer.from(image.buffer, 'ascii')
+      const trackBuffer = Buffer.from(image.buffer, 'ascii')
+      const audio = singleState.trackAudio.buffer
+      const audioBuffer = Buffer.from(audio, 'ascii')
+      // const blob = new Blob(audioBuffer, {type: 'audio/mp3'})
+      // console.log(blob)
 
       const defaultDate = convertDate(singleState.deliveryDate, true)
 
@@ -75,7 +81,8 @@ function SingleEdit() {
         trackTitle: singleState.trackTitle,
         artist: singleState.artist,
         deliveryDate: defaultDate,
-        trackCover: buffer,
+        trackCover: trackBuffer,
+        trackAudio: audioBuffer,
       }))
 
     } else {
@@ -218,6 +225,14 @@ function SingleEdit() {
                   />
                 </div>
               </div>
+            </div>
+            <div>
+              <AudioUpload
+                changeFile={setFormState}
+                file={trackAudio}
+                fieldname={'trackAudio'}
+                altText={'Upload Track Audio'}
+              />
             </div>
             <div className={styles.input_div} />
             <div>
