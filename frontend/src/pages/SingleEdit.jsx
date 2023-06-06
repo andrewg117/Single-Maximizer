@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-// import Notification from '../components/Notification'
-// import { sendEmail } from '../features/email/emailSlice';
-import { getTracks, getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
+import { getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
@@ -34,7 +32,6 @@ function SingleEdit() {
   const { id } = useParams()
 
 
-
   const convertDate = (date, isDefault) => {
     const d = new Date(date)
 
@@ -58,7 +55,6 @@ function SingleEdit() {
   const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
   const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
 
-  // let singleState = {}
   const [singleState, setSingleState] = useState({})
 
   store.subscribe(() => {
@@ -69,10 +65,9 @@ function SingleEdit() {
 
       const image = singleState.trackCover
       const trackBuffer = Buffer.from(image.buffer, 'ascii')
-      const audio = singleState.trackAudio.buffer
-      const audioBuffer = Buffer.from(audio, 'ascii')
-      // const blob = new Blob(audioBuffer, {type: 'audio/mp3'})
-      // console.log(blob)
+      const audio = singleState.trackAudio
+      const audioBuffer = audio ? Buffer.from(audio.buffer, 'base64') : null
+      // console.log(audioBuffer)
 
       const defaultDate = convertDate(singleState.deliveryDate, true)
 
@@ -125,12 +120,8 @@ function SingleEdit() {
           trackCover: formData
         }))
 
-        console.log(trackCover)
+        // console.log(trackCover)
         dispatch(updateSingle(trackCover))
-
-        // console.log(recipient)
-        // dispatch(sendEmail({ recipient, subject, emailMessage }))
-        // dispatch(updateSingle({ id, trackTitle, artist, deliveryDate, trackCover: trackCover }))
 
         toast.success("Update Successful")
         navigate('/profile/singles')
@@ -167,7 +158,6 @@ function SingleEdit() {
     }
 
     if (!isExpired) {
-      dispatch(getTracks())
       dispatch(getSingle(id))
     }
 

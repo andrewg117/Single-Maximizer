@@ -1,17 +1,25 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
+import 'react-h5-audio-player/lib/styles.css'
 
 function AudioUpload({ changeFile, file, fieldname, altText }) {
   const [isEdit, setEdit] = useState(true)
 
-  const [blob, getBlob] = useState(useCallback(() => {
+  const makeBlob = useCallback(() => {
     if (file && !isEdit) {
       return URL.createObjectURL(file.get(fieldname))
-    } else if (isEdit === true) {
-      return file
+    } else if (file && isEdit) {
+      const blob = new Blob([file], { type: 'audio/mpeg' })
+      const href = URL.createObjectURL(blob)
+      console.log(href.toString())
+      return href
     }
-  }, [file, isEdit, fieldname]))
+
+  }, [file, isEdit, fieldname])
+
+  const [blob, getBlob] = useState(makeBlob())
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -33,14 +41,10 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
 
 
   useEffect(() => {
-    if (isEdit === true) {
-      getBlob(file)
-    }
     return () => {
       URL.revokeObjectURL(blob)
-      URL.revokeObjectURL(file)
     }
-  }, [blob, file, isEdit])
+  }, [blob])
 
   return (
     <>
@@ -52,21 +56,22 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
       <div>
         {file ?
           <>
-            {/* {console.log(blob)} */}
             {isEdit === true ?
               <>
-              {console.log(blob)}
-                <audio controls>
-                  <source src={`data:audio/mp3;base64,${file}`} />
-                  {altText}
-                </audio>
+                <AudioPlayer
+                  // src={`data:audio/mp3;base64,${makeBlob()}`}
+                  src={makeBlob()}
+                  controls
+                  layout="horizontal"
+                />
               </>
               :
               <>
-                <audio controls>
-                  <source src={blob} type="audio/mp3" />
-                  {altText}
-                </audio>
+                <AudioPlayer
+                  src={blob}
+                  controls
+                  layout="horizontal"
+                />
                 <p>{file.get('trackAudio').name}</p>
               </>
             }
@@ -76,7 +81,6 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
                 setEdit(false)
                 getBlob(null)
                 URL.revokeObjectURL(blob)
-                URL.revokeObjectURL(file)
                 changeFile((prevState) => ({
                   ...prevState,
                   [fieldname]: null
