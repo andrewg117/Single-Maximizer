@@ -28,10 +28,6 @@ const trackSchema = mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: false
   },
-  trackAudio: {
-    type: mongoose.Schema.Types.Mixed,
-    required: false
-  }
 },
 {
   timestamps: true,

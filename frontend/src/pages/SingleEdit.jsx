@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getSingle, updateSingle, deleteTrack, reset } from '../features/tracks/trackSlice'
+import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
+import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
@@ -56,18 +57,18 @@ function SingleEdit() {
   const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
 
   const [singleState, setSingleState] = useState({})
+  const [audioState, setAudioState] = useState(null)
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
+    setAudioState(store.getState().audio['audio'])
 
-    if (Object.keys(singleState).length > 0) {
+    if (Object.keys(singleState).length > 0 && audioState) {
       // console.log(singleState.trackCover)
 
       const image = singleState.trackCover
       const trackBuffer = Buffer.from(image.buffer, 'ascii')
-      const audio = singleState.trackAudio
-      const audioBuffer = audio ? Buffer.from(audio.buffer, 'base64') : null
-      // console.log(audioBuffer)
+      const audio = audioState.file
 
       const defaultDate = convertDate(singleState.deliveryDate, true)
 
@@ -77,7 +78,7 @@ function SingleEdit() {
         artist: singleState.artist,
         deliveryDate: defaultDate,
         trackCover: trackBuffer,
-        trackAudio: audioBuffer,
+        trackAudio: audio,
       }))
 
     } else {
@@ -96,11 +97,13 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
-    if (trackCover !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+      let audioData = trackAudio
+      audioData.append("trackID", id)
+      dispatch(updateAudio(audioData))
 
       if (isEdit === true) {
         dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
-
         toast.success("Update Successful")
         navigate('/profile/singles')
 
@@ -108,8 +111,7 @@ function SingleEdit() {
         e.preventDefault()
 
         let formData = trackCover
-        // Add MP3 here
-        // formData.append("trackAudio", trackCover.get('trackCover'))
+        
         formData.append("id", id)
         formData.append("trackTitle", trackTitle)
         formData.append("artist", artist)
@@ -136,6 +138,7 @@ function SingleEdit() {
   const deleteSingle = (e) => {
     e.preventDefault()
     dispatch(deleteTrack(id))
+    dispatch(deleteAudio(id))
     toast.success("Single Deleted")
     navigate('/profile/singles')
   }
@@ -159,10 +162,12 @@ function SingleEdit() {
 
     if (!isExpired) {
       dispatch(getSingle(id))
+      dispatch(getAudio(id))
     }
 
     return (() => {
-      dispatch(reset)
+      dispatch(resetSingle)
+      dispatch(resetAudio)
     })
 
 

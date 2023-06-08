@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
+import { postAudio, reset as resetAudio } from '../features/audio/audioSlice' 
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
@@ -35,10 +36,9 @@ function NewRelease() {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const store = useStore()
 
   const { isExpired } = useSelector((state) => state.auth)
-  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
+  const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
   const [isEdit, setEdit] = useState(false)
 
@@ -68,6 +68,7 @@ function NewRelease() {
     return () => {
       dispatch(resetTracks())
       dispatch(resetEmail())
+      dispatch(resetAudio())
     }
   }, [isExpired, isError, message, dispatch])
 
@@ -99,7 +100,7 @@ function NewRelease() {
 
         let formData = trackCover
         // Add MP3 here
-        formData.append("trackAudio", trackCover.get('trackCover'))
+        // formData.append("trackAudio", trackCover.get('trackCover'))
         formData.append("trackTitle", trackTitle)
         formData.append("artist", artist)
         formData.append("deliveryDate", deliveryDate)
@@ -114,6 +115,11 @@ function NewRelease() {
         dispatch(createTrack(trackCover)).unwrap()
           .then((data) => {
             const trackID = data._id
+
+            let audioData = trackAudio
+            audioData.append("trackID", trackID)
+
+            dispatch(postAudio(audioData))
             trackEmail(data.trackTitle, data.deliveryDate, trackID)
           })
 

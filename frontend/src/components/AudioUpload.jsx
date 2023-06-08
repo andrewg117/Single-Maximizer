@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { Buffer } from 'buffer'
 import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
 import 'react-h5-audio-player/lib/styles.css'
@@ -11,9 +12,10 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
     if (file && !isEdit) {
       return URL.createObjectURL(file.get(fieldname))
     } else if (file && isEdit) {
-      const blob = new Blob([file], { type: 'audio/mpeg' })
+      const audioBuffer = Buffer.from(file.buffer, 'base64')
+      const blob = new Blob([audioBuffer], { type: 'audio/mpeg' })
       const href = URL.createObjectURL(blob)
-      console.log(href.toString())
+      // console.log(href.toString())
       return href
     }
 
