@@ -28,7 +28,8 @@ function SingleEdit() {
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const [isEdit, setEdit] = useState(true)
+  const [isNewImage, setIsNewImage] = useState(true)
+  const [isNewAudio, setIsNewAudio] = useState(true)
 
   const { id } = useParams()
 
@@ -90,36 +91,46 @@ function SingleEdit() {
   })
 
 
-
   const onSubmit = (e) => {
     e.preventDefault()
 
     if (isError) {
       toast.error(message)
     }
-    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
-      let audioData = trackAudio
-      audioData.append("trackID", id)
-      dispatch(updateAudio(audioData))
 
-      if (isEdit === true) {
+    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+
+      if (trackAudio instanceof FormData){
+        let audioData = new FormData()
+        audioData.append("trackAudio", trackAudio.get('trackAudio'))
+        audioData.append("trackID", id)
+        dispatch(updateAudio(audioData))
+      } else {
+        let audioData = new FormData()
+        audioData.append("trackAudio", trackAudio)
+        audioData.append("trackID", id)
+        dispatch(updateAudio(audioData))
+      }
+
+      if (isNewImage === true) {
         dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
         toast.success("Update Successful")
         navigate('/profile/singles')
 
-      } else if (isEdit === false) {
+      } else if (isNewImage === false) {
         e.preventDefault()
 
-        let formData = trackCover
-        
-        formData.append("id", id)
-        formData.append("trackTitle", trackTitle)
-        formData.append("artist", artist)
-        formData.append("deliveryDate", deliveryDate)
+        let imageData = new FormData()
+
+        imageData.append("trackCover", trackCover)
+        imageData.append("id", id)
+        imageData.append("trackTitle", trackTitle)
+        imageData.append("artist", artist)
+        imageData.append("deliveryDate", deliveryDate)
 
         setFormState((prevState) => ({
           ...prevState,
-          trackCover: formData
+          trackCover: imageData
         }))
 
         // console.log(trackCover)
@@ -190,8 +201,8 @@ function SingleEdit() {
                   file={trackCover}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
-                  isEdit={isEdit}
-                  setEdit={setEdit}
+                  isEdit={isNewImage}
+                  setEdit={setIsNewImage}
                 />
               </div>
               <div className={styles.top_input_div}>
@@ -226,7 +237,6 @@ function SingleEdit() {
                 changeFile={setFormState}
                 file={trackAudio}
                 fieldname={'trackAudio'}
-                altText={'Upload Track Audio'}
               />
             </div>
             <div className={styles.input_div} />
