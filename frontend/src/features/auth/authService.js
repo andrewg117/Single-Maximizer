@@ -48,7 +48,7 @@ const update = async  (userData, token) => {
 
   let response
   if (!checkToken(token)){
-    response = await axios.put(API_URL + userData, userData, config)
+    response = await axios.put(API_URL + 'me', userData, config)
   }
 
   return response.data

@@ -11,15 +11,14 @@ const imageSchema = mongoose.Schema({
     required: false,
     ref: 'Track'
   },
-  file: {
-    data: mongoose.Schema.Types.Mixed,
-    type: String,
-    required: true
-  },
   section: {
     type: String,
     required: false
-  }
+  },
+  file: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true
+  },
 },
 {
   timestamps: true,

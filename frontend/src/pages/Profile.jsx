@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getUser, reset} from '../features/auth/authSlice'
+import { getUser, reset as userReset } from '../features/auth/authSlice'
+import { getImage, reset as imageReset } from '../features/image/imageSlice'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
@@ -26,22 +27,26 @@ const Profile = () => {
     profileImage: null,
   })
 
-  const {  fname,  lname, username, email, website, profileImage } = formState
+  const { fname, lname, username, email, website, profileImage } = formState
 
   const dispatch = useDispatch()
   const store = useStore()
 
   const { isExpired, isLoading, isError, message } = useSelector((state) => state.auth)
 
-  
+
   store.subscribe(() => {
     const userState = store.getState().auth['user']
+    const imageState = store.getState().image['image']
 
-    if(userState !== null && !isExpired) {
-      const image = userState.profileImage
-  
-      const buffer = Buffer.from(image.buffer, 'ascii')
-  
+    if (userState !== null && !isExpired) {
+      let buffer = null
+      if (imageState) {
+        const image = imageState ? imageState.file : null
+
+        buffer = Buffer.from(image.buffer, 'ascii')
+      }
+
       setFormState((prevState) => ({
         ...prevState,
         fname: userState.fname,
@@ -67,9 +72,11 @@ const Profile = () => {
 
     if (!isExpired) {
       dispatch(getUser())
-    } 
+      dispatch(getImage({ section: 'avatar' }))
+    }
     return () => {
-      dispatch(reset())
+      dispatch(userReset())
+      dispatch(imageReset())
     }
   }, [isExpired, isError, message, dispatch])
 

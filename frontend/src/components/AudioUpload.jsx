@@ -5,7 +5,7 @@ import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
 import 'react-h5-audio-player/lib/styles.css'
 
-function AudioUpload({ changeFile, file, fieldname, altText }) {
+function AudioUpload({ changeFile, file, fieldname }) {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
@@ -61,10 +61,11 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
             {isEdit === true ?
               <>
                 <AudioPlayer
-                  // src={`data:audio/mp3;base64,${makeBlob()}`}
                   src={makeBlob()}
                   controls
                   layout="horizontal"
+                  autoPlayAfterSrcChange={false}
+                  volume={.2}
                 />
               </>
               :
@@ -73,6 +74,8 @@ function AudioUpload({ changeFile, file, fieldname, altText }) {
                   src={blob}
                   controls
                   layout="horizontal"
+                  autoPlayAfterSrcChange={false}
+                  volume={.2}
                 />
                 <p>{file.get('trackAudio').name}</p>
               </>

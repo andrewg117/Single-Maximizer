@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { getUser, updateUser, reset } from '../features/auth/authSlice'
+import { getUser, updateUser, reset as userReset } from '../features/auth/authSlice'
+import { postImage, getImage, updateImage, reset as imageReset } from '../features/image/imageSlice'
 import ImageUpload from '../components/ImageUpload'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
@@ -18,26 +19,32 @@ function ProfileEdit() {
     profileImage: null,
   })
 
-  const {  fname,  lname, username, email, website, profileImage } = formState
+  const { fname, lname, username, email, website, profileImage } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const store = useStore()
+  let store = useStore()
 
   const { isExpired, isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
 
-  const [isEdit, setEdit] = useState(true)
+  const { image } = useSelector(
+    (state) => state.image
+  )
 
   store.subscribe(() => {
     const userState = store.getState().auth['user']
+    const imageState = store.getState().image['image']
 
-    if(userState !== null && !isExpired) {
-      const image = userState.profileImage
-  
-      const buffer = Buffer.from(image.buffer, 'ascii')
-  
+    if (userState !== null && !isExpired) {
+      let buffer = null
+      if (imageState) {
+        const image = imageState ? imageState.file : null
+
+        buffer = Buffer.from(image.buffer, 'ascii')
+      }
+
       setFormState((prevState) => ({
         ...prevState,
         fname: userState.fname,
@@ -63,55 +70,56 @@ function ProfileEdit() {
 
     if (!isExpired) {
       dispatch(getUser())
+      dispatch(getImage({ 'section': 'avatar' }))
     }
 
-    return(() => {
-      dispatch(reset)
+    return (() => {
+      dispatch(userReset)
+      dispatch(imageReset)
     })
   }, [isExpired, navigate, isError, message, dispatch])
+
 
   const onSubmit = (e) => {
     e.preventDefault()
 
     if (isError) {
       toast.error(message)
-    } 
-    
+    }
+
     if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && !isExpired) {
 
-      if(isEdit === true) {
-        dispatch(updateUser({
-          fname,
-          lname,
-          username,
-          email,
-          website
-        }))
-  
-        toast.success("Update Successful")
-        navigate('/profile')
 
-  
-      } else if (isEdit === false) {
-        let formData = profileImage
-        formData.append("fname", fname)
-        formData.append("lname", lname)
-        formData.append("username", username)
-        formData.append("email", email)
-        formData.append("website", website)
 
-        setFormState((prevState) => ({
-          ...prevState,
-          profileImage: formData
-        }))
+      dispatch(updateUser({
+        fname,
+        lname,
+        username,
+        email,
+        website
+      })).unwrap()
+        .then(() => {
+          if (image === null) {
+            let imageData = new FormData()
+            imageData.append("Image", profileImage.get('Image'))
+            imageData.append("section", 'avatar')
+            dispatch(postImage(imageData))
+          } else if (profileImage instanceof FormData) {
+            let imageData = new FormData()
+            imageData.append("Image", profileImage.get('Image'))
+            imageData.append("section", 'avatar')
+            dispatch(updateImage(imageData))
+          } else {
+            let imageData = new FormData()
+            imageData.append("Image", profileImage)
+            imageData.append("section", 'avatar')
+            dispatch(updateImage(imageData))
+          }
+        })
 
-        console.log(profileImage)
-  
-        dispatch(updateUser(profileImage))
-        
-        toast.success("Update Successful")
-        navigate('/profile')
-      } 
+      toast.success("Update Successful")
+      navigate('/profile')
+
 
     } else {
       toast.error('Empty field')
@@ -143,8 +151,6 @@ function ProfileEdit() {
                   file={profileImage}
                   fieldname={'profileImage'}
                   altText={'Upload Profile Image'}
-                  isEdit={isEdit}
-                  setEdit={setEdit}
                 />
               </div>
               <div></div>

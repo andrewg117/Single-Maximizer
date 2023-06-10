@@ -32,10 +32,9 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword
   })
 
-  if(user) {
+  if (user) {
     res.status(201).json({
       _id: user.id,
-      profileImage: user.profileImage,
       fname: user.fname,
       lname: user.lname,
       username: user.username,
@@ -55,9 +54,9 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
 
-  const user = await User.findOne({email})
+  const user = await User.findOne({ email })
 
-  if(user && (await bcrypt.compare(password, user.password))) {
+  if (user && (await bcrypt.compare(password, user.password))) {
     const userBody = {
       ...user['_doc'],
     }
@@ -82,45 +81,20 @@ const getMe = asyncHandler(async (req, res) => {
 })
 
 // @desc    Update user data
-// @route   PUT /api/users/:file
+// @route   PUT /api/users/
 // @access  Private
 const updateUser = asyncHandler(async (req, res) => {
-  if(!req.user) {
+  if (!req.user) {
     res.status(401)
     throw new Error('User not found')
   }
 
   let updatedUser
 
-  
-  if (req.files) {
-    // console.log('File: ' + JSON.stringify(req.file))
-    let profileImage
+  updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+    new: true
+  })
 
-    req.files.map((file) => {
-      if (file.fieldname === 'profileImage') {
-        profileImage = file
-        // console.log(file.fieldname)
-      }
-    })
-
-    const newBody = {
-      ...req.body,
-      profileImage: profileImage
-    }
-
-    updatedUser = await User.findByIdAndUpdate(req.user.id, newBody, {
-      new: true
-    })
-    // console.log('New Body: ' + JSON.stringify(newBody))
-  } else {
-    updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
-      new: true
-    })
-    // console.log('Body: ' + JSON.stringify(req.body))
-
-  }
-  
   res.json(updatedUser)
 })
 
