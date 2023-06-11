@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
-import { postAudio, reset as resetAudio } from '../features/audio/audioSlice' 
+import { postImage, reset as resetImage } from '../features/image/imageSlice'
+import { postAudio, reset as resetAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import Spinner from '../components/Spinner'
@@ -40,26 +41,6 @@ function NewRelease() {
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const [isEdit, setEdit] = useState(false)
-
-  // store.subscribe(() => {
-  //   const userState = store.getState().auth['user']
-
-  //   if(userState !== null) {
-
-  //     setFormState((prevState) => ({
-  //       ...prevState,
-  //       artist: userState.username,
-  //     }))
-
-  //   } else {
-  //     setFormState((prevState) => ({
-  //       ...prevState,
-  //     }))
-  //   }
-
-  // })
-
   useEffect(() => {
     if (isError) {
       toast.error(message)
@@ -67,6 +48,7 @@ function NewRelease() {
 
     return () => {
       dispatch(resetTracks())
+      dispatch(resetImage())
       dispatch(resetEmail())
       dispatch(resetAudio())
     }
@@ -89,44 +71,30 @@ function NewRelease() {
       toast.error(message)
     }
     if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+      dispatch(createTrack({ trackTitle, artist, deliveryDate })).unwrap()
+        .then((data) => {
+          const trackID = data._id
 
-      if (isEdit === true) {
-        dispatch(createTrack({ trackTitle, artist, deliveryDate }))
+          let imageData = new FormData()
+          imageData.append("Image", trackCover.get('Image'))
+          imageData.append("trackID", trackID)
+          imageData.append("section", 'cover')
+          dispatch(postImage(imageData))
+          // console.log(imageData)
 
-        toast.success('Email Sent')
+          let audioData = new FormData() 
+          imageData.append("trackAudio", trackAudio.get('trackAudio'))
+          audioData.append("trackID", trackID)
 
-      } else if (isEdit === false) {
-        e.preventDefault()
-
-        let formData = trackCover
-        // Add MP3 here
-        // formData.append("trackAudio", trackCover.get('trackCover'))
-        formData.append("trackTitle", trackTitle)
-        formData.append("artist", artist)
-        formData.append("deliveryDate", deliveryDate)
-
-        setFormState((prevState) => ({
-          ...prevState,
-          trackCover: formData
-        }))
-
-        // console.log(trackCover)
-
-        dispatch(createTrack(trackCover)).unwrap()
-          .then((data) => {
-            const trackID = data._id
-
-            let audioData = trackAudio
-            audioData.append("trackID", trackID)
-
-            dispatch(postAudio(audioData))
-            trackEmail(data.trackTitle, data.deliveryDate, trackID)
-          })
-
-        toast.success('Email Sent')
-        navigate('/profile/singles')
-
-      }
+          dispatch(postAudio(audioData))
+          // trackEmail(data.trackTitle, data.deliveryDate, trackID)
+          toast.success('Email Sent')
+          navigate('/profile/singles')
+          setFormState((prevState) => ({
+            ...prevState,
+            trackAudio: null
+          }))
+        })
 
     } else {
       toast.error("Update Fields")
@@ -157,8 +125,6 @@ function NewRelease() {
                   file={trackCover}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
-                  isEdit={isEdit}
-                  setEdit={setEdit}
                 />
               </div>
               <div className={styles.top_input_div}>

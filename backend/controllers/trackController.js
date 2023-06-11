@@ -46,21 +46,6 @@ const setTrack = asyncHandler(async (req, res) => {
     throw new Error('Add track title')
   }
 
-  let cover
-  let audio
-
-  if (req.files) {
-
-    req.files.map((file) => {
-      if (file.fieldname === 'trackCover') {
-        cover = file
-        // console.log(file.fieldname)
-      } else if (file.fieldname === 'trackAudio') {
-        audio = file
-      }
-    })
-  } 
-
   // console.log(req.files)
   // console.log(req.body)
 
@@ -69,8 +54,6 @@ const setTrack = asyncHandler(async (req, res) => {
     artist: req.body.artist,
     deliveryDate: req.body.deliveryDate,
     trackURL: req.body.trackURL,
-    trackCover: cover,
-    trackAudio: audio,
     user: req.user.id
   })
 
@@ -79,10 +62,10 @@ const setTrack = asyncHandler(async (req, res) => {
 
 
 // @desc    Update track
-// @route   PUT /api/tracks/:file
+// @route   PUT /api/tracks/:id
 // @access  Private
 const updateTrack = asyncHandler(async (req, res) => {
-  const track = await Track.findById(req.body.id)
+  const track = await Track.findById(req.params.id)
 
   if (!track) {
     res.status(400)
@@ -103,35 +86,9 @@ const updateTrack = asyncHandler(async (req, res) => {
   // console.log('Params: ' + JSON.stringify(req.params))
   // console.log('File: ' + JSON.stringify(req.files))
 
-  let updatedTrack
-
-  if (req.files) {
-    // console.log('File: ' + JSON.stringify(req.file))
-    let trackCover
-
-    req.files.map((file) => {
-      if (file.fieldname === 'trackCover') {
-        trackCover = file
-        // console.log(file.fieldname)
-      }
-    })
-
-    const newBody = {
-      ...req.body,
-      trackCover: trackCover
-    }
-
-    updatedTrack = await Track.findByIdAndUpdate(req.body.id, newBody, {
+  const updatedTrack = await Track.findByIdAndUpdate(req.params.id, req.body, {
       new: true
     })
-    // console.log('New Body: ' + JSON.stringify(newBody))
-  } else {
-    updatedTrack = await Track.findByIdAndUpdate(req.body.id, req.body, {
-      new: true
-    })
-    // console.log('Body: ' + JSON.stringify(req.body))
-
-  }
 
   res.json(updatedTrack)
 })

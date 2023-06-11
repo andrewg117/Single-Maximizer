@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { getUser, updateUser, reset as userReset } from '../features/auth/authSlice'
-import { postImage, getImage, updateImage, reset as imageReset } from '../features/image/imageSlice'
+import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
+import { postImage, getImage, updateImage, reset as resetImage } from '../features/image/imageSlice'
 import ImageUpload from '../components/ImageUpload'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
@@ -74,8 +74,8 @@ function ProfileEdit() {
     }
 
     return (() => {
-      dispatch(userReset)
-      dispatch(imageReset)
+      dispatch(resetUser)
+      dispatch(resetImage)
     })
   }, [isExpired, navigate, isError, message, dispatch])
 

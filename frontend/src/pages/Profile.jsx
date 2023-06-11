@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getUser, reset as userReset } from '../features/auth/authSlice'
-import { getImage, reset as imageReset } from '../features/image/imageSlice'
+import { getUser, reset as resetUser } from '../features/auth/authSlice'
+import { getImage, reset as resetImage } from '../features/image/imageSlice'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
@@ -75,8 +75,8 @@ const Profile = () => {
       dispatch(getImage({ section: 'avatar' }))
     }
     return () => {
-      dispatch(userReset())
-      dispatch(imageReset())
+      dispatch(resetUser())
+      dispatch(resetImage())
     }
   }, [isExpired, isError, message, dispatch])
 

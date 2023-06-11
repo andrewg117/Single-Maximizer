@@ -24,10 +24,6 @@ const trackSchema = mongoose.Schema({
     type: String,
     required: false
   },
-  trackCover: {
-    type: mongoose.Schema.Types.Mixed,
-    required: false
-  },
 },
 {
   timestamps: true,

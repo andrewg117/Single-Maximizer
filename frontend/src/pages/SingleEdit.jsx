@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
+import { postImage, getImage, updateImage, reset as resetImage } from '../features/image/imageSlice'
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
@@ -27,9 +28,6 @@ function SingleEdit() {
 
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
-
-  const [isNewImage, setIsNewImage] = useState(true)
-  const [isNewAudio, setIsNewAudio] = useState(true)
 
   const { id } = useParams()
 
@@ -59,15 +57,17 @@ function SingleEdit() {
 
   const [singleState, setSingleState] = useState({})
   const [audioState, setAudioState] = useState(null)
+  const [trackState, setTrackState] = useState(null)
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
     setAudioState(store.getState().audio['audio'])
+    setTrackState(store.getState().image['image'])
 
-    if (Object.keys(singleState).length > 0 && audioState) {
+    if (Object.keys(singleState).length > 0 && audioState && trackState) {
       // console.log(singleState.trackCover)
 
-      const image = singleState.trackCover
+      const image = trackState.file
       const trackBuffer = Buffer.from(image.buffer, 'ascii')
       const audio = audioState.file
 
@@ -100,46 +100,37 @@ function SingleEdit() {
 
     if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
 
-      if (trackAudio instanceof FormData){
-        let audioData = new FormData()
-        audioData.append("trackAudio", trackAudio.get('trackAudio'))
-        audioData.append("trackID", id)
-        dispatch(updateAudio(audioData))
-      } else {
-        let audioData = new FormData()
-        audioData.append("trackAudio", trackAudio)
-        audioData.append("trackID", id)
-        dispatch(updateAudio(audioData))
-      }
+        dispatch(updateSingle({ id, trackTitle, artist, deliveryDate })).unwrap()
+        .then((data) => {
+          if (trackCover instanceof FormData) {
+            let imageData = new FormData()
+            imageData.append("Image", trackCover.get('Image'))
+            imageData.append("trackID", id)
+            imageData.append("section", 'cover')
+            dispatch(updateImage(imageData))
+          } else {
+            let imageData = new FormData()
+            imageData.append("Image", trackCover)
+            imageData.append("trackID", id)
+            imageData.append("section", 'cover')
+            dispatch(updateImage(imageData))
+          }
 
-      if (isNewImage === true) {
-        dispatch(updateSingle({ id, trackTitle, artist, deliveryDate }))
-        toast.success("Update Successful")
-        navigate('/profile/singles')
+          if (trackAudio instanceof FormData){
+            let audioData = new FormData()
+            audioData.append("trackAudio", trackAudio.get('trackAudio'))
+            audioData.append("trackID", id)
+            dispatch(updateAudio(audioData))
+          } else {
+            let audioData = new FormData()
+            audioData.append("trackAudio", trackAudio)
+            audioData.append("trackID", id)
+            dispatch(updateAudio(audioData))
+          }
 
-      } else if (isNewImage === false) {
-        e.preventDefault()
-
-        let imageData = new FormData()
-
-        imageData.append("trackCover", trackCover)
-        imageData.append("id", id)
-        imageData.append("trackTitle", trackTitle)
-        imageData.append("artist", artist)
-        imageData.append("deliveryDate", deliveryDate)
-
-        setFormState((prevState) => ({
-          ...prevState,
-          trackCover: imageData
-        }))
-
-        // console.log(trackCover)
-        dispatch(updateSingle(trackCover))
-
-        toast.success("Update Successful")
-        navigate('/profile/singles')
-
-      }
+          toast.success("Update Successful")
+          navigate('/profile/singles')
+        })
 
     } else {
       toast.error("Update Fields")
@@ -173,11 +164,16 @@ function SingleEdit() {
 
     if (!isExpired) {
       dispatch(getSingle(id))
+      dispatch(getImage({ 
+        'trackID': id,
+        'section': 'cover' 
+      }))
       dispatch(getAudio(id))
     }
 
     return (() => {
       dispatch(resetSingle)
+      dispatch(resetImage)
       dispatch(resetAudio)
     })
 
@@ -201,8 +197,6 @@ function SingleEdit() {
                   file={trackCover}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
-                  isEdit={isNewImage}
-                  setEdit={setIsNewImage}
                 />
               </div>
               <div className={styles.top_input_div}>
