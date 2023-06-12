@@ -42,10 +42,10 @@ export const updateImage = createAsyncThunk('image/put', async (imageData, thunk
   }
 })
 
-export const deleteImage = createAsyncThunk('image/delete', async (imageData, thunkAPI) => {
+export const deleteImage = createAsyncThunk('image/delete', async (trackID, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
-    return await imageService.deleteImage(imageData, token)
+    return await imageService.deleteImage(trackID, token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

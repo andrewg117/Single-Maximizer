@@ -9,7 +9,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
-    if ((file instanceof FormData) && !isEdit) {
+    if (file !== null && (file instanceof FormData) && !isEdit) {
       return URL.createObjectURL(file.get(fieldname))
     } else if (file !== null && isEdit) {
       const audioBuffer = Buffer.from(file.buffer, 'base64')
@@ -17,11 +17,13 @@ function AudioUpload({ changeFile, file, fieldname }) {
       const href = URL.createObjectURL(blob)
       // console.log(href.toString())
       return href
+    } else {
+      return null
     }
 
   }, [file, isEdit, fieldname])
 
-  const [blob, getBlob] = useState(makeBlob())
+  const [blob, getBlob] = useState()
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -56,7 +58,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
         <p>Drag and drop or click to upload audio</p>
       </div>
       <div>
-        {file ?
+        {file !== null ?
           <>
             {isEdit === true ?
               <>
@@ -77,7 +79,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
                   autoPlayAfterSrcChange={false}
                   volume={.2}
                 />
-                <p>{file.get('trackAudio').name}</p>
+                <p>{file instanceof FormData ? file.get('trackAudio').name : ''}</p>
               </>
             }
             <p

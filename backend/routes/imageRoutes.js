@@ -9,7 +9,7 @@ const upload = multer({ storage: storage })
 
 router.route('/').post(protect).post(upload.single('Image'), uploadImage)
   .get(protect, getImage)
-router.route('/:file').put(protect).put(upload.single('Image'), updateImage)
+router.route('/:id').put(protect).put(upload.single('Image'), updateImage)
   .delete(protect, deleteImage)
 
 module.exports = router

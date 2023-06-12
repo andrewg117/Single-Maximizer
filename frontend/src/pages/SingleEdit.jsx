@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
-import { postImage, getImage, updateImage, reset as resetImage } from '../features/image/imageSlice'
+import { postImage, getImage, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
@@ -140,6 +140,7 @@ function SingleEdit() {
   const deleteSingle = (e) => {
     e.preventDefault()
     dispatch(deleteTrack(id))
+    dispatch(deleteImage(id))
     dispatch(deleteAudio(id))
     toast.success("Single Deleted")
     navigate('/profile/singles')

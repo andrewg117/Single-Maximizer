@@ -83,17 +83,19 @@ function NewRelease() {
           // console.log(imageData)
 
           let audioData = new FormData() 
-          imageData.append("trackAudio", trackAudio.get('trackAudio'))
+          audioData.append("trackAudio", trackAudio.get('trackAudio'))
           audioData.append("trackID", trackID)
-
           dispatch(postAudio(audioData))
+
           // trackEmail(data.trackTitle, data.deliveryDate, trackID)
-          toast.success('Email Sent')
-          navigate('/profile/singles')
+          
           setFormState((prevState) => ({
             ...prevState,
             trackAudio: null
           }))
+
+          toast.success('Email Sent')
+          navigate('/profile/singles')
         })
 
     } else {

@@ -24,7 +24,7 @@ const uploadImage = asyncHandler(async (req, res) => {
   } else if (req.body.section === 'cover') {
     image = await Image.create({
       user: req.user.id,
-      track: req.body.trackID,
+      trackID: req.body.trackID,
       section: req.body.section,
       file: req.file,
     })
@@ -44,7 +44,7 @@ const getImage = asyncHandler(async (req, res) => {
   if (req.query.section === 'avatar') {
     image = await Image.findOne({ user: req.user.id })
   } else if (req.query.section === 'cover') {
-    image = await Image.findOne({ trackID: req.params.trackID })
+    image = await Image.findOne({ trackID: req.query.trackID })
   }
 
   if (!image) {
@@ -115,11 +115,7 @@ const updateImage = asyncHandler(async (req, res) => {
 // @access  Private
 const deleteImage = asyncHandler(async (req, res) => {
   let image
-  if (req.body.section === 'avatar') {
-    image = await Image.findOne({ user: req.user.id })
-  } else if (req.body.section === 'cover') {
-    image = await Image.findOne({ trackID: req.body.trackID })
-  }
+  image = await Image.findOne({ trackID: req.params.id })
 
   if (!image) {
     res.status(400)
@@ -136,7 +132,7 @@ const deleteImage = asyncHandler(async (req, res) => {
     throw new Error('User not authorized')
   }
 
-  const deleteImage = await Image.findOneAndDelete({ trackID: req.body.trackID })
+  const deleteImage = await Image.findOneAndDelete({ trackID: req.params.id })
 
   res.json(deleteImage.id)
 })

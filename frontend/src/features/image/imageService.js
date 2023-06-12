@@ -54,7 +54,7 @@ const updateImage = async (imageData, token) => {
   return response.data
 }
 
-const deleteImage = async (imageData, token) => {
+const deleteImage = async (trackID, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
@@ -64,7 +64,7 @@ const deleteImage = async (imageData, token) => {
   let response
 
   if (!authService.checkToken(token)){
-    response = await axios.delete(API_URL, imageData, config)
+    response = await axios.delete(API_URL + trackID, config)
   }
 
   return response.data
