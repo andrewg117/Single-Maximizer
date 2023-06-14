@@ -107,7 +107,6 @@ function SingleEdit() {
         deliveryDate
       })).unwrap()
         .then((data) => {
-          console.log(data)
           if (trackCover instanceof FormData) {
             let imageData = new FormData()
             imageData.append("Image", trackCover.get('Image'))
