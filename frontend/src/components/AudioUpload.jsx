@@ -9,9 +9,9 @@ function AudioUpload({ changeFile, file, fieldname }) {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
-    if (file !== null && (file instanceof FormData) && !isEdit) {
+    if (file && (file instanceof FormData) && !isEdit) {
       return URL.createObjectURL(file.get(fieldname))
-    } else if (file !== null && isEdit) {
+    } else if (isEdit === true) {
       const audioBuffer = Buffer.from(file.buffer, 'base64')
       const blob = new Blob([audioBuffer], { type: 'audio/mpeg' })
       const href = URL.createObjectURL(blob)

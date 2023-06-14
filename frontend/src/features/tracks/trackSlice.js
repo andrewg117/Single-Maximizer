@@ -45,7 +45,7 @@ export const getSingle = createAsyncThunk('tracks/single', async (id, thunkAPI) 
 
 export const updateSingle = createAsyncThunk('tracks/putSingle', async (args, thunkAPI) => {
   try {
-    const { trackID, trackData } = args
+    const { trackID, ...trackData } = args
 
     const token = thunkAPI.getState().auth.user.token
     return await trackService.updateSingle(trackID, trackData, token)

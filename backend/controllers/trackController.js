@@ -66,6 +66,7 @@ const setTrack = asyncHandler(async (req, res) => {
 // @access  Private
 const updateTrack = asyncHandler(async (req, res) => {
   const track = await Track.findById(req.params.id)
+  console.log(req.body)
 
   if (!track) {
     res.status(400)

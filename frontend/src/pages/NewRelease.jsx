@@ -80,23 +80,22 @@ function NewRelease() {
           imageData.append("trackID", trackID)
           imageData.append("section", 'cover')
           dispatch(postImage(imageData))
-          // console.log(imageData)
 
-          let audioData = new FormData() 
+          let audioData = new FormData()
           audioData.append("trackAudio", trackAudio.get('trackAudio'))
           audioData.append("trackID", trackID)
           dispatch(postAudio(audioData))
 
-          // trackEmail(data.trackTitle, data.deliveryDate, trackID)
-          
+          trackEmail(data.trackTitle, data.deliveryDate, trackID)
+
+
+        })
           setFormState((prevState) => ({
             ...prevState,
             trackAudio: null
           }))
-
           toast.success('Email Sent')
           navigate('/profile/singles')
-        })
 
     } else {
       toast.error("Update Fields")

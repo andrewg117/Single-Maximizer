@@ -100,8 +100,14 @@ function SingleEdit() {
 
     if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
 
-        dispatch(updateSingle({ id, trackTitle, artist, deliveryDate })).unwrap()
+      dispatch(updateSingle({
+        trackID: id,
+        trackTitle,
+        artist,
+        deliveryDate
+      })).unwrap()
         .then((data) => {
+          console.log(data)
           if (trackCover instanceof FormData) {
             let imageData = new FormData()
             imageData.append("Image", trackCover.get('Image'))
@@ -116,7 +122,7 @@ function SingleEdit() {
             dispatch(updateImage(imageData))
           }
 
-          if (trackAudio instanceof FormData){
+          if (trackAudio instanceof FormData) {
             let audioData = new FormData()
             audioData.append("trackAudio", trackAudio.get('trackAudio'))
             audioData.append("trackID", id)
@@ -165,9 +171,9 @@ function SingleEdit() {
 
     if (!isExpired) {
       dispatch(getSingle(id))
-      dispatch(getImage({ 
+      dispatch(getImage({
         'trackID': id,
-        'section': 'cover' 
+        'section': 'cover'
       }))
       dispatch(getAudio(id))
     }

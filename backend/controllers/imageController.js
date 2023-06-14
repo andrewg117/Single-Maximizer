@@ -100,7 +100,6 @@ const updateImage = asyncHandler(async (req, res) => {
     ...req.body,
     file: req.file
   }
-  console.log(newBody)
 
   const updatedImage = await Image.findOneAndUpdate({ trackID: req.body.trackID }, newBody, {
     new: true
