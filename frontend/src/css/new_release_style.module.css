@@ -74,6 +74,47 @@
   cursor: pointer;
 }
 
+#press_upload {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: .2em;
+  height: 200px;
+  border: 2px dashed #dfdfdf;
+  margin: 1em 0;
+  overflow: auto;
+}
+
+#press_frame {
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000;
+}
+
+#add_press {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000;
+  font-size: .9em;
+  cursor: pointer;
+}
+
+#remove_press {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  color: #dfdfdf;
+  cursor: pointer;
+}
+
 #new_form_div {
   width: 90%;
   padding: 2rem;

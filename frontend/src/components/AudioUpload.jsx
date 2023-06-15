@@ -55,7 +55,6 @@ function AudioUpload({ changeFile, file, fieldname }) {
 
   return (
     <>
-      <p>Audio Upload</p>
       <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload audio</p>
