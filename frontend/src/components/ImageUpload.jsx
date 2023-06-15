@@ -22,11 +22,14 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
     onDrop: async (acceptedFiles) => {
       let formData = new FormData()
       formData.append('Image', acceptedFiles[0])
+      let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
+      megBytes = megBytes.toString() + ' MB'
+      formData.append('size', megBytes)
 
       setEdit(false)
 
       getBlob(URL.createObjectURL(formData.get('Image')))
-      
+
       changeFile((prevState) => ({
         ...prevState,
         [fieldname]: formData
@@ -45,6 +48,7 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
       <div {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload image</p>
+        <p>Size Limit: 10 MB</p>
       </div>
       {
         file ?
@@ -53,7 +57,11 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
               <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
               // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
               :
-              <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+              <>
+                <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+                <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
+                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
+              </>
             }
             <div
               id={styles.remove_image}

@@ -32,6 +32,9 @@ function AudioUpload({ changeFile, file, fieldname }) {
     onDrop: async (acceptedFiles) => {
       let formData = new FormData()
       formData.append(fieldname, acceptedFiles[0])
+      let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
+      megBytes = megBytes.toString() + ' MB'
+      formData.append('size', megBytes)
 
       setEdit(false)
 
@@ -56,6 +59,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
       <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload audio</p>
+        <p>Size Limit: 21 MB</p>
       </div>
       <div>
         {file !== null ?
@@ -80,6 +84,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
                   volume={.2}
                 />
                 <p>{file instanceof FormData ? file.get('trackAudio').name : ''}</p>
+                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
               </>
             }
             <p
