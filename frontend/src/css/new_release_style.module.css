@@ -94,6 +94,11 @@
   border: 1px solid #000;
 }
 
+#press_frame img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 #add_press {
   display: flex;
   flex-direction: column;
@@ -169,7 +174,7 @@
   #top_div {
     display: inline;
   }
-  
+
   .input_div {
     display: inline;
   }
@@ -179,7 +184,7 @@
   #top_div {
     display: inline;
   }
-  
+
   .input_div {
     display: inline;
   }

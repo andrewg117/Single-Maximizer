@@ -2,12 +2,12 @@ import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 
-const ImageFrame = ({ imageID, removePress }) => {
+const ImageFrame = ({ blob, id, removePress }) => {
   return (
     <>
       <div id={styles.press_frame}>
-        <p>{imageID}</p>
-        <p id={styles.remove_press} onClick={(e) => removePress(e, imageID)}>
+        <img src={URL.createObjectURL(blob)} alt='N/A' onLoad={() => { URL.revokeObjectURL(blob) }} />
+        <p id={styles.remove_press} onClick={(e) => removePress(e, id)}>
           X
         </p>
       </div>
@@ -15,8 +15,8 @@ const ImageFrame = ({ imageID, removePress }) => {
   )
 }
 
-function PressUpload({ changeFile, files, fieldname, altText }) {
-  const [ pressList, setList ] = useState(() => {return [1, 2, 3, 4, 5, 6]})
+function PressUpload({ changeFile, trackPress }) {
+  // const [pressList, setList] = useState([])
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -33,33 +33,51 @@ function PressUpload({ changeFile, files, fieldname, altText }) {
 
       // getBlob(URL.createObjectURL(formData.get('Image')))
 
-      setList(() => ({
-        pressList: pressList.push(URL.createObjectURL(formData.get('Press')))
+      changeFile((prevState) => ({
+        ...prevState,
+        trackPress: [
+          ...trackPress,
+          formData.get('Press')
+        ]
       }))
-
-      // changeFile((prevState) => ({
-      //   ...prevState,
-      //   [fieldname]: [fieldname].push(URL.createObjectURL(formData.get('Press')))
-      // }))
     }
   })
 
-  const removePress = (e, item) => {
+  const removePress = (e, id) => {
     e.preventDefault()
-    // console.log(pressList.filter(i => i !== item))
-    setList(pressList.filter(i => i !== item))
+    // setList(files.filter((item, index) => index !== id))
+
+    changeFile((prevState) => ({
+      ...prevState,
+      trackPress: trackPress.filter((item, index) => index !== id)
+    }))
   }
+
+  useEffect(() => {
+    return () => {
+      // files.map((item, index) => {
+      //   return []
+      // })
+      // URL.revokeObjectURL(blob)
+      if(trackPress.length > 0) {
+      }
+    }
+  }, [trackPress])
 
   return (
     <div id={styles.press_upload}>
       {
-        pressList.map((item) => {
-          return <ImageFrame key={item} imageID={item} removePress={removePress} />
+        trackPress.length > 0 ?
+        trackPress.map((item, index) => {
+          // return <p key={index}>{item.path}</p>
+          return <ImageFrame key={index} id={index} blob={item} removePress={removePress} />
         })
+        :
+        []
       }
-      <div id={styles.add_press}>
+      <div id={styles.add_press} {...getRootProps()}>
+        <input {...getInputProps()} />
         <div>Add Photo</div>
-        {/* <div>+</div> */}
       </div>
     </div>
   )

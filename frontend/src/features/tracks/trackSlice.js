@@ -4,6 +4,7 @@ import trackService from "./trackService"
 const initialState = {
   tracks: [],
   single: {},
+  press: [],
   isError: false,
   isSuccess: false,
   isLoading: false,

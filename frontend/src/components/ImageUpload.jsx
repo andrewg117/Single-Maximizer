@@ -48,7 +48,6 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
       <div {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload image</p>
-        <p>Size Limit: 10 MB</p>
       </div>
       {
         file ?

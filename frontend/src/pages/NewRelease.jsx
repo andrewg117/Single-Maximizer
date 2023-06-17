@@ -123,6 +123,7 @@ function NewRelease() {
             <div id={styles.top_div}>
               <div id={styles.image_div}>
                 <label>COVER ART</label>
+                <p>Size Limit: 10 MB</p>
                 <ImageUpload
                   changeFile={setFormState}
                   file={trackCover}
@@ -143,6 +144,7 @@ function NewRelease() {
             </div>
             <div className={styles.top_input_div}>
               <label>AUDIO UPLOAD</label>
+              <p>Size Limit: 21 MB</p>
               <AudioUpload
                 changeFile={setFormState}
                 file={trackAudio}
@@ -152,11 +154,10 @@ function NewRelease() {
             </div>
             <div className={styles.top_input_div}>
               <label>PRESS PHOTOS</label>
+              <p>Size Limit: 20 MB</p>
               <PressUpload
                 changeFile={setFormState}
-                files={trackPress}
-                fieldname={'Press'}
-                altText={'Upload Track Press'}
+                trackPress={trackPress}
               />
             </div>
             <div className={styles.input_div} />

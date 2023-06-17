@@ -58,7 +58,6 @@ function AudioUpload({ changeFile, file, fieldname }) {
       <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload audio</p>
-        <p>Size Limit: 21 MB</p>
       </div>
       <div>
         {file !== null ?
