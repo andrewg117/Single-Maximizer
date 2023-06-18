@@ -6,14 +6,14 @@ import { getImage, getPress, updateImage, deleteImage, reset as resetImage } fro
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
-import PressUpload from '../components/PressUpload'
+import PressEdit from '../components/PressEdit'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
-  const { press } = useSelector((state) => state.image)
+  // const { press } = useSelector((state) => state.image)
 
   const [formState, setFormState] = useState({
     trackTitle: '',
@@ -21,10 +21,12 @@ function SingleEdit() {
     deliveryDate: '',
     trackCover: null,
     trackAudio: null,
-    trackPress: press
+    trackPress: [],
+    newPressList: [],
+    deletePressList: [],
   })
 
-  const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress } = formState
+  const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -62,14 +64,16 @@ function SingleEdit() {
   const [singleState, setSingleState] = useState({})
   const [audioState, setAudioState] = useState(null)
   const [trackState, setTrackState] = useState(null)
+  const [pressState, setPressState] = useState(null)
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
     setAudioState(store.getState().audio['audio'])
     setTrackState(store.getState().image['image'])
+    setPressState(store.getState().image['press'])
 
-    if (Object.keys(singleState).length > 0 && audioState && trackState) {
-      // console.log(singleState.trackCover)
+    if (Object.keys(singleState).length > 0 && audioState && trackState && pressState) {
+      // console.log(pressState)
 
       const image = trackState.file
       const trackBuffer = Buffer.from(image.buffer, 'ascii')
@@ -84,6 +88,7 @@ function SingleEdit() {
         deliveryDate: defaultDate,
         trackCover: trackBuffer,
         trackAudio: audio,
+        trackPress: pressState
       }))
 
     } else {
@@ -249,9 +254,11 @@ function SingleEdit() {
             <div className={styles.top_input_div}>
               <label>PRESS PHOTOS</label>
               <p>Size Limit: 20 MB</p>
-              <PressUpload
+              <PressEdit
                 changeFile={setFormState}
                 trackPress={trackPress}
+                newPressList={newPressList}
+                deletePressList={deletePressList}
               />
             </div>
             <div className={styles.input_div} />
