@@ -19,6 +19,22 @@ const postImage = async (imageData, token) => {
   return response.data
 }
 
+const postPress = async (pressData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.post(API_URL + 'press', pressData, config)
+  }
+
+  return response.data
+}
+
 
 const getImage = async (imageData, token) => {
   const config = {
@@ -33,6 +49,24 @@ const getImage = async (imageData, token) => {
   let response
   if (!authService.checkToken(token)){
     response = await axios.get(API_URL, config)
+  }
+
+  return response.data
+}
+
+const getPress = async (pressData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      ...pressData
+    }
+  }
+
+  let response
+  if (!authService.checkToken(token)){
+    response = await axios.get(API_URL + 'press', config)
   }
 
   return response.data
@@ -72,7 +106,9 @@ const deleteImage = async (trackID, token) => {
 
 const imageService = {
   postImage,
+  postPress,
   getImage,
+  getPress,
   updateImage,
   deleteImage
 }

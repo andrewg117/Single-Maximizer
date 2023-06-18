@@ -2,25 +2,29 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
-import { postImage, getImage, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
+import { getImage, getPress, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
+import PressUpload from '../components/PressUpload'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
+  const { press } = useSelector((state) => state.image)
+
   const [formState, setFormState] = useState({
     trackTitle: '',
     artist: '',
     deliveryDate: '',
     trackCover: null,
     trackAudio: null,
+    trackPress: press
   })
 
-  const { trackTitle, artist, deliveryDate, trackCover, trackAudio } = formState
+  const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -174,6 +178,9 @@ function SingleEdit() {
         'trackID': id,
         'section': 'cover'
       }))
+      dispatch(getPress({
+        'trackID': id,
+      }))
       dispatch(getAudio(id))
     }
 
@@ -232,11 +239,19 @@ function SingleEdit() {
                 </div>
               </div>
             </div>
-            <div>
+            <div className={styles.top_input_div}>
               <AudioUpload
                 changeFile={setFormState}
                 file={trackAudio}
                 fieldname={'trackAudio'}
+              />
+            </div>
+            <div className={styles.top_input_div}>
+              <label>PRESS PHOTOS</label>
+              <p>Size Limit: 20 MB</p>
+              <PressUpload
+                changeFile={setFormState}
+                trackPress={trackPress}
               />
             </div>
             <div className={styles.input_div} />

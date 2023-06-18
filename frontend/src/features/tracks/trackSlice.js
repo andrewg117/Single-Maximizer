@@ -4,14 +4,13 @@ import trackService from "./trackService"
 const initialState = {
   tracks: [],
   single: {},
-  press: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
 }
 
-export const createTrack = createAsyncThunk('tracks/create', async (trackData, thunkAPI) => {
+export const createTrack = createAsyncThunk('tracks/post', async (trackData, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
     return await trackService.createTrack(trackData, token)

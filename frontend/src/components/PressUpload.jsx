@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 

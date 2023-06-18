@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
-import { postImage, reset as resetImage } from '../features/image/imageSlice'
+import { postImage, postPress, reset as resetImage } from '../features/image/imageSlice'
 import { postAudio, reset as resetAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
@@ -72,7 +72,7 @@ function NewRelease() {
     if (isError) {
       toast.error(message)
     }
-    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+    if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '' && !isExpired) {
       dispatch(createTrack({ trackTitle, artist, deliveryDate })).unwrap()
         .then((data) => {
           const trackID = data._id
@@ -86,12 +86,22 @@ function NewRelease() {
           let audioData = new FormData()
           audioData.append("trackAudio", trackAudio.get('trackAudio'))
           audioData.append("trackID", trackID)
-          dispatch(postAudio(audioData))
+          dispatch(postAudio(audioData)).unwrap()
+            .then(() => {
+              let pressData = new FormData()
+              trackPress.forEach((item) => {
+                pressData.append("Press", item)
+              })
+              pressData.append("trackID", trackID)
+              pressData.append("section", 'press')
+              dispatch(postPress(pressData))
+            })
 
           trackEmail(data.trackTitle, data.deliveryDate, trackID)
 
 
         })
+
       setFormState((prevState) => ({
         ...prevState,
         trackAudio: null

@@ -3,6 +3,7 @@ import imageService from "./imageService"
 
 const initialState = {
   image: null,
+  press: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -20,10 +21,32 @@ export const postImage = createAsyncThunk('image/post', async (imageData, thunkA
   }
 })
 
+export const postPress = createAsyncThunk('press/post', async (pressData, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token
+    return await imageService.postPress(pressData, token)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
 export const getImage = createAsyncThunk('image/get', async (imageData, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
     return await imageService.getImage(imageData, token)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const getPress = createAsyncThunk('press/get', async (pressData, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token
+    return await imageService.getPress(pressData, token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -74,6 +97,19 @@ export const imageSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
+      .addCase(postPress.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(postPress.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.press.push(action.payload)
+      })
+      .addCase(postPress.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
       .addCase(getImage.pending, (state) => {
         state.isLoading = true
       })
@@ -83,6 +119,19 @@ export const imageSlice = createSlice({
         state.image = action.payload
       })
       .addCase(getImage.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(getPress.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getPress.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.press = action.payload
+      })
+      .addCase(getPress.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
