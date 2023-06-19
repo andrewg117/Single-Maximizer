@@ -109,7 +109,7 @@ const deleteAudio = asyncHandler(async (req, res) => {
     throw new Error('User not authorized')
   }
 
-  const deleteAudio = await Audio.findOneAndDelete({ trackID: req.params.id })
+  const deleteAudio = await Audio.findByIdAndDelete(audio._id)
 
   res.json(deleteAudio.id)
 })

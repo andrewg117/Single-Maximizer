@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
-import { getImage, getPress, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
+import { postPress, getImage, getPress, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
@@ -142,6 +142,19 @@ function SingleEdit() {
             dispatch(updateAudio(audioData))
           }
 
+          if (newPressList.length > 0) {
+            let pressData = new FormData()
+            newPressList.forEach((item) => {
+              pressData.append("Press", item)
+            })
+            pressData.append("trackID", id)
+            pressData.append("section", 'press')
+            dispatch(postPress(pressData))
+          }
+          if (deletePressList.length > 0) {
+
+          }
+
           toast.success("Update Successful")
           navigate('/profile/singles')
         })
@@ -153,11 +166,17 @@ function SingleEdit() {
 
   const deleteSingle = (e) => {
     e.preventDefault()
-    dispatch(deleteTrack(id))
-    dispatch(deleteImage(id))
-    dispatch(deleteAudio(id))
-    toast.success("Single Deleted")
-    navigate('/profile/singles')
+    dispatch(deleteTrack(id)).unwrap()
+      .then(() => {
+        dispatch(deleteImage(id)).unwrap()
+          .then(() => {
+            dispatch(deleteAudio(id)).unwrap()
+              .then(() => {
+                toast.success("Single Deleted")
+                navigate('/profile/singles')
+              })
+          })
+      })
   }
 
   const goBackToSingles = (e) => {
@@ -253,7 +272,6 @@ function SingleEdit() {
             </div>
             <div className={styles.top_input_div}>
               <label>PRESS PHOTOS</label>
-              <p>Size Limit: 20 MB</p>
               <PressEdit
                 changeFile={setFormState}
                 trackPress={trackPress}

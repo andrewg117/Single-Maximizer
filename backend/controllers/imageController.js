@@ -84,7 +84,7 @@ const getImage = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  if (req.user._id.toString() !== req.user.id) {
+  if (image.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -110,7 +110,7 @@ const getPress = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  if (req.user._id.toString() !== req.user.id) {
+  if (image[0].user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -139,7 +139,7 @@ const updateImage = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  if (req.user._id.toString() !== req.user.id) {
+  if (image.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
@@ -167,7 +167,7 @@ const updateImage = asyncHandler(async (req, res) => {
 // @access  Private
 const deleteImage = asyncHandler(async (req, res) => {
   let image
-  image = await Image.findOne({ trackID: req.params.id })
+  image = await Image.find({ trackID: req.params.id })
 
   if (!image) {
     res.status(400)
@@ -179,14 +179,18 @@ const deleteImage = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  if (req.user._id.toString() !== req.user.id) {
+  if (image.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
 
-  const deleteImage = await Image.findOneAndDelete({ trackID: req.params.id })
+  image.forEach(async(item) => {
+    console.log(item._id)
+    const deleteImage = await Image.findByIdAndDelete(item._id)
+    res.json(deleteImage.id)
+  })
 
-  res.json(deleteImage.id)
+
 })
 
 module.exports = {

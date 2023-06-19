@@ -68,7 +68,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
     }))
   }
 
-  
+
   const removeNewPress = (e, id) => {
     e.preventDefault()
 
@@ -81,19 +81,19 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
   useEffect(() => {
     setListSize(() => {
       let size = 0
-      if(trackPress.length > 0) {
+      if (trackPress.length > 0) {
         trackPress.forEach((item) => {
           size = size + item.file.size
         })
-      } 
-      if(newPressList.length > 0) {
+      }
+      if (newPressList.length > 0) {
         newPressList.forEach((item) => {
           size = size + item.size
         })
-      } 
+      }
 
       let megBytes = Math.round((size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString() + ' MB'
+      megBytes = megBytes.toString()
       return megBytes
     })
     return () => {
@@ -105,31 +105,33 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
   }, [trackPress, newPressList])
 
   return (
-    <div id={styles.press_upload}>
-      <>{console.log(listSize)}</>
-      {
-        trackPress.length > 0 ?
-          trackPress.map((item, index) => {
-            // return <p key={index}>{item.file.originalname}</p>
-            return <ImageFrame key={index} id={item._id} blob={item.file.buffer} removePress={removePress} />
-          })
-          :
-          []
-      }
-      {
-        newPressList.length > 0 ?
-          newPressList.map((item, index) => {
-            // return <p key={index}>{item.file.originalname}</p>
-            return <NewImageFrame key={index} id={index} blob={item} removePress={removeNewPress} />
-          })
-          :
-          []
-      }
-      <div id={styles.add_press} {...getRootProps()}>
-        <input {...getInputProps()} />
-        <div>Add Photo</div>
+    <>
+      <p>Size Limit: {listSize + " / "}20 MB</p>
+      <div id={styles.press_upload}>
+        {
+          trackPress.length > 0 ?
+            trackPress.map((item, index) => {
+              // return <p key={index}>{item.file.originalname}</p>
+              return <ImageFrame key={index} id={item._id} blob={item.file.buffer} removePress={removePress} />
+            })
+            :
+            []
+        }
+        {
+          newPressList.length > 0 ?
+            newPressList.map((item, index) => {
+              // return <p key={index}>{item.file.originalname}</p>
+              return <NewImageFrame key={index} id={index} blob={item} removePress={removeNewPress} />
+            })
+            :
+            []
+        }
+        <div id={styles.add_press} {...getRootProps()}>
+          <input {...getInputProps()} />
+          <div>Add Photo</div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -13,4 +13,8 @@ export const store = configureStore({
     image: imageReducer,
     audio: audioReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    immutableCheck: false,
+    serializableCheck: false,
+  })
 });
