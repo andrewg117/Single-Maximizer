@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
-import { postPress, getImage, getPress, updateImage, deleteImage, reset as resetImage } from '../features/image/imageSlice'
+import { postPress, getImage, getPress, updateImage, deleteImage, deletePress, reset as resetImage } from '../features/image/imageSlice'
 import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
@@ -27,6 +27,7 @@ function SingleEdit() {
   })
 
   const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+  const { isPressSuccess } = useSelector((state) => state.image)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -152,7 +153,10 @@ function SingleEdit() {
             dispatch(postPress(pressData))
           }
           if (deletePressList.length > 0) {
-
+            deletePressList.forEach((item) => {
+              // console.log(item._id)
+              dispatch(deletePress(item._id))
+            })
           }
 
           toast.success("Update Successful")
@@ -166,11 +170,13 @@ function SingleEdit() {
 
   const deleteSingle = (e) => {
     e.preventDefault()
-    dispatch(deleteTrack(id)).unwrap()
+
+
+    dispatch(deleteAudio(id)).unwrap()
       .then(() => {
         dispatch(deleteImage(id)).unwrap()
           .then(() => {
-            dispatch(deleteAudio(id)).unwrap()
+            dispatch(deleteTrack(id)).unwrap()
               .then(() => {
                 toast.success("Single Deleted")
                 navigate('/profile/singles')
@@ -272,12 +278,15 @@ function SingleEdit() {
             </div>
             <div className={styles.top_input_div}>
               <label>PRESS PHOTOS</label>
-              <PressEdit
-                changeFile={setFormState}
-                trackPress={trackPress}
-                newPressList={newPressList}
-                deletePressList={deletePressList}
-              />
+              {isPressSuccess ?
+                <PressEdit
+                  changeFile={setFormState}
+                  trackPress={trackPress}
+                  newPressList={newPressList}
+                  deletePressList={deletePressList}
+                />
+                :
+                <></>}
             </div>
             <div className={styles.input_div} />
             <div>

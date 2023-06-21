@@ -104,13 +104,30 @@ const deleteImage = async (trackID, token) => {
   return response.data
 }
 
+const deletePress = async (trackID, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  let response
+
+  if (!authService.checkToken(token)){
+    response = await axios.delete(API_URL + 'press/' + trackID, config)
+  }
+
+  return response.data
+}
+
 const imageService = {
   postImage,
   postPress,
   getImage,
   getPress,
   updateImage,
-  deleteImage
+  deleteImage,
+  deletePress
 }
 
 export default imageService

@@ -20,7 +20,6 @@ const uploadAudio = asyncHandler(async (req, res) => {
   })
 
   if (audio) {
-    // console.log(audio)
     res.json(audio)
   }
 })

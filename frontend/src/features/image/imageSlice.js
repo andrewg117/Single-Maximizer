@@ -6,6 +6,7 @@ const initialState = {
   press: [],
   isError: false,
   isSuccess: false,
+  isPressSuccess: false,
   isLoading: false,
   message: '',
 }
@@ -76,6 +77,17 @@ export const deleteImage = createAsyncThunk('image/delete', async (trackID, thun
   }
 })
 
+export const deletePress = createAsyncThunk('press/delete', async (trackID, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token
+    return await imageService.deletePress(trackID, token)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
 export const imageSlice = createSlice({
   name: 'image',
   initialState,
@@ -103,7 +115,9 @@ export const imageSlice = createSlice({
       .addCase(postPress.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.press.push(action.payload)
+        state.press = [...state.press,
+        action.payload
+        ]
       })
       .addCase(postPress.rejected, (state, action) => {
         state.isLoading = false
@@ -128,7 +142,7 @@ export const imageSlice = createSlice({
       })
       .addCase(getPress.fulfilled, (state, action) => {
         state.isLoading = false
-        state.isSuccess = true
+        state.isPressSuccess = true
         state.press = action.payload
       })
       .addCase(getPress.rejected, (state, action) => {
@@ -159,6 +173,19 @@ export const imageSlice = createSlice({
         state.image = null
       })
       .addCase(deleteImage.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(deletePress.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deletePress.fulfilled, (state) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.image = null
+      })
+      .addCase(deletePress.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

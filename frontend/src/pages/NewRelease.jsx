@@ -73,37 +73,34 @@ function NewRelease() {
       toast.error(message)
     }
     if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '' && !isExpired) {
+
+      let audioData = new FormData()
+      audioData.append("trackAudio", trackAudio.get('trackAudio'))
+
+      let imageData = new FormData()
+      imageData.append("Image", trackCover.get('Image'))
+      imageData.append("section", 'cover')
+
+      let pressData = new FormData()
+      trackPress.forEach((item) => {
+        pressData.append("Press", item)
+      })
+      pressData.append("section", 'press')
+
       dispatch(createTrack({ trackTitle, artist, deliveryDate })).unwrap()
         .then((data) => {
           const trackID = data._id
 
-          let imageData = new FormData()
-          imageData.append("Image", trackCover.get('Image'))
+          audioData.append("trackID", trackID)
+          dispatch(postAudio(audioData))
+
           imageData.append("trackID", trackID)
-          imageData.append("section", 'cover')
-          dispatch(postImage(imageData)).unwrap()
-            .then(() => {
+          dispatch(postImage(imageData))
 
-              let audioData = new FormData()
-              audioData.append("trackAudio", trackAudio.get('trackAudio'))
-              audioData.append("trackID", trackID)
-              dispatch(postAudio(audioData)).unwrap()
-                .then(() => {
-                  let pressData = new FormData()
-                  trackPress.forEach((item) => {
-                    pressData.append("Press", item)
-                  })
-                  pressData.append("trackID", trackID)
-                  pressData.append("section", 'press')
-                  dispatch(postPress(pressData)).unwrap()
-                    .then(() => {
-                      // trackEmail(data.trackTitle, data.deliveryDate, trackID)
-                    })
-                })
-            })
+          pressData.append("trackID", trackID)
+          dispatch(postPress(pressData))
 
-
-
+          // trackEmail(data.trackTitle, data.deliveryDate, trackID)
         })
 
       setFormState((prevState) => ({

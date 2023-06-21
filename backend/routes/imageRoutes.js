@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { uploadImage, getImage, updateImage, uploadPress, getPress, deleteImage } = require('../controllers/imageController')
+const { uploadImage, getImage, updateImage, uploadPress, getPress, deleteImage, deletePress } = require('../controllers/imageController')
 const { protect } = require('../middleware/authMiddleware')
 const multer  = require('multer')
 
@@ -13,6 +13,6 @@ router.route('/:id').put(protect).put(upload.single('Image'), updateImage)
   .delete(protect, deleteImage)
 router.route('/press').post(protect).post(upload.array('Press'), uploadPress)
   .get(protect, getPress)
-router.route('/press/:id').put(protect).put(upload.array('Press'))
+router.route('/press/:id').delete(protect, deletePress)
 
 module.exports = router
