@@ -16,10 +16,18 @@ function ProfileEdit() {
     username: '',
     email: '',
     website: '',
+    scloud: '',
+    twitter: '',
+    igram: '',
+    fbook: '',
+    spotify: '',
+    ytube: '',
+    tiktok: '',
+    bio_text: '',
     profileImage: null,
   })
 
-  const { fname, lname, username, email, website, profileImage } = formState
+  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -52,6 +60,14 @@ function ProfileEdit() {
         username: userState.username,
         email: userState.email,
         website: userState.website,
+        scloud: userState.scloud,
+        twitter: userState.twitter,
+        igram: userState.igram,
+        fbook: userState.fbook,
+        spotify: userState.spotify,
+        ytube: userState.ytube,
+        tiktok: userState.tiktok,
+        bio_text: userState.bio_text,
         profileImage: buffer,
       }))
 
@@ -96,7 +112,15 @@ function ProfileEdit() {
         lname,
         username,
         email,
-        website
+        website,
+        scloud,
+        twitter,
+        igram,
+        fbook,
+        spotify,
+        ytube,
+        tiktok,
+        bio_text,
       })).unwrap()
         .then(() => {
           if (image === null) {
@@ -218,43 +242,98 @@ function ProfileEdit() {
               </div>
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>
-                <input className={styles.profile_input} type="url" id="scloud" name="soundcloud" placeholder="Enter your soundcloud link" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="scloud"
+                  name="scloud"
+                  placeholder="Enter your soundcloud link"
+                  value={scloud}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="twitter">TWITTER</label>
-                <input className={styles.profile_input} type="url" id="twitter" name="twitter" placeholder="Enter your twitter handle" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="twitter"
+                  name="twitter"
+                  placeholder="Enter your twitter handle"
+                  value={twitter}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="igram">INSTAGRAM</label>
-                <input className={styles.profile_input} type="url" id="igram" name="instagram" placeholder="Enter your instagram username" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="igram"
+                  name="igram"
+                  placeholder="Enter your instagram username"
+                  value={igram}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="fbook">FACEBOOK</label>
-                <input className={styles.profile_input} type="url" id="fbook" name="facebook" placeholder="Enter your facebook handle" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="fbook"
+                  name="fbook"
+                  placeholder="Enter your facebook handle"
+                  value={fbook}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="spotify">SPOTIFY</label>
-                <input className={styles.profile_input} type="url" id="spotify" name="spotify" placeholder="Enter your spotify URI" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="spotify"
+                  name="spotify"
+                  placeholder="Enter your spotify URI"
+                  value={spotify}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="ytube">YOUTUBE</label>
-                <input className={styles.profile_input} type="url" id="ytube" name="youtube" placeholder="Enter your youtube profile link" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="ytube"
+                  name="ytube"
+                  placeholder="Enter your youtube profile link"
+                  value={ytube}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="tiktok">TIKTOK</label>
-                <input className={styles.profile_input} type="url" id="tiktok" name="tiktok" placeholder="Enter your tiktok username" />
+                <input
+                  className={styles.profile_input}
+                  type="url"
+                  id="tiktok"
+                  name="tiktok"
+                  placeholder="Enter your tiktok username"
+                  value={tiktok}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
-                <label htmlFor="bio-text">BIO</label>
-                <textarea name="" id="bio-text" cols="30" rows="10" placeholder="Enter your artist bio here"></textarea>
+                <label htmlFor="bio_text">BIO</label>
+                <textarea
+                  name="bio_text"
+                  id="bio_text"
+                  cols="30" rows="10"
+                  placeholder="Enter your artist bio here"
+                  value={bio_text ? bio_text : ""}
+                  onChange={onChange}></textarea>
               </div>
             </div>
             <div id={styles.profile_submit_div}>

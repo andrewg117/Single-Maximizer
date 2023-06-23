@@ -53,7 +53,17 @@ const setTrack = asyncHandler(async (req, res) => {
     trackTitle: req.body.trackTitle,
     artist: req.body.artist,
     deliveryDate: req.body.deliveryDate,
-    trackURL: req.body.trackURL,
+    spotify: req.body.spotify,
+    features: req.body.features,
+    apple: req.body.apple,
+    producer: req.body.producer,
+    scloud: req.body.scloud,
+    album: req.body.album,
+    ytube: req.body.ytube,
+    albumDate: req.body.albumDate,
+    genres: req.body.genres,
+    trackSum: req.body.trackSum,
+    pressSum: req.body.pressSum,
     user: req.user.id
   })
 

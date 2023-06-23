@@ -30,12 +30,23 @@ function NewRelease() {
     trackTitle: '',
     artist: '',
     deliveryDate: minDate(),
+    spotify: '',
+    features: '',
+    apple: '',
+    producer: '',
+    scloud: '',
+    album: '',
+    ytube: '',
+    albumDate: '',
+    genres: '',
+    trackSum: '',
+    pressSum: '',
     trackCover: null,
     trackAudio: null,
     trackPress: []
   })
 
-  const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -87,7 +98,7 @@ function NewRelease() {
       })
       pressData.append("section", 'press')
 
-      dispatch(createTrack({ trackTitle, artist, deliveryDate })).unwrap()
+      dispatch(createTrack({ trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
         .then((data) => {
           const trackID = data._id
 
@@ -145,11 +156,25 @@ function NewRelease() {
               <div className={styles.top_input_div}>
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
-                  <input className={styles.new_input} type="text" id="artist" name="artist" placeholder="Enter your artist name" defaultValue={artist} onChange={onChange} />
+                  <input
+                    className={styles.new_input}
+                    type="text"
+                    id="artist"
+                    name="artist"
+                    placeholder="Enter your artist name"
+                    defaultValue={artist}
+                    onChange={onChange} />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
-                  <input className={styles.new_input} type="text" id="trackTitle" name="trackTitle" placeholder="Enter the name of your track" value={trackTitle} onChange={onChange} />
+                  <input
+                    className={styles.new_input}
+                    type="text"
+                    id="trackTitle"
+                    name="trackTitle"
+                    placeholder="Enter the name of your track"
+                    value={trackTitle}
+                    onChange={onChange} />
                 </div>
               </div>
             </div>
@@ -174,73 +199,148 @@ function NewRelease() {
             <div className={styles.input_div} />
             <div>
               <label htmlFor="deliveryDate">DELIVERY DATE</label>
-              <input className={styles.new_input} type="datetime-local" id="deliveryDate" name="deliveryDate" min={minDate()} defaultValue={minDate()} onChange={onChange} />
+              <input
+                className={styles.new_input}
+                type="datetime-local"
+                id="deliveryDate"
+                name="deliveryDate"
+                min={minDate()}
+                defaultValue={minDate()}
+                onChange={onChange} />
             </div>
             <div>
-              <label htmlFor="spoturi">SPOTIFY TRACK URI</label>
-              <input className={styles.new_input} type="text" id="spoturi" name="spoturi" placeholder="Enter the URI of your track on Spotify" />
+              <label htmlFor="spotify">SPOTIFY TRACK URI</label>
+              <input
+                className={styles.new_input}
+                type="text"
+                id="spotify"
+                name="spotify"
+                placeholder="Enter the URI of your track on Spotify"
+                value={spotify}
+                onChange={onChange} />
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="features">FEATURES</label>
-                <input className={styles.new_input} type="text" id="features" name="features" placeholder="Enter the names of features" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="features"
+                  name="features"
+                  placeholder="Enter the names of features"
+                  value={features}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
-                <input className={styles.new_input} type="text" id="applelink" name="applelink" placeholder="Enter your Apple Music track link" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="apple"
+                  name="apple"
+                  placeholder="Enter your Apple Music track link"
+                  value={apple}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="producer">PRODUCER</label>
-                <input className={styles.new_input} type="text" id="producer" name="producer" placeholder="Who produced the track?" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="producer"
+                  name="producer"
+                  placeholder="Who produced the track?"
+                  value={producer}
+                  onChange={onChange} />
               </div>
               <div>
-                <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
-                <input className={styles.new_input} type="text" id="scloudlink" name="scloudlink" placeholder="Enter the track's Soundcloud link" />
+                <label htmlFor="scloud">SOUNDCLOUD LINK</label>
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="scloud"
+                  name="scloud"
+                  placeholder="Enter the track's Soundcloud link" 
+                  value={scloud}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="album">ALBUM</label>
-                <input className={styles.new_input} type="text" id="album" name="album" placeholder="Is this song part of an album?" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="album"
+                  name="album"
+                  placeholder="Is this song part of an album?" 
+                  value={album}
+                  onChange={onChange} />
               </div>
               <div>
-                <label htmlFor="ytubelink">YOUTUBE LINK</label>
-                <input className={styles.new_input} type="text" id="ytubelink" name="ytubelink" placeholder="Enter the Youtube video link" />
+                <label htmlFor="ytube">YOUTUBE LINK</label>
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="ytube"
+                  name="ytube"
+                  placeholder="Enter the Youtube video link" 
+                  value={ytube}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="albumdate">ALBUM RELEASE DATE</label>
-                <input className={styles.new_input} type="text" id="albumdate" name="albumdate" placeholder="When will the album be released?" />
+                <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="albumDate"
+                  name="albumDate"
+                  placeholder="When will the album be released?" 
+                  value={albumDate}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                <input className={styles.new_input} type="text" id="genres" name="genres" placeholder="Enter the genres that fit your song" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="genres"
+                  name="genres"
+                  placeholder="Enter the genres that fit your song" 
+                  value={genres}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="tracksum">TRACK SUMMARY</label>
-                <textarea name="tracksum" id="tracksum" cols="30" rows="10" placeholder="Enter your track details here"></textarea>
+                <label htmlFor="trackSum">TRACK SUMMARY</label>
+                <textarea
+                  name="trackSum"
+                  id="trackSum"
+                  cols="30" rows="10"
+                  placeholder="Enter your track details here" 
+                  value={trackSum}
+                  onChange={onChange}></textarea>
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="press">RECENT PRESS</label>
-                <textarea name="press" id="press" cols="30" rows="10" placeholder="Enter recent accomplishments"></textarea>
+                <label htmlFor="pressSum">RECENT PRESS</label>
+                <textarea
+                  name="pressSum"
+                  id="pressSum"
+                  cols="30" rows="10"
+                  placeholder="Enter recent accomplishments" 
+                  value={pressSum}
+                  onChange={onChange}></textarea>
               </div>
             </div>
             <div id={styles.submit_div}>
               <input type="submit" className={styles.profile_btn} value="SAVE" />
-              {/* <Notification
-                type="submit"
-                trackTitle={trackTitle}
-                artist={artist}
-                deliveryDate={deliveryDate}
-                style={styles.profile_btn}
-              /> */}
               <button className={styles.profile_btn} >CANCEL</button>
             </div>
 

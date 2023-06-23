@@ -24,10 +24,18 @@ const Profile = () => {
     username: '',
     email: '',
     website: '',
+    scloud: '',
+    twitter: '',
+    igram: '',
+    fbook: '',
+    spotify: '',
+    ytube: '',
+    tiktok: '',
+    bio_text: '',
     profileImage: null,
   })
 
-  const { fname, lname, username, email, website, profileImage } = formState
+  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage } = formState
 
   const dispatch = useDispatch()
   const store = useStore()
@@ -54,6 +62,14 @@ const Profile = () => {
         username: userState.username,
         email: userState.email,
         website: userState.website,
+        scloud: userState.scloud,
+        twitter: userState.twitter,
+        igram: userState.igram,
+        fbook: userState.fbook,
+        spotify: userState.spotify,
+        ytube: userState.ytube,
+        tiktok: userState.tiktok,
+        bio_text: userState.bio_text,
         profileImage: buffer,
       }))
 
@@ -129,50 +145,50 @@ const Profile = () => {
             <ProfileDiv
               labelID='scloud'
               text='SOUNDCLOUD'
-            // userData={userData.email}
+              userData={scloud}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='twitter'
               text='TWITTER'
-            // userData={userData.email}
+              userData={twitter}
             />
             <ProfileDiv
               labelID='igram'
               text='INSTAGRAM'
-            // userData={userData.email}
+              userData={igram}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='fbook'
               text='FACEBOOK'
-            // userData={userData.email}
+              userData={fbook}
             />
             <ProfileDiv
               labelID='spotify'
               text='SPOTIFY'
-            // userData={userData.email}
+              userData={spotify}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
               labelID='ytube'
               text='YOUTUBE'
-            // userData={userData.email}
+              userData={ytube}
             />
             <ProfileDiv
               labelID='tiktok'
               text='TIKTOK'
-            // userData={userData.email}
+              userData={tiktok}
             />
           </div>
           <div className={styles.profile_data_div}>
             <ProfileDiv
-              labelID='bio-text'
+              labelID='bio_text'
               text='BIO'
-            // userData={userData.email}
+              userData={bio_text}
             />
           </div>
           <div id={styles.profile_submit_div}>

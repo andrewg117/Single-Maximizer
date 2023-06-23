@@ -19,6 +19,17 @@ function SingleEdit() {
     trackTitle: '',
     artist: '',
     deliveryDate: '',
+    spotify: '',
+    features: '',
+    apple: '',
+    producer: '',
+    scloud: '',
+    album: '',
+    ytube: '',
+    albumDate: '',
+    genres: '',
+    trackSum: '',
+    pressSum: '',
     trackCover: null,
     trackAudio: null,
     trackPress: [],
@@ -26,7 +37,7 @@ function SingleEdit() {
     deletePressList: [],
   })
 
-  const { trackTitle, artist, deliveryDate, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
   const { isPressSuccess } = useSelector((state) => state.image)
 
   const navigate = useNavigate()
@@ -87,6 +98,17 @@ function SingleEdit() {
         trackTitle: singleState.trackTitle,
         artist: singleState.artist,
         deliveryDate: defaultDate,
+        spotify: singleState.spotify,
+        features: singleState.features,
+        apple: singleState.apple,
+        producer: singleState.producer,
+        scloud: singleState.scloud,
+        album: singleState.album,
+        ytube: singleState.ytube,
+        albumDate: singleState.albumDate,
+        genres: singleState.genres,
+        trackSum: singleState.trackSum,
+        pressSum: singleState.pressSum,
         trackCover: trackBuffer,
         trackAudio: audio,
         trackPress: pressState
@@ -114,7 +136,18 @@ function SingleEdit() {
         trackID: id,
         trackTitle,
         artist,
-        deliveryDate
+        deliveryDate,
+        spotify,
+        features,
+        apple,
+        producer,
+        scloud,
+        album,
+        ytube,
+        albumDate,
+        genres,
+        trackSum,
+        pressSum,
       })).unwrap()
         .then((data) => {
           if (trackCover instanceof FormData) {
@@ -303,59 +336,134 @@ function SingleEdit() {
               />
             </div>
             <div>
-              <label htmlFor="spoturi">SPOTIFY TRACK URI</label>
-              <input className={styles.new_input} type="text" id="spoturi" name="spoturi" placeholder="Enter the URI of your track on Spotify" />
+              <label htmlFor="spotify">SPOTIFY TRACK URI</label>
+              <input
+                className={styles.new_input}
+                type="text"
+                id="spotify"
+                name="spotify"
+                placeholder="Enter the URI of your track on Spotify"
+                value={spotify}
+                onChange={onChange} />
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="features">FEATURES</label>
-                <input className={styles.new_input} type="text" id="features" name="features" placeholder="Enter the names of features" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="features"
+                  name="features"
+                  placeholder="Enter the names of features"
+                  value={features}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
-                <input className={styles.new_input} type="text" id="applelink" name="applelink" placeholder="Enter your Apple Music track link" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="apple"
+                  name="apple"
+                  placeholder="Enter your Apple Music track link"
+                  value={apple}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="producer">PRODUCER</label>
-                <input className={styles.new_input} type="text" id="producer" name="producer" placeholder="Who produced the track?" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="producer"
+                  name="producer"
+                  placeholder="Who produced the track?"
+                  value={producer}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
-                <input className={styles.new_input} type="text" id="scloudlink" name="scloudlink" placeholder="Enter the track's Soundcloud link" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="scloud"
+                  name="scloud"
+                  placeholder="Enter the track's Soundcloud link"
+                  value={scloud}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="album">ALBUM</label>
-                <input className={styles.new_input} type="text" id="album" name="album" placeholder="Is this song part of an album?" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="album"
+                  name="album"
+                  placeholder="Is this song part of an album?"
+                  value={album}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="ytubelink">YOUTUBE LINK</label>
-                <input className={styles.new_input} type="text" id="ytubelink" name="ytubelink" placeholder="Enter the Youtube video link" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="ytube"
+                  name="ytube"
+                  placeholder="Enter the Youtube video link"
+                  value={ytube}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="albumdate">ALBUM RELEASE DATE</label>
-                <input className={styles.new_input} type="text" id="albumdate" name="albumdate" placeholder="When will the album be released?" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="albumDate"
+                  name="albumDate"
+                  placeholder="When will the album be released?"
+                  value={albumDate}
+                  onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                <input className={styles.new_input} type="text" id="genres" name="genres" placeholder="Enter the genres that fit your song" />
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="genres"
+                  name="genres"
+                  placeholder="Enter the genres that fit your song"
+                  value={genres}
+                  onChange={onChange} />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="tracksum">TRACK SUMMARY</label>
-                <textarea name="tracksum" id="tracksum" cols="30" rows="10" placeholder="Enter your track details here"></textarea>
+                <textarea
+                  name="trackSum"
+                  id="trackSum"
+                  cols="30" rows="10"
+                  placeholder="Enter your track details here"
+                  value={trackSum}
+                  onChange={onChange}></textarea>
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="press">RECENT PRESS</label>
-                <textarea name="press" id="press" cols="30" rows="10" placeholder="Enter recent accomplishments"></textarea>
+                <textarea
+                  name="pressSum"
+                  id="pressSum"
+                  cols="30" rows="10"
+                  placeholder="Enter recent accomplishments"
+                  value={pressSum}
+                  onChange={onChange}></textarea>
               </div>
             </div>
             <div id={styles.submit_div}>

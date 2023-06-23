@@ -20,7 +20,47 @@ const trackSchema = mongoose.Schema({
     type: Date,
     required: false
   },
-  trackURL: {
+  spotify: {
+    type: String,
+    required: false
+  },
+  features: {
+    type: String,
+    required: false
+  },
+  apple: {
+    type: String,
+    required: false
+  },
+  producer: {
+    type: String,
+    required: false
+  },
+  scloud: {
+    type: String,
+    required: false
+  },
+  album: {
+    type: String,
+    required: false
+  },
+  ytube: {
+    type: String,
+    required: false
+  },
+  albumDate: {
+    type: String,
+    required: false
+  },
+  genres: {
+    type: String,
+    required: false
+  },
+  trackSum: {
+    type: String,
+    required: false
+  },
+  pressSum: {
     type: String,
     required: false
   },

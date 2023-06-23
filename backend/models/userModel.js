@@ -31,6 +31,38 @@ const userSchema = mongoose.Schema({
     type: String,
     required: false
   },
+  scloud: {
+    type: String,
+    required: false
+  },
+  twitter: {
+    type: String,
+    required: false
+  },
+  igram: {
+    type: String,
+    required: false
+  },
+  fbook: {
+    type: String,
+    required: false
+  },
+  spotify: {
+    type: String,
+    required: false
+  },
+  ytube: {
+    type: String,
+    required: false
+  },
+  tiktok: {
+    type: String,
+    required: false
+  },
+  bio_text: {
+    type: String,
+    required: false
+  },
   isAdmin: {
     type: Boolean,
     required: false,
