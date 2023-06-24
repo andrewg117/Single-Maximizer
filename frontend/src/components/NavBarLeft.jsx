@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, reset } from '../features/auth/authSlice';
+import { logout, reset } from '../features/auth/authSlice'
+import { toast } from 'react-toastify'
 import styles from '../css/profile_nav.module.css'
 
 function NavBarLeft() {
@@ -10,9 +11,10 @@ function NavBarLeft() {
 
   const { user } = useSelector((state) => state.auth)
 
-  const [activeLink, setActiveLink] = useState('PROFILE');
+  const [activeLink, setActiveLink] = useState('PROFILE')
 
   const onLogout = () => {
+    toast.clearWaitingQueue()
     dispatch(logout())
     dispatch(reset())
     navigate('/home')
@@ -26,7 +28,7 @@ function NavBarLeft() {
     { name: 'ADMIN', path: "/admin", position: 'bot' },
     { name: 'SETTINGS', path: "/", position: 'bot' },
     { name: 'LOGOUT', path: "/", position: 'bot' },
-  ];
+  ]
 
   return (
     <>

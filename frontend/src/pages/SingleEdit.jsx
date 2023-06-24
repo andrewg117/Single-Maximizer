@@ -7,6 +7,7 @@ import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../feat
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import PressEdit from '../components/PressEdit'
+import ConfirmAlert from '../components/ConfirmAlert'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import { Buffer } from 'buffer'
@@ -46,6 +47,8 @@ function SingleEdit() {
 
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
+  const [showPopup, setShowPopup] = useState(false)
+  const [showDelPopup, setShowDelPopup] = useState(false)
 
   const { id } = useParams()
 
@@ -123,9 +126,7 @@ function SingleEdit() {
   })
 
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-
+  const onSubmit = () => {
     if (isError) {
       toast.error(message)
     }
@@ -194,6 +195,7 @@ function SingleEdit() {
 
           toast.success("Update Successful")
           navigate('/profile/singles')
+          setShowPopup(false)
         })
 
     } else {
@@ -201,10 +203,12 @@ function SingleEdit() {
     }
   }
 
-  const deleteSingle = (e) => {
-    e.preventDefault()
+  const closeConfirm = () => {
+    setShowPopup(false)
+    setShowDelPopup(false)
+  }
 
-
+  const deleteSingle = () => {
     dispatch(deleteAudio(id)).unwrap()
       .then(() => {
         dispatch(deleteImage(id)).unwrap()
@@ -213,6 +217,7 @@ function SingleEdit() {
               .then(() => {
                 toast.success("Single Deleted")
                 navigate('/profile/singles')
+                setShowDelPopup(false)
               })
           })
       })
@@ -263,7 +268,20 @@ function SingleEdit() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={onSubmit}>
+        <form id={styles.new_form} onSubmit={(e) => {
+          setShowPopup(() => {
+            e.preventDefault()
+            return true
+          })
+        }}>
+          {showPopup &&
+            (<ConfirmAlert
+              message="Do you want to save these changes?"
+              onConfirm={onSubmit}
+              onCancel={closeConfirm}
+            />)
+          }
+
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
@@ -468,14 +486,19 @@ function SingleEdit() {
             </div>
             <div id={styles.submit_div}>
               <input type="submit" className={styles.profile_btn} value="SAVE" />
-              {/* <Notification
-                type="submit"
-                trackTitle={trackTitle}
-                artist={artist}
-                deliveryDate={deliveryDate}
-                style={styles.profile_btn}
-              /> */}
-              <button className={styles.profile_btn} onClick={deleteSingle}>DELETE</button>
+              <button className={styles.profile_btn} onClick={(e) => {
+                setShowDelPopup(() => {
+                  e.preventDefault()
+                  return true
+                })
+              }}>DELETE</button>
+              {showDelPopup &&
+                (<ConfirmAlert
+                  message="Do you want to delete this Single?"
+                  onConfirm={deleteSingle}
+                  onCancel={closeConfirm}
+                />)
+              }
               <button className={styles.profile_btn} onClick={goBackToSingles}>CANCEL</button>
             </div>
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
@@ -9,6 +9,7 @@ import { postAudio, reset as resetAudio } from '../features/audio/audioSlice'
 import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import PressUpload from '../components/PressUpload'
+import ConfirmAlert from '../components/ConfirmAlert'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -53,6 +54,7 @@ function NewRelease() {
 
   const { isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
+  const [showPopup, setShowPopup] = useState(false)
 
   useEffect(() => {
     if (isError) {
@@ -77,12 +79,11 @@ function NewRelease() {
 
   }, [dispatch])
 
-  const onSubmit = async (e) => {
-    e.preventDefault()
-
+  const onSubmit = async () => {
     if (isError) {
       toast.error(message)
     }
+
     if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '' && !isExpired) {
 
       let audioData = new FormData()
@@ -120,10 +121,15 @@ function NewRelease() {
       }))
       toast.success('Email Sent')
       navigate('/profile/singles')
+      setShowPopup(false)
 
     } else {
       toast.error("Update Fields")
     }
+  }
+
+  const closeConfirm = () => {
+    setShowPopup(false)
   }
 
   const onChange = (e) => {
@@ -140,7 +146,18 @@ function NewRelease() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={onSubmit}>
+        <form id={styles.new_form} onSubmit={(e) => {setShowPopup(() => {
+          e.preventDefault()
+          return true
+        })}}>
+        {showPopup &&
+          (<ConfirmAlert
+            message="Do you want to save these changes?"
+            onConfirm={onSubmit}
+            onCancel={closeConfirm}
+          />)
+        }
+
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
@@ -341,7 +358,7 @@ function NewRelease() {
             </div>
             <div id={styles.submit_div}>
               <input type="submit" className={styles.profile_btn} value="SAVE" />
-              <button className={styles.profile_btn} >CANCEL</button>
+              <Link to={'/profile'} className={styles.profile_btn}>CANCEL</Link>
             </div>
 
           </div>

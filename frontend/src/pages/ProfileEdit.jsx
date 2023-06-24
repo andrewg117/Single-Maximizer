@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
 import { postImage, getImage, updateImage, reset as resetImage } from '../features/image/imageSlice'
 import ImageUpload from '../components/ImageUpload'
+import ConfirmAlert from '../components/ConfirmAlert'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
@@ -40,6 +41,8 @@ function ProfileEdit() {
   const { image } = useSelector(
     (state) => state.image
   )
+
+  const [showPopup, setShowPopup] = useState(false)
 
   store.subscribe(() => {
     const userState = store.getState().auth['user']
@@ -96,16 +99,12 @@ function ProfileEdit() {
   }, [isExpired, navigate, isError, message, dispatch])
 
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-
+  const onSubmit = () => {
     if (isError) {
       toast.error(message)
     }
 
     if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && !isExpired) {
-
-
 
       dispatch(updateUser({
         fname,
@@ -143,11 +142,15 @@ function ProfileEdit() {
 
       toast.success("Update Successful")
       navigate('/profile')
-
+      setShowPopup(false)
 
     } else {
       toast.error('Empty field')
     }
+  }
+
+  const closeConfirm = () => {
+    setShowPopup(false)
   }
 
   const onChange = (e) => {
@@ -164,7 +167,17 @@ function ProfileEdit() {
   return (
     <>
       <div id={styles.profile_content_right}>
-        <form id={styles.profile_form} onSubmit={onSubmit}>
+        <form id={styles.profile_form} onSubmit={(e) => {setShowPopup(() => {
+          e.preventDefault()
+          return true
+        })}}>
+          {showPopup &&
+            (<ConfirmAlert
+              message="Do you want to save these changes?"
+              onConfirm={onSubmit}
+              onCancel={closeConfirm}
+            />)
+          }
           <div id={styles.profile_form_div}>
 
             <div id={styles.top_div}>
@@ -193,7 +206,7 @@ function ProfileEdit() {
                   onChange={onChange} />
               </div>
               <div>
-                <label htmlFor="fname">LAST NAME</label>
+                <label htmlFor="lname">LAST NAME</label>
                 <input
                   type="text"
                   className={styles.profile_input}

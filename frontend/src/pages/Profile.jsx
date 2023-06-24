@@ -109,90 +109,91 @@ const Profile = () => {
             <div id={styles.image_div}>
               <img src={`data:image/*;base64,${profileImage}`} alt='N/A' />
             </div>
-            <div></div>
+            <div id={styles.username_div}>{username}</div>
           </div>
-
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='fname'
-              text='FIRST NAME'
-              userData={fname}
-            />
-            <ProfileDiv
-              labelID='lname'
-              text='LAST NAME'
-              userData={lname}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='username'
-              text='USERNAME'
-              userData={username}
-            />
-            <ProfileDiv
-              labelID='email'
-              text='EMAIL'
-              userData={email}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='website'
-              text='WEBSITE'
-              userData={!isExpired ? website : "No data"}
-            />
-            <ProfileDiv
-              labelID='scloud'
-              text='SOUNDCLOUD'
-              userData={scloud}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='twitter'
-              text='TWITTER'
-              userData={twitter}
-            />
-            <ProfileDiv
-              labelID='igram'
-              text='INSTAGRAM'
-              userData={igram}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='fbook'
-              text='FACEBOOK'
-              userData={fbook}
-            />
-            <ProfileDiv
-              labelID='spotify'
-              text='SPOTIFY'
-              userData={spotify}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='ytube'
-              text='YOUTUBE'
-              userData={ytube}
-            />
-            <ProfileDiv
-              labelID='tiktok'
-              text='TIKTOK'
-              userData={tiktok}
-            />
-          </div>
-          <div className={styles.profile_data_div}>
-            <ProfileDiv
-              labelID='bio_text'
-              text='BIO'
-              userData={bio_text}
-            />
-          </div>
-          <div id={styles.profile_submit_div}>
-            <Link to={'/profile/editprofile'} className={styles.profile_btn}>EDIT</Link>
+          <div id={styles.profile_body_div}>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='fname'
+                text='FIRST NAME'
+                userData={fname}
+              />
+              <ProfileDiv
+                labelID='lname'
+                text='LAST NAME'
+                userData={lname}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='username'
+                text='USERNAME'
+                userData={username}
+              />
+              <ProfileDiv
+                labelID='email'
+                text='EMAIL'
+                userData={email}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='website'
+                text='WEBSITE'
+                userData={!isExpired ? website : "No data"}
+              />
+              <ProfileDiv
+                labelID='scloud'
+                text='SOUNDCLOUD'
+                userData={scloud}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='twitter'
+                text='TWITTER'
+                userData={twitter}
+              />
+              <ProfileDiv
+                labelID='igram'
+                text='INSTAGRAM'
+                userData={igram}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='fbook'
+                text='FACEBOOK'
+                userData={fbook}
+              />
+              <ProfileDiv
+                labelID='spotify'
+                text='SPOTIFY'
+                userData={spotify}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='ytube'
+                text='YOUTUBE'
+                userData={ytube}
+              />
+              <ProfileDiv
+                labelID='tiktok'
+                text='TIKTOK'
+                userData={tiktok}
+              />
+            </div>
+            <div className={styles.profile_data_div}>
+              <ProfileDiv
+                labelID='bio_text'
+                text='BIO'
+                userData={bio_text}
+              />
+            </div>
+            <div id={styles.profile_submit_div}>
+              <Link to={'/profile/editprofile'} className={styles.profile_btn}>EDIT</Link>
+            </div>
           </div>
         </div>
       </div>

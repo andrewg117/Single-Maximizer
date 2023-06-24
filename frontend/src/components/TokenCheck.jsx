@@ -15,6 +15,7 @@ const TokenCheck = ({ children }) => {
 
   useEffect(() => {
     dispatch(getTokenResult())
+    toast.clearWaitingQueue()
     if (isExpired) {
       toast.error("Login Expired")
       dispatch(trackReset())
