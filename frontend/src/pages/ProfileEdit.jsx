@@ -93,8 +93,8 @@ function ProfileEdit() {
     }
 
     return (() => {
-      dispatch(resetUser)
-      dispatch(resetImage)
+      dispatch(resetUser())
+      dispatch(resetImage())
     })
   }, [isExpired, navigate, isError, message, dispatch])
 

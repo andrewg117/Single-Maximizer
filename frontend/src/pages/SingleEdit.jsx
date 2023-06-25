@@ -39,6 +39,7 @@ function SingleEdit() {
   })
 
   const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+
   const { isPressSuccess } = useSelector((state) => state.image)
 
   const navigate = useNavigate()
@@ -253,9 +254,9 @@ function SingleEdit() {
     }
 
     return (() => {
-      dispatch(resetSingle)
-      dispatch(resetImage)
-      dispatch(resetAudio)
+      dispatch(resetSingle())
+      dispatch(resetImage())
+      dispatch(resetAudio())
     })
 
 

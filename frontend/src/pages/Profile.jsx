@@ -44,34 +44,39 @@ const Profile = () => {
 
 
   store.subscribe(() => {
-    const userState = store.getState().auth['user']
-    const imageState = store.getState().image['image']
-
-    if (userState !== null && !isExpired) {
-      let buffer = null
-      if (imageState) {
+    if(!isExpired) {
+      const userState = store.getState().auth['user']
+      const imageState = store.getState().image['image']
+  
+      if (userState !== null && imageState !== null) {
+        let buffer = null
         const image = imageState ? imageState.file : null
-
+  
         buffer = Buffer.from(image.buffer, 'ascii')
+  
+        setFormState((prevState) => ({
+          ...prevState,
+          fname: userState.fname,
+          lname: userState.lname,
+          username: userState.username,
+          email: userState.email,
+          website: userState.website,
+          scloud: userState.scloud,
+          twitter: userState.twitter,
+          igram: userState.igram,
+          fbook: userState.fbook,
+          spotify: userState.spotify,
+          ytube: userState.ytube,
+          tiktok: userState.tiktok,
+          bio_text: userState.bio_text,
+          profileImage: buffer,
+        }))
+  
+      } else {
+        setFormState((prevState) => ({
+          ...prevState,
+        }))
       }
-
-      setFormState((prevState) => ({
-        ...prevState,
-        fname: userState.fname,
-        lname: userState.lname,
-        username: userState.username,
-        email: userState.email,
-        website: userState.website,
-        scloud: userState.scloud,
-        twitter: userState.twitter,
-        igram: userState.igram,
-        fbook: userState.fbook,
-        spotify: userState.spotify,
-        ytube: userState.ytube,
-        tiktok: userState.tiktok,
-        bio_text: userState.bio_text,
-        profileImage: buffer,
-      }))
 
     } else {
       setFormState((prevState) => ({

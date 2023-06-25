@@ -54,10 +54,10 @@ export const updateUser = createAsyncThunk('auth/update', async (userData, thunk
   }
 })
 
-export const getTokenResult = createAsyncThunk('auth/token', async (_, thunkAPI) => {
+export const getTokenResult = createAsyncThunk('auth/token', (_, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.user.token
-    return await authService.checkToken(token)
+    return authService.checkToken(token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -65,8 +65,8 @@ export const getTokenResult = createAsyncThunk('auth/token', async (_, thunkAPI)
   }
 })
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  await authService.logout()
+export const logout = createAsyncThunk('auth/logout', () => {
+  authService.logout()
 })
 
 export const authSlice = createSlice({
@@ -80,7 +80,7 @@ export const authSlice = createSlice({
       state.message = ''
     }
   },
-  extraReducers: (builder) => { 
+  extraReducers: (builder) => {
     builder
       .addCase(register.pending, (state) => {
         state.isLoading = true

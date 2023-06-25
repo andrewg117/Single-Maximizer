@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
@@ -16,7 +16,6 @@ function NavBarLeft() {
   const onLogout = () => {
     toast.clearWaitingQueue()
     dispatch(logout())
-    dispatch(reset())
     navigate('/home')
   }
 
@@ -29,6 +28,11 @@ function NavBarLeft() {
     { name: 'SETTINGS', path: "/", position: 'bot' },
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ]
+  useEffect(() => {
+    return (() => {
+      dispatch(reset())
+    })
+  }, [dispatch])
 
   return (
     <>
