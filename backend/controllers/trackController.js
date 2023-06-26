@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const Track = require('../models/trackModel')
-// const User = require('../models/userModel')
 
 // @desc    Get tracks
 // @route   GET /api/track

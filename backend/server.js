@@ -18,6 +18,7 @@ app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/email', require('./routes/emailRoutes'))
 app.use('/api/image', require('./routes/imageRoutes'))
 app.use('/api/audio', require('./routes/audioRoutes'))
+app.use('/api/purchase', require('./routes/purchaseRoutes'))
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')))
