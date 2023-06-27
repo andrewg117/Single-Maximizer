@@ -12,6 +12,7 @@ import Singles from './pages/Singles'
 import SingleEdit from './pages/SingleEdit'
 import Admin from './pages/Admin'
 import NewRelease from './pages/NewRelease'
+import CheckoutPage from './pages/CheckoutPage'
 import NavBarLeft from './components/NavBarLeft'
 import TokenCheck from './components/TokenCheck'
 import styles from './css/style.module.css';
@@ -35,6 +36,7 @@ function MaximizerApp() {
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/profile/editprofile' element={<ProfileEdit />} />
                 <Route path='/profile/newrelease' element={<NewRelease />} />
+                <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
                 <Route path='/profile/singles' element={<Singles />} />
                 <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
                 <Route path='/admin' element={<Admin />} />

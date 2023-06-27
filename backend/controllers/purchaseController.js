@@ -8,16 +8,16 @@ const payment = asyncHandler(async (req, res) => {
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: '{{PRICE_ID}}',
+        price: 'price_1NNh7rFOk6NyPVsVGSoBA4pY',
         quantity: 1,
       },
     ],
     mode: 'payment',
     success_url: `${YOUR_DOMAIN}?success=true`,
     cancel_url: `${YOUR_DOMAIN}?canceled=true`,
-  });
+  })
 
-  res.redirect(303, session.url);
+  res.redirect(303, session.url)
 
   // res.json()
 })
