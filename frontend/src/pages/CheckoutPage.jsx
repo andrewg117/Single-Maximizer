@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { makePurchase } from '../features/purchace/purchaseSlice' 
+import { makePurchase, getPurchase } from '../features/purchace/purchaseSlice' 
+// import styles from '../css/new_release_style.module.css'
 
 const ProductDisplay = () => {
   const dispatch = useDispatch()
@@ -8,6 +9,10 @@ const ProductDisplay = () => {
   const onSubmit = (e) => {
     e.preventDefault()
     dispatch(makePurchase())
+      .unwrap()
+      .then((data) => {
+        window.location.href = data
+      })
   }
 
   return (
@@ -15,16 +20,16 @@ const ProductDisplay = () => {
       <div className="product">
         <img
           src="https://trackstarz.com/wp-content/uploads/2021/06/single-maximizer-logo-white-text-1024x717.png.webp"
-          alt="The cover of Stubborn Attachments"
+          alt="Single Maximizer"
         />
         <div className="description">
-        <h3>Stubborn Attachments</h3>
-        <h5>$20.00</h5>
+        <h1>Create New Single</h1>
+        <h5>$50.00</h5>
         </div>
       </div>
       <form onSubmit={onSubmit}>
         <button type="submit">
-          Checkout
+          Purchase
         </button>
       </form>
     </section>
@@ -38,13 +43,16 @@ const Message = ({ message }) => (
 )
 
 function CheckoutPage() {
+  const dispatch = useDispatch()
+
   const [message, setMessage] = useState("")
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search)
-
+    console.log(query)
     if (query.get("success")) {
+      dispatch(getPurchase())
       setMessage("Order placed! You will receive an email confirmation.")
     }
 
@@ -53,7 +61,7 @@ function CheckoutPage() {
         "Order canceled -- continue to shop around and checkout when you're ready."
       )
     }
-  }, [])
+  }, [dispatch])
 
   return message ? (
     <Message message={message} />

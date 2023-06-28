@@ -21,7 +21,7 @@ function NavBarLeft() {
 
   const menuItems = [
     { name: 'PROFILE', path: "/profile", position: 'top' },
-    { name: 'NEW RELEASE', path: "/profile/newrelease", position: 'top' },
+    // { name: 'NEW RELEASE', path: "/profile/newrelease", position: 'top' },
     { name: 'CHECKOUT', path: "/profile/checkoutpage", position: 'top' },
     { name: 'SINGLES', path: "/profile/singles", position: 'top' },
     // { name: 'EMAIL', path: "/email", position: 'top' },

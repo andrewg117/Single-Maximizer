@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const stripe = require('stripe')(process.env.SK_TEST)
 
-const YOUR_DOMAIN = 'http://localhost:' + process.env.PORT
+const YOUR_DOMAIN = 'http://localhost:3000/'
 
 const payment = asyncHandler(async (req, res) => {
   const session = await stripe.checkout.sessions.create({
@@ -13,15 +13,22 @@ const payment = asyncHandler(async (req, res) => {
       },
     ],
     mode: 'payment',
-    success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    success_url: `${YOUR_DOMAIN}profile/checkoutpage?success=true`,
+    cancel_url: `${YOUR_DOMAIN}profile/checkoutpage?canceled=true`,
   })
+  
+  res.json(session.url)
 
-  res.redirect(303, session.url)
+})
 
-  // res.json()
+const getPayment = asyncHandler(async (req, res) => {
+  const session = await stripe.checkout.sessions.retrieve(process.env.SK_RETRIEVE)
+  console.log(session)
+  
+  res.json(session)
 })
 
 module.exports = {
   payment,
+  getPayment
 }
