@@ -63,6 +63,11 @@ const userSchema = mongoose.Schema({
     type: String,
     required: false
   },
+  trackAllowance: {
+    type: Number,
+    required: false,
+    default: 0
+  },
   isAdmin: {
     type: Boolean,
     required: false,

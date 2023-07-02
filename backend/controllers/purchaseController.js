@@ -1,6 +1,8 @@
 const e = require('express')
 const asyncHandler = require('express-async-handler')
 const stripe = require('stripe')(process.env.SK_TEST)
+const User = require('../models/userModel')
+const Track = require('../models/trackModel')
 
 const YOUR_DOMAIN = 'http://localhost:3000/'
 
@@ -21,7 +23,7 @@ const postPayment = asyncHandler(async (req, res) => {
     cancel_url: `${YOUR_DOMAIN}profile/checkoutpage?canceled=true`,
     client_reference_id: req.user.id.toString(),
   })
-  
+
   res.json(session.url)
 
 })
@@ -48,6 +50,9 @@ const postEndpoint = asyncHandler(async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`)
   }
 
+  let newSingle
+  let updatedUser
+
   // Handle the checkout.session.completed event
   if (event.type === 'checkout.session.completed') {
     // Retrieve the session. If you require line items in the res, you may include them by expanding line_items.
@@ -57,11 +62,24 @@ const postEndpoint = asyncHandler(async (req, res) => {
         expand: ['line_items'],
       }
     )
-    const lineItems = sessionWithLineItems.line_items
+    // const lineItems = sessionWithLineItems.line_items
 
     // Fulfill the purchase...
     // fulfillOrder(lineItems)
-    // console.log(sessionWithLineItems)
+    console.log(sessionWithLineItems.client_reference_id)
+    if (sessionWithLineItems.client_reference_id) {
+      // newSingle = await Track.create({
+      //   trackTitle: 'New Single',
+      //   user: sessionWithLineItems.client_reference_id
+      // }) 
+      updatedUser = await User.findByIdAndUpdate(sessionWithLineItems.client_reference_id, {
+        trackAllowance: trackAllowance + 1
+      }, {
+        new: true
+      })
+
+
+    }
   }
 
   res.status(200).end()

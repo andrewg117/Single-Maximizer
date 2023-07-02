@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice' 
+import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice'
 import { toast } from 'react-toastify'
 // import styles from '../css/new_release_style.module.css'
 
@@ -24,8 +24,8 @@ const ProductDisplay = () => {
           alt="Single Maximizer"
         />
         <div className="description">
-        <h1>Create New Single</h1>
-        <h5>$50.00</h5>
+          <h1>Create New Single</h1>
+          <h5>$50.00</h5>
         </div>
       </div>
       <form onSubmit={onSubmit}>
@@ -51,7 +51,7 @@ function CheckoutPage() {
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search)
-    
+
     if (query.get("success")) {
       dispatch(getPurchase())
       setMessage("Order placed! You will receive an email confirmation.")
@@ -62,6 +62,7 @@ function CheckoutPage() {
     }
     return () => {
       toast.clearWaitingQueue()
+      dispatch(resetPurchase())
     }
   }, [dispatch])
 

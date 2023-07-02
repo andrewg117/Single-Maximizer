@@ -72,7 +72,8 @@ function Singles() {
                     <td>{track.trackTitle}</td>
                     <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
                     <td>
-                      <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button>
+                      {track.deliveryDate ? <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button> : <button className={styles.pending}>{"Pending"}</button>}
+                      
                     </td>
                     <td>
                       {!isDeliverd(track.deliveryDate) ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
