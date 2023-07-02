@@ -10,6 +10,8 @@ connectDB()
 
 const app = express()
 
+app.use('/api/webhook', require('./routes/webhookRoutes'))
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

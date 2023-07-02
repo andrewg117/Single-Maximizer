@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { makePurchase, getPurchase } from '../features/purchace/purchaseSlice' 
+import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice' 
+import { toast } from 'react-toastify'
 // import styles from '../css/new_release_style.module.css'
 
 const ProductDisplay = () => {
@@ -50,16 +51,17 @@ function CheckoutPage() {
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search)
-    console.log(query)
+    
     if (query.get("success")) {
       dispatch(getPurchase())
       setMessage("Order placed! You will receive an email confirmation.")
     }
 
     if (query.get("canceled")) {
-      setMessage(
-        "Order canceled -- continue to shop around and checkout when you're ready."
-      )
+      toast.info("Order canceled")
+    }
+    return () => {
+      toast.clearWaitingQueue()
     }
   }, [dispatch])
 
