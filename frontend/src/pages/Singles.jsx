@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getTracks, reset } from '../features/tracks/trackSlice'
 import Spinner from '../components/Spinner'
 import { FaEdit } from 'react-icons/fa'
@@ -11,7 +11,7 @@ function Singles() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { isExpired } = useSelector((state) => state.auth)
+  const { user, isExpired } = useSelector((state) => state.auth)
   const { tracks, isLoading } = useSelector((state) => state.tracks)
 
   const [trackState, setTrackState] = useState(tracks)
@@ -85,6 +85,7 @@ function Singles() {
               )}
             </tbody>
           </table>
+          {user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>} 
         </div>
 
       </div>

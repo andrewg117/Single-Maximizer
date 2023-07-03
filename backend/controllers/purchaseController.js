@@ -29,10 +29,10 @@ const postPayment = asyncHandler(async (req, res) => {
 })
 
 
-const fulfillOrder = (lineItems) => {
-  // TODO: fill me in
-  console.log("Fulfilling order", lineItems)
-}
+// const fulfillOrder = (lineItems) => {
+//   // TODO: fill me in
+//   console.log("Fulfilling order", lineItems)
+// }
 
 // @desc    Post endpoint
 // @route   POST /api/webhook
@@ -50,7 +50,6 @@ const postEndpoint = asyncHandler(async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`)
   }
 
-  let newSingle
   let updatedUser
 
   // Handle the checkout.session.completed event
@@ -66,18 +65,19 @@ const postEndpoint = asyncHandler(async (req, res) => {
 
     // Fulfill the purchase...
     // fulfillOrder(lineItems)
-    console.log(sessionWithLineItems.client_reference_id)
+    // console.log(sessionWithLineItems.client_reference_id)
     if (sessionWithLineItems.client_reference_id) {
       // newSingle = await Track.create({
       //   trackTitle: 'New Single',
       //   user: sessionWithLineItems.client_reference_id
       // }) 
+
+      // Update User's trackAllowance after purchase is complete
       updatedUser = await User.findByIdAndUpdate(sessionWithLineItems.client_reference_id, {
-        trackAllowance: trackAllowance + 1
+        $inc: { trackAllowance: 1 }
       }, {
         new: true
       })
-
 
     }
   }

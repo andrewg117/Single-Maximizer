@@ -76,3 +76,13 @@
 .edit_track {
   font-size: 1.5em;
 }
+
+#new_single {
+  text-decoration: none;
+  background-color: #8a1a1a;
+  color: white;
+  text-align: center;
+  padding: .5em 1.5em;
+  font-size: 1.5em;
+  border: none;
+}

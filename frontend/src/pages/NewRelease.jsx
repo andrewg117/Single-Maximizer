@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
+import { updateUser, reset as resetUser } from '../features/auth/authSlice'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
 import { postImage, postPress, reset as resetImage } from '../features/image/imageSlice'
@@ -52,7 +53,7 @@ function NewRelease() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { isExpired } = useSelector((state) => state.auth)
+  const { user, isExpired } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
   const [showPopup, setShowPopup] = useState(false)
 
@@ -61,13 +62,17 @@ function NewRelease() {
       toast.error(message)
     }
 
+    if(user.trackAllowance === 0) {
+      navigate('/profile/singles')
+    }
+
     return () => {
       dispatch(resetTracks())
       dispatch(resetImage())
       dispatch(resetEmail())
       dispatch(resetAudio())
     }
-  }, [isExpired, isError, message, dispatch])
+  }, [isExpired, isError, message, dispatch, navigate, user.trackAllowance])
 
 
   const trackEmail = useCallback((title, date, trackID) => {
@@ -113,6 +118,7 @@ function NewRelease() {
           dispatch(postPress(pressData))
 
           // trackEmail(data.trackTitle, data.deliveryDate, trackID)
+          dispatch(updateUser({ trackAllowance: user.trackAllowance - 1 }))
         })
 
       setFormState((prevState) => ({
