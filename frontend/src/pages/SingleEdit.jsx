@@ -236,6 +236,23 @@ function SingleEdit() {
     }))
   }
 
+  const genreList = ['CHH', 'Hip Hop', 'Gospel', 'R&B', 'Pop', 'Rock', 'CCM']
+
+  const CheckBoxList = ({ list }) => {
+    return (
+      <fieldset id={styles.checkboxlist}>
+        {list.map((item, i) => {
+          return (
+            <>
+              <input name={item} type='checkbox' key={i} value={item} />
+              <label htmlFor={item}>{item}</label>
+            </>
+          )
+        })}
+      </fieldset>
+    )
+  }
+
   useEffect(() => {
     if (isError) {
       toast.error(message)
@@ -451,14 +468,16 @@ function SingleEdit() {
               </div>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                <input
+                {/* <input
                   className={styles.new_input}
-                  type="text"
+                  type="checkbox"
                   id="genres"
                   name="genres"
                   placeholder="Enter the genres that fit your song"
-                  value={genres}
-                  onChange={onChange} />
+                  // value={genres}
+                  value={['genres', 'genres']}
+                  onChange={onChange} /> */}
+                <CheckBoxList list={genreList} />
               </div>
             </div>
             <div className={styles.input_div}>
