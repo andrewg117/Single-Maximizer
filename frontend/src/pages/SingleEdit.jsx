@@ -8,6 +8,7 @@ import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import PressEdit from '../components/PressEdit'
 import ConfirmAlert from '../components/ConfirmAlert'
+import GenreCheckBox from '../components/GenreCheckBox'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import { Buffer } from 'buffer'
@@ -28,7 +29,7 @@ function SingleEdit() {
     album: '',
     ytube: '',
     albumDate: '',
-    genres: '',
+    genres: [],
     trackSum: '',
     pressSum: '',
     trackCover: null,
@@ -39,6 +40,8 @@ function SingleEdit() {
   })
 
   const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+
+  const [genreList, changeGenreList] = useState(['CHH', 'Pop'])
 
   const { isPressSuccess } = useSelector((state) => state.image)
 
@@ -234,23 +237,6 @@ function SingleEdit() {
       ...prevState,
       [e.target.name]: e.target.value
     }))
-  }
-
-  const genreList = ['CHH', 'Hip Hop', 'Gospel', 'R&B', 'Pop', 'Rock', 'CCM']
-
-  const CheckBoxList = ({ list }) => {
-    return (
-      <fieldset id={styles.checkboxlist}>
-        {list.map((item, i) => {
-          return (
-            <>
-              <input name={item} type='checkbox' key={i} value={item} />
-              <label htmlFor={item}>{item}</label>
-            </>
-          )
-        })}
-      </fieldset>
-    )
   }
 
   useEffect(() => {
@@ -477,7 +463,7 @@ function SingleEdit() {
                   // value={genres}
                   value={['genres', 'genres']}
                   onChange={onChange} /> */}
-                <CheckBoxList list={genreList} />
+                <GenreCheckBox changeList={setFormState} list={genres} />
               </div>
             </div>
             <div className={styles.input_div}>

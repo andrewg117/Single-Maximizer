@@ -16,8 +16,10 @@
 
 .input_div {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   column-gap: 5em;
+  row-gap: 1em;
 }
 
 .input_div div {
@@ -138,9 +140,10 @@
 }
 
 #checkboxlist {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
   align-items: center;
-  justify-content: space-evenly;
+  text-align: start;
 }
 
 #new_form_div label {

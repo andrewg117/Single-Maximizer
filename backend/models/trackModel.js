@@ -53,7 +53,7 @@ const trackSchema = mongoose.Schema({
     required: false
   },
   genres: {
-    type: String,
+    type: Array,
     required: false
   },
   trackSum: {
