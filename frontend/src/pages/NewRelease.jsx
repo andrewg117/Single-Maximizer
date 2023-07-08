@@ -11,6 +11,7 @@ import ImageUpload from '../components/ImageUpload'
 import AudioUpload from '../components/AudioUpload'
 import PressUpload from '../components/PressUpload'
 import ConfirmAlert from '../components/ConfirmAlert'
+import GenreCheckBox from '../components/GenreCheckBox'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
@@ -40,7 +41,7 @@ function NewRelease() {
     album: '',
     ytube: '',
     albumDate: '',
-    genres: '',
+    genres: [],
     trackSum: '',
     pressSum: '',
     trackCover: null,
@@ -328,14 +329,7 @@ function NewRelease() {
               </div>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                <input
-                  className={styles.new_input}
-                  type="text"
-                  id="genres"
-                  name="genres"
-                  placeholder="Enter the genres that fit your song" 
-                  value={genres}
-                  onChange={onChange} />
+                <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
               </div>
             </div>
             <div className={styles.input_div}>
