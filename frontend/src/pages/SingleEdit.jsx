@@ -41,7 +41,6 @@ function SingleEdit() {
 
   const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
 
-  const [genreList, changeGenreList] = useState(['CHH', 'Pop'])
 
   const { isPressSuccess } = useSelector((state) => state.image)
 
@@ -80,10 +79,10 @@ function SingleEdit() {
   const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
   const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
 
-  const [singleState, setSingleState] = useState({})
-  const [audioState, setAudioState] = useState(null)
-  const [trackState, setTrackState] = useState(null)
-  const [pressState, setPressState] = useState(null)
+  const [singleState, setSingleState] = useState()
+  const [audioState, setAudioState] = useState()
+  const [trackState, setTrackState] = useState()
+  const [pressState, setPressState] = useState()
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
@@ -91,12 +90,13 @@ function SingleEdit() {
     setTrackState(store.getState().image['image'])
     setPressState(store.getState().image['press'])
 
-    if (Object.keys(singleState).length > 0 && audioState && trackState && pressState) {
-      // console.log(pressState)
-
-      const image = trackState.file
-      const trackBuffer = Buffer.from(image.buffer, 'ascii')
-      const audio = audioState.file
+    if (singleState) {
+      let trackBuffer
+      if(trackState) {
+        const image = trackState.file
+        trackBuffer = Buffer.from(image.buffer, 'ascii')
+      }
+      const audio = audioState ? audioState.file : null
 
       const defaultDate = convertDate(singleState.deliveryDate, true)
 
@@ -118,7 +118,7 @@ function SingleEdit() {
         pressSum: singleState.pressSum,
         trackCover: trackBuffer,
         trackAudio: audio,
-        trackPress: pressState
+        trackPress: pressState ? pressState : []
       }))
 
     } else {
@@ -261,8 +261,6 @@ function SingleEdit() {
       dispatch(resetImage())
       dispatch(resetAudio())
     })
-
-
   }, [isExpired, isError, message, id, dispatch])
 
   if (isLoading) {
@@ -365,7 +363,7 @@ function SingleEdit() {
                 id="spotify"
                 name="spotify"
                 placeholder="Enter the URI of your track on Spotify"
-                value={spotify}
+                defaultValue={spotify}
                 onChange={onChange} />
             </div>
             <div className={styles.input_div}>
@@ -377,7 +375,7 @@ function SingleEdit() {
                   id="features"
                   name="features"
                   placeholder="Enter the names of features"
-                  value={features}
+                  defaultValue={features}
                   onChange={onChange} />
               </div>
               <div>
@@ -388,7 +386,7 @@ function SingleEdit() {
                   id="apple"
                   name="apple"
                   placeholder="Enter your Apple Music track link"
-                  value={apple}
+                  defaultValue={apple}
                   onChange={onChange} />
               </div>
             </div>
@@ -401,7 +399,7 @@ function SingleEdit() {
                   id="producer"
                   name="producer"
                   placeholder="Who produced the track?"
-                  value={producer}
+                  defaultValue={producer}
                   onChange={onChange} />
               </div>
               <div>
@@ -412,7 +410,7 @@ function SingleEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter the track's Soundcloud link"
-                  value={scloud}
+                  defaultValue={scloud}
                   onChange={onChange} />
               </div>
             </div>
@@ -425,7 +423,7 @@ function SingleEdit() {
                   id="album"
                   name="album"
                   placeholder="Is this song part of an album?"
-                  value={album}
+                  defaultValue={album}
                   onChange={onChange} />
               </div>
               <div>
@@ -436,7 +434,7 @@ function SingleEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter the Youtube video link"
-                  value={ytube}
+                  defaultValue={ytube}
                   onChange={onChange} />
               </div>
             </div>
@@ -449,21 +447,12 @@ function SingleEdit() {
                   id="albumDate"
                   name="albumDate"
                   placeholder="When will the album be released?"
-                  value={albumDate}
+                  defaultValue={albumDate}
                   onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                {/* <input
-                  className={styles.new_input}
-                  type="checkbox"
-                  id="genres"
-                  name="genres"
-                  placeholder="Enter the genres that fit your song"
-                  // value={genres}
-                  value={['genres', 'genres']}
-                  onChange={onChange} /> */}
-                <GenreCheckBox changeList={setFormState} list={genres} />
+                <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -474,7 +463,7 @@ function SingleEdit() {
                   id="trackSum"
                   cols="30" rows="10"
                   placeholder="Enter your track details here"
-                  value={trackSum}
+                  defaultValue={trackSum}
                   onChange={onChange}></textarea>
               </div>
             </div>
@@ -486,7 +475,7 @@ function SingleEdit() {
                   id="pressSum"
                   cols="30" rows="10"
                   placeholder="Enter recent accomplishments"
-                  value={pressSum}
+                  defaultValue={pressSum}
                   onChange={onChange}></textarea>
               </div>
             </div>

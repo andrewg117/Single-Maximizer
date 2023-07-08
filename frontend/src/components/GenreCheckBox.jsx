@@ -1,12 +1,25 @@
-import { useEffect } from 'react'
 import styles from '../css/new_release_style.module.css'
+
+const CheckBox = (props) => {
+  return (
+    <>
+      <input
+        name={props.item}
+        type='checkbox'
+        value={props.item}
+        checked={props.list.includes(props.item)}
+        onChange={props.onChange}
+      />
+      <label htmlFor={props.item}>{props.item}</label>
+    </>
+  )
+}
 
 function GenreCheckBox({ changeList, list }) {
   const genreList = ['CHH', 'Hip Hop', 'Gospel', 'R&B', 'Pop', 'Rock', 'CCM']
 
   const onChange = (e) => {
-    // console.log(e.target.checked)
-    // console.log(genreList.indexOf(e.target.value))
+    // Add to list if checked
     if (e.target.checked && !list.includes(e.target.value)) {
       changeList((prevState) => ({
         ...prevState,
@@ -15,7 +28,9 @@ function GenreCheckBox({ changeList, list }) {
           e.target.value
         ]
       }))
-    } else if (!e.target.checked && list.includes(e.target.value)) {
+    } 
+    // Remove from list if unchecked
+    if (!e.target.checked) {
       changeList((prevState) => ({
         ...prevState,
         genres: list.filter(item => item !== e.target.value)
@@ -23,28 +38,18 @@ function GenreCheckBox({ changeList, list }) {
     }
   }
 
-  useEffect(() => {
-    console.log(list)
-  }, [list])
-
   return (
     <fieldset id={styles.checkboxlist}>
       {genreList.map((item, i) => {
         return (
-          <>
-            <input
-              name={item}
-              type='checkbox'
+            <CheckBox
               key={i}
-              value={item}
-              defaultChecked={list.includes(item)}
+              item={item}
+              list={list}
               onChange={onChange}
             />
-            <label htmlFor={item}>{item}</label>
-          </>
         )
       })}
-      {/* {console.log(list.includes(item))} */}
     </fieldset>
   )
 }
