@@ -11,7 +11,7 @@ function NavBar() {
     { name: 'FAQ', path: "/home" },
     { name: 'PRICING', path: "/home" },
     { name: 'SIGN IN', path: "/home/signin" },
-    { name: 'SIGN UP', path: "/home/signup" },
+    { name: 'SIGN UP', path: "/home/emailsignup" },
   ];
 
   return (

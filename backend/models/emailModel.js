@@ -8,7 +8,7 @@ const emailSchema = mongoose.Schema({
   },
   trackID: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: 'Track'
   },
   recipient: {

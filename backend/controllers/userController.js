@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
+const nodemailer = require('nodemailer')
+const EMAILUSER = process.env.EMAILUSER
+const EMAILPASS = process.env.EMAILPASS
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -46,6 +49,52 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error('Invalid user data')
   }
+})
+
+
+// @desc    Register new user
+// @route   POST /api/users
+// @access  Public
+const checkEmail = asyncHandler(async (req, res) => {
+  const { email } = req.body
+
+
+  const userExists = await User.findOne({ email })
+  // console.log(userExists)
+
+  if (userExists) {
+    res.status(409)
+    throw new Error('User exists, use a different email or login')
+  }
+
+  // create reusable transporter object using the default SMTP transport
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: EMAILUSER,
+      pass: EMAILPASS
+    }
+  })
+
+  const link = "http://localhost:3000/home/signup?" + email
+
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+    to: email, // list of receivers
+    subject: 'Register Account', // Subject line
+    text: "Continue creating your account: " + link, // plain text body
+    html: `<p>Continue creating your account: ${link}</p>` // html body
+  }
+
+  // send mail with defined transport object
+  const info = await transporter.sendMail(mailOptions)
+
+  // console.log('Message sent: %s', info.messageId)
+
+  res.status(200).json(info)
 })
 
 // @desc    Authenticate a user
@@ -109,6 +158,7 @@ const generateToken = (id) => {
 
 module.exports = {
   registerUser,
+  checkEmail,
   loginUser,
   updateUser,
   getMe

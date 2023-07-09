@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Home from './pages/Home'
+import EmailSignUp from './pages/EmailSignUp'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import NavBar from './components/NavBar'
@@ -25,12 +26,13 @@ function MaximizerApp() {
     <>
       <Router>
         <div className={styles.body}>
-          <section id={user === null || isExpired ? styles.body_wrapper: styles.profile_body_wrapper}>
+          <section id={user === null || isExpired ? styles.body_wrapper : styles.profile_body_wrapper}>
             {user === null || isExpired ? <NavBar /> : <NavBarLeft />}
             <Routes>
-              {user === null || isExpired ? <Route path='*' element={<Home />} />: <Route path='*' element={<Profile />} />}
+              {user === null || isExpired ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
               <Route path='/home' element={<Home />} />
               <Route path='/home/signup' element={<SignUp />} />
+              <Route path='/home/emailsignup' element={<EmailSignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
               <Route element={<TokenCheck />}>
                 <Route path='/profile' element={<Profile />} />
