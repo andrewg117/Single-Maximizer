@@ -44,16 +44,19 @@ const Profile = () => {
 
 
   store.subscribe(() => {
-    if(!isExpired) {
+    if (!isExpired) {
       const userState = store.getState().auth['user']
       const imageState = store.getState().image['image']
-  
-      if (userState !== null && imageState !== null) {
+
+      if (userState !== null) {
         let buffer = null
-        const image = imageState ? imageState.file : null
-  
-        buffer = Buffer.from(image.buffer, 'ascii')
-  
+
+        if (imageState !== null) {
+          const image = imageState ? imageState.file : null
+
+          buffer = Buffer.from(image.buffer, 'ascii')
+        }
+
         setFormState((prevState) => ({
           ...prevState,
           fname: userState.fname,
@@ -71,7 +74,7 @@ const Profile = () => {
           bio_text: userState.bio_text,
           profileImage: buffer,
         }))
-  
+
       } else {
         setFormState((prevState) => ({
           ...prevState,
@@ -112,7 +115,7 @@ const Profile = () => {
 
           <div id={styles.top_div}>
             <div id={styles.image_div}>
-              <img src={`data:image/*;base64,${profileImage}`} alt='N/A' />
+              <img src={`data:image/*;base64,${profileImage}`} alt='Edit for Avatar' />
             </div>
             <div id={styles.username_div}>{username}</div>
           </div>

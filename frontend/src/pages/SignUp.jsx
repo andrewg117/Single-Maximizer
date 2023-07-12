@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { register, reset } from '../features/auth/authSlice'
+import { emailData, register, reset } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 import styles from '../css/sign_in_style.module.css'
 
@@ -16,28 +16,44 @@ function SignUp() {
     password2: '',
   })
 
-  const {  fname,  lname, username, email, password, password2 } = formData
+  const { fname, lname, username, email, password, password2 } = formData
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
+  const { isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
+
+  const { token } = useParams()
 
   useEffect(() => {
     if (isError) {
       toast.error(message)
     }
 
-    if (isSuccess || user) {
-      navigate('/profile')
-    } else {
-      navigate('/home/signup')
-    }
+    // console.log(params.token)
+    // const query = new URLSearchParams(window.location.search)
+    // console.log(query.get('email').split('/')[0])
+    dispatch(emailData(token)).unwrap()
+      .then((data) => {
+        console.log(data)
+        setFormData((prevState) => ({
+          ...prevState,
+          email: data.id
+        }))
+      })
+      .catch((error) => {
+        toast.error('Login Expired', { id: error })
+        toast.clearWaitingQueue()
+        navigate('/home/emailsignup')
+      })
 
-    dispatch(reset())
-  }, [user, isError, isSuccess, message, navigate, dispatch])
+
+    return () => {
+      dispatch(reset())
+    }
+  }, [isError, message, token, dispatch, navigate])
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -56,7 +72,11 @@ function SignUp() {
         fname, lname, username, email, password
       }
 
-      dispatch(register(userData))
+      dispatch(register(userData)).unwrap()
+        .then(() => {
+          navigate('/profile')
+        })
+        .catch((error) => console.error(error))
     }
   }
 
@@ -113,7 +133,7 @@ function SignUp() {
                   className={styles.signin_input}
                   id='email'
                   name='email'
-                  value={email}
+                  defaultValue={email}
                   onChange={onChange} />
                 <label htmlFor="password">PASSWORD</label>
                 <input

@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode'
 
 const API_URL = '/api/users/'
 
-const register = async  (userData) => {
+const register = async (userData) => {
   const response = await axios.post(API_URL, userData)
 
   if (response.data) {
@@ -13,17 +13,19 @@ const register = async  (userData) => {
   return response.data
 }
 
-const emailUser = async  (userData) => {
+const emailUser = async (userData) => {
   const response = await axios.post(API_URL + 'email', userData)
-
-  if (response.data) {
-    localStorage.setItem('user', JSON.stringify(response.data))
-  }
 
   return response.data
 }
 
-const login = async  (userData) => {
+const emailData = async (token) => {
+  const response = await axios.get(API_URL + 'email/' + token.toString())
+  // console.log(token)
+  return response.data
+}
+
+const login = async (userData) => {
   const response = await axios.post(API_URL + 'login', userData)
 
   if (response.data) {
@@ -33,23 +35,23 @@ const login = async  (userData) => {
   return response.data
 }
 
-const getUser = async  (token) => {
+const getUser = async (token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
     }
   }
-  
+
   let response
 
-  if (!checkToken(token)){
+  if (!checkToken(token)) {
     response = await axios.get(API_URL + 'me', config)
   }
 
   return response.data
 }
 
-const update = async  (userData, token) => {
+const update = async (userData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
@@ -57,7 +59,7 @@ const update = async  (userData, token) => {
   }
 
   let response
-  if (!checkToken(token)){
+  if (!checkToken(token)) {
     response = await axios.put(API_URL + 'me', userData, config)
   }
 
@@ -82,6 +84,7 @@ const logout = () => {
 const authService = {
   register,
   emailUser,
+  emailData,
   login,
   getUser,
   update,

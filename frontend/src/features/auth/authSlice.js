@@ -5,6 +5,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
   user: user ? user : null,
+  emailTok: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -25,6 +26,17 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
 export const emailUser = createAsyncThunk('auth/emailUser', async (userData, thunkAPI) => {
   try {
     return await authService.emailUser(userData)
+  } catch (error) {
+    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+
+export const emailData = createAsyncThunk('auth/emailData', async (token, thunkAPI) => {
+  try {
+    return await authService.emailData(token)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -116,6 +128,20 @@ export const authSlice = createSlice({
         state.isExpired = false
       })
       .addCase(emailUser.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(emailData.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(emailData.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isExpired = false
+        state.emailTok = action.payload
+      })
+      .addCase(emailData.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

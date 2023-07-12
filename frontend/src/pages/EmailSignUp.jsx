@@ -23,10 +23,12 @@ function EmailSignUp() {
   useEffect(() => {
     if (isError) {
       toast.error(message)
+      toast.clearWaitingQueue()
     }
 
     return () => {
       dispatch(resetUser())
+      toast.dismiss()
     }
   }, [ isError, message, dispatch])
 
@@ -45,13 +47,9 @@ function EmailSignUp() {
       toast.error("Add Email")
     } else {
 
-      const userData = {
-        email
-      }
 
-      dispatch(emailUser(userData)).unwrap()
-        .then((data) => {
-          // console.log(data)
+      dispatch(emailUser({email})).unwrap()
+        .then(() => {
           setEmailSent(true)
         })
         .catch((error) => console.error(error))
@@ -61,8 +59,11 @@ function EmailSignUp() {
   const resendEmail = (e) => {
     e.preventDefault()
 
-
-    // dispatch(register(userData))
+    dispatch(emailUser({email})).unwrap()
+      .then(() => {
+        setEmailSent(true)
+      })
+      .catch((error) => console.error(error))
   }
 
 

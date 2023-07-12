@@ -31,7 +31,7 @@ function MaximizerApp() {
             <Routes>
               {user === null || isExpired ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
               <Route path='/home' element={<Home />} />
-              <Route path='/home/signup' element={<SignUp />} />
+              <Route path='/home/signup/:token' element={<SignUp />} />
               <Route path='/home/emailsignup' element={<EmailSignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
               <Route element={<TokenCheck />}>

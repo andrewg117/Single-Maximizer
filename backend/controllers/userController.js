@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id)
+      token: generateToken(user._id, '2h')
     })
   } else {
     res.status(400)
@@ -53,9 +53,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 // @desc    Register new user
-// @route   POST /api/users
+// @route   POST /api/users/email
 // @access  Public
-const checkEmail = asyncHandler(async (req, res) => {
+const checkRegisterEmail = asyncHandler(async (req, res) => {
   const { email } = req.body
 
 
@@ -78,7 +78,11 @@ const checkEmail = asyncHandler(async (req, res) => {
     }
   })
 
-  const link = "http://localhost:3000/home/signup?" + email
+
+  const token = generateToken(email, '2m')
+
+  // const link = "http://localhost:3000/home/signup?" + "email=" + email
+  const link = `http://localhost:3000/home/signup/${token}`
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -114,13 +118,63 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.json({
       ...userBody,
-      token: generateToken(user._id),
+      token: generateToken(user._id, '2h'),
     })
   } else {
     res.status(400)
     throw new Error('Invalid credentials')
   }
 })
+
+
+// @desc    Forgot Password
+// @route   POST /api/users/forgot
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body
+
+
+  const user = await User.findOne({ email })
+  // console.log(user)
+
+  if (!user) {
+    res.status(409)
+    throw new Error('User does not exists, use a different email or login')
+  }
+
+  // create reusable transporter object using the default SMTP transport
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: EMAILUSER,
+      pass: EMAILPASS
+    }
+  })
+
+  const token = generateToken(user.email, '5m')
+
+  // const link = "http://localhost:3000/home/resetpassword?" + "email=" + email
+  const link = `http://localhost:3000/home/resetpassword/${user.email}/${token}`
+
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+    to: email, // list of receivers
+    subject: 'Forgot Password', // Subject line
+    text: "Reset Password: " + link, // plain text body
+    html: `<p>Reset Password: ${link}</p>` // html body
+  }
+
+  // send mail with defined transport object
+  const info = await transporter.sendMail(mailOptions)
+
+  // console.log('Message sent: %s', info.messageId)
+
+  res.status(200).json(info)
+})
+
 
 // @desc    Get user data
 // @route   GET /api/users/me
@@ -147,19 +201,39 @@ const updateUser = asyncHandler(async (req, res) => {
   res.json(updatedUser)
 })
 
-const expire = '2h'
+// @desc    Get email data
+// @route   GET /api/users/email
+// @access  Private
+const emailData = asyncHandler(async (req, res) => {
+  const { token } = req.params
+  // console.log(token)
+  try {
+    const decoded = decodeToken(token)
+    res.json(decoded)
+  } catch (error) {
+    res.status(401)
+    throw new Error(error === 'TokenExpiredError: jwt expired' ? 'Login Expired' : error)
+  }
+})
 
 // Generate JWT 
-const generateToken = (id) => {
+const generateToken = (id, expire) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: expire
   })
 }
 
+// Decode JWT
+const decodeToken = (token) => {
+  return jwt.verify(token, process.env.JWT_SECRET)
+}
+
 module.exports = {
   registerUser,
-  checkEmail,
+  checkRegisterEmail,
   loginUser,
+  forgotPassword,
   updateUser,
-  getMe
+  getMe,
+  emailData,
 }

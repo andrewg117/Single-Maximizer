@@ -26,12 +26,9 @@ function SignIn() {
       toast.error(message)
     }
 
-    if (isSuccess || user !== null) {
+    if (user) {
       navigate('/profile')
-    } else {
-      navigate('/home/signin')
     }
-
     return () => {
       dispatch(reset())
     }
