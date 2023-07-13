@@ -6,6 +6,8 @@ import Home from './pages/Home'
 import EmailSignUp from './pages/EmailSignUp'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import NavBar from './components/NavBar'
 import Profile from './pages/Profile'
 import ProfileEdit from './pages/ProfileEdit'
@@ -34,6 +36,8 @@ function MaximizerApp() {
               <Route path='/home/signup/:token' element={<SignUp />} />
               <Route path='/home/emailsignup' element={<EmailSignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
+              <Route path='/home/forgotpass' element={<ForgotPassword />} />
+              <Route path='/home/resetpass/:token' element={<ResetPassword />} />
               <Route element={<TokenCheck />}>
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/profile/editprofile' element={<ProfileEdit />} />

@@ -153,18 +153,18 @@ const forgotPassword = asyncHandler(async (req, res) => {
     }
   })
 
-  const token = generateToken(user.email, '5m')
+  const token = generateToken(user.email, '10m')
 
   // const link = "http://localhost:3000/home/resetpassword?" + "email=" + email
-  const link = `http://localhost:3000/home/resetpassword/${user.email}/${token}`
+  const link = `http://localhost:3000/home/resetpass/${token}`
 
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: email, // list of receivers
     subject: 'Forgot Password', // Subject line
-    text: "Reset Password: " + link, // plain text body
-    html: `<p>Reset Password: ${link}</p>` // html body
+    text: "Hello " + user.username + ",\n Reset Password: " + link, // plain text body
+    html: `<p>Hello ${user.username},</p><p>Reset Password: ${link}</p>` // html body
   }
 
   // send mail with defined transport object
@@ -173,6 +173,34 @@ const forgotPassword = asyncHandler(async (req, res) => {
   // console.log('Message sent: %s', info.messageId)
 
   res.status(200).json(info)
+})
+
+// @desc    Update user password
+// @route   PUT /api/users/reset
+// @access  Private
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body
+  let email
+
+  try {
+    const decoded = decodeToken(token)
+    email = decoded.id
+  } catch (error) {
+    res.status(401)
+    throw new Error(error === 'TokenExpiredError: jwt expired' ? 'Login Expired' : error)
+  }
+
+  const user = await User.findOne({ email })
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+
+  let updatedUser
+
+  updatedUser = await User.findByIdAndUpdate(user._id, { password: hashedPassword }, {
+    new: true
+  })
+
+  res.json(updatedUser)
 })
 
 
@@ -233,6 +261,7 @@ module.exports = {
   checkRegisterEmail,
   loginUser,
   forgotPassword,
+  resetPassword,
   updateUser,
   getMe,
   emailData,

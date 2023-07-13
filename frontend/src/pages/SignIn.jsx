@@ -23,7 +23,7 @@ function SignIn() {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
 
     if (user) {
@@ -31,6 +31,7 @@ function SignIn() {
     }
     return () => {
       dispatch(reset())
+      toast.clearWaitingQueue()
     }
   }, [user, isError, isSuccess, message, navigate, dispatch])
 
@@ -49,7 +50,9 @@ function SignIn() {
       password
     }
 
-    dispatch(login(userData))
+    dispatch(login(userData)).unwrap()
+      .then(() => navigate('/profile'))
+      .catch((error) => console.error(error))
   }
 
   if (isLoading) {
@@ -84,8 +87,7 @@ function SignIn() {
                   name='password'
                   value={password}
                   onChange={onChange} />
-                <Link className={styles.signin_link}>Forgot Username?</Link>
-                <Link className={styles.signin_link}>Forgot Password?</Link>
+                <Link to={'/home/forgotpass'} className={styles.signin_link}>Forgot Password?</Link>
                 <div className={styles.submit_div}>
                   <input type="submit" id={styles.signin_submit} value="SUBMIT" />
                 </div>

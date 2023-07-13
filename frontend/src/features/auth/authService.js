@@ -14,9 +14,15 @@ const register = async (userData) => {
 }
 
 const emailUser = async (userData) => {
-  const response = await axios.post(API_URL + 'email', userData)
-
-  return response.data
+  if(userData.type === 'reset') {
+    const response = await axios.post(API_URL + 'reset', userData)
+  
+    return response.data
+  } else if (userData.type === 'register') {
+    const response = await axios.post(API_URL + 'email', userData)
+  
+    return response.data
+  }
 }
 
 const emailData = async (token) => {
@@ -31,6 +37,11 @@ const login = async (userData) => {
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))
   }
+
+  return response.data
+}
+const reset = async (userData) => {
+  const response = await axios.put(API_URL + 'reset', userData)
 
   return response.data
 }
@@ -86,6 +97,7 @@ const authService = {
   emailUser,
   emailData,
   login,
+  reset,
   getUser,
   update,
   checkToken,

@@ -29,15 +29,11 @@ function SignUp() {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
-
-    // console.log(params.token)
-    // const query = new URLSearchParams(window.location.search)
-    // console.log(query.get('email').split('/')[0])
+    
     dispatch(emailData(token)).unwrap()
       .then((data) => {
-        console.log(data)
         setFormData((prevState) => ({
           ...prevState,
           email: data.id

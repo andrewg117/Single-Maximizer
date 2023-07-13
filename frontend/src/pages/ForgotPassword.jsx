@@ -5,7 +5,7 @@ import { emailUser, reset as resetUser } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 import styles from '../css/sign_in_style.module.css'
 
-function EmailSignUp() {
+function ForgotPassword() {
   const [formData, setFormData] = useState({
     email: '',
   })
@@ -48,7 +48,7 @@ function EmailSignUp() {
     } else {
 
 
-      dispatch(emailUser({email, type: 'register'})).unwrap()
+      dispatch(emailUser({email, type: 'reset'})).unwrap()
         .then(() => {
           setEmailSent(true)
         })
@@ -59,7 +59,7 @@ function EmailSignUp() {
   const resendEmail = (e) => {
     e.preventDefault()
 
-    dispatch(emailUser({email, type: 'register'})).unwrap()
+    dispatch(emailUser({email, type: 'reset'})).unwrap()
       .then(() => {
         setEmailSent(true)
       })
@@ -70,7 +70,8 @@ function EmailSignUp() {
   if (isLoading) {
     return <Spinner />
   }
-
+  
+  
   return (
     <>
       <section id={styles.sign_in_wrapper}>
@@ -80,7 +81,7 @@ function EmailSignUp() {
           </div>
 
           <div id={styles.block_right}>
-            <h1>Sign Up</h1>
+            <h1>Recover Account</h1>
             {emailSent === false ?
               <form id={styles.signin_form} onSubmit={onSubmit}>
                 <div className={styles.signin_form_div}>
@@ -101,7 +102,7 @@ function EmailSignUp() {
 
               <form id={styles.signin_form} onSubmit={resendEmail}>
                 <div className={styles.signin_form_div}>
-                  <h1>Check your email to register your account</h1>
+                  <h1>Check your email to recover your account</h1>
                   <h3>{email}</h3>
                   <div className={styles.submit_div}>
                     <input type="submit" id={styles.signin_submit} value="Resend Email" />
@@ -116,4 +117,4 @@ function EmailSignUp() {
   )
 }
 
-export default EmailSignUp
+export default ForgotPassword
