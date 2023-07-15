@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const nodemailer = require('nodemailer')
+const schedule = require('node-schedule')
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
 
@@ -62,10 +63,10 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email })
   // console.log(userExists)
 
-  if (userExists) {
-    res.status(409)
-    throw new Error('User exists, use a different email or login')
-  }
+  // if (userExists) {
+  //   res.status(409)
+  //   throw new Error('User exists, use a different email or login')
+  // }
 
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
@@ -93,12 +94,35 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     html: `<p>Continue creating your account: ${link}</p>` // html body
   }
 
+  const dateString = new Date('2023-07-15T17:40:00')
+  const date = new Date(2023, 6, 15, 17, 40, 0)
+  console.log('Cron: ' + date)
+  console.log('DateTime: ' + dateString)
+
+  // const emailJob = schedule.scheduleJob(date, function () {
+  //   // send mail with defined transport object
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //       console.error('Error sending email:', error)
+  //     } else {
+  //       console.log('Email sent:', info.response)
+  //     }
+  //   })
+  // })
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error)
+    } else {
+      console.log('Email sent:', info.response)
+    }
+  })
+
   // send mail with defined transport object
-  const info = await transporter.sendMail(mailOptions)
+  // const info = await transporter.sendMail(mailOptions)
 
   // console.log('Message sent: %s', info.messageId)
 
-  res.status(200).json(info)
+  res.status(200).json("Email sent")
 })
 
 // @desc    Authenticate a user
