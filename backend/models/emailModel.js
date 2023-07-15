@@ -11,6 +11,10 @@ const emailSchema = mongoose.Schema({
     required: false,
     ref: 'Track'
   },
+  deliveryDate: {
+    type: Date,
+    required: false
+  },
   recipient: {
     type: String,
     required: [true, 'Add recipient']

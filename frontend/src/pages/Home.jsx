@@ -13,7 +13,7 @@ function Home() {
           </p>
         </div>
         <div id={styles.intro_btn}>
-          <Link to='/home/signup'>
+          <Link to='/home/emailsignup'>
             GET STARTED
           </Link>
         </div>
