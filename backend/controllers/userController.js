@@ -94,28 +94,28 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     html: `<p>Continue creating your account: ${link}</p>` // html body
   }
 
-  const dateString = new Date('2023-07-15T17:40:00')
   const date = new Date(2023, 6, 15, 17, 40, 0)
+  const dateString = new Date('2023-07-16T09:36:00')
   console.log('Cron: ' + date)
   console.log('DateTime: ' + dateString)
 
-  // const emailJob = schedule.scheduleJob(date, function () {
-  //   // send mail with defined transport object
-  //   transporter.sendMail(mailOptions, (error, info) => {
-  //     if (error) {
-  //       console.error('Error sending email:', error)
-  //     } else {
-  //       console.log('Email sent:', info.response)
-  //     }
-  //   })
-  // })
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error)
-    } else {
-      console.log('Email sent:', info.response)
-    }
+  const emailJob = schedule.scheduleJob(dateString, function () {
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error)
+      } else {
+        console.log('Email sent:', info.response)
+      }
+    })
   })
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.error('Error sending email:', error)
+  //   } else {
+  //     console.log('Email sent:', info.response)
+  //   }
+  // })
 
   // send mail with defined transport object
   // const info = await transporter.sendMail(mailOptions)

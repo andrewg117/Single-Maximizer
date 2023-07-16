@@ -2,6 +2,8 @@ const path = require('path')
 const express = require('express')
 const colors = require('colors')
 const dotenv = require('dotenv').config()
+const schedule = require('node-schedule')
+const { sendScheduledEmail } = require('./controllers/emailController')
 const { errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const port = process.env.Port || 5000
@@ -9,6 +11,11 @@ const port = process.env.Port || 5000
 connectDB()
 
 const app = express()
+
+// Daily function
+schedule.scheduleJob('0 9 * * *', function () {
+  sendScheduledEmail()
+})
 
 app.use('/api/webhook', require('./routes/webhookRoutes'))
 

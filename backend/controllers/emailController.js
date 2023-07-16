@@ -1,15 +1,18 @@
 const nodemailer = require('nodemailer')
 const Email = require('../models/emailModel')
+const Track = require('../models/trackModel')
 const asyncHandler = require('express-async-handler')
 const schedule = require('node-schedule')
+const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
 
 //
-// @desc    Send Email
-// @route   POST /api/send
-// @access  Private
-const sendScheduledEmail = asyncHandler(async (req, res) => {
+// @desc    Send Scheduled Email
+const sendScheduledEmail = async() => {
+  let tracks
+
+  tracks = await Image.find({ deliveryDate: 'press' })
 
   // const email = await Email.create({
   //   recipient: req.body.recipient,
@@ -35,24 +38,23 @@ const sendScheduledEmail = asyncHandler(async (req, res) => {
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: email, // list of receivers
+    to: EMAILTO, // list of receivers
     subject: 'Register Account', // Subject line
-    text: "Continue creating your account: " + link, // plain text body
-    html: `<p>Continue creating your account: ${link}</p>` // html body
+    text: "Continue creating your account: ", // plain text body
+    html: `<p>Continue creating your account:</p>` // html body
   }
 
-  const date = new Date(2023, 6, 15, 4, 52, 0)
-
-  const emailJob = schedule.scheduleJob('53 * * * *', function () {
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions)
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error)
+    } else {
+      console.log('Email sent:', info.response)
+    }
   })
 
 
   // console.log('Message sent: %s', info.messageId)
-
-  res.status(200)
-})
+}
 
 // @desc    Send Email
 // @route   POST /api/send
