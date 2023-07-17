@@ -64,6 +64,11 @@ const trackSchema = mongoose.Schema({
     type: String,
     required: false
   },
+  isDelivered: {
+    type: Boolean,
+    default: false,
+    required: false
+  },
 },
 {
   timestamps: true,

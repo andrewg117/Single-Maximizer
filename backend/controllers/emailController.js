@@ -9,10 +9,17 @@ const EMAILPASS = process.env.EMAILPASS
 
 //
 // @desc    Send Scheduled Email
-const sendScheduledEmail = async() => {
+const sendScheduledEmail = async () => {
   let tracks
+  const curDate = new Date()
+  curDate.setHours(23,59,59,999)
 
-  tracks = await Image.find({ deliveryDate: 'press' })
+  tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
+  
+  for (const track in tracks) {
+    console.log(tracks[track].trackTitle)
+    console.log(tracks[track].deliveryDate) 
+  }
 
   // const email = await Email.create({
   //   recipient: req.body.recipient,
@@ -44,13 +51,13 @@ const sendScheduledEmail = async() => {
     html: `<p>Continue creating your account:</p>` // html body
   }
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error)
-    } else {
-      console.log('Email sent:', info.response)
-    }
-  })
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.error('Error sending email:', error)
+  //   } else {
+  //     console.log('Email sent:', info.response)
+  //   }
+  // })
 
 
   // console.log('Message sent: %s', info.messageId)

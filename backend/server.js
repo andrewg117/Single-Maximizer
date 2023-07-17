@@ -13,9 +13,9 @@ connectDB()
 const app = express()
 
 // Daily function
-schedule.scheduleJob('0 9 * * *', function () {
-  sendScheduledEmail()
+schedule.scheduleJob('58 13 * * *', function () {
 })
+sendScheduledEmail()
 
 app.use('/api/webhook', require('./routes/webhookRoutes'))
 
