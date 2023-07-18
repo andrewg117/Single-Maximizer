@@ -7,18 +7,22 @@ const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
 
-//
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
   let tracks
+
+  // tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
+
+  // Updates tracks to be delivered
   const curDate = new Date()
   curDate.setHours(23,59,59,999)
-
-  tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
+  updateTracks = await Track.updateMany({deliveryDate: { $lt: curDate }, isDelivered: false}, {$set: {isDelivered: true}})
+  tracks = await Track.find({deliveryDate: { $lt: curDate }, isDelivered: false})
   
   for (const track in tracks) {
     console.log(tracks[track].trackTitle)
     console.log(tracks[track].deliveryDate) 
+    console.log(tracks[track].isDelivered) 
   }
 
   // const email = await Email.create({

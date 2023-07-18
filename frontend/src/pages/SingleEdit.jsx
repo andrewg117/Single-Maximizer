@@ -56,28 +56,21 @@ function SingleEdit() {
   const { id } = useParams()
 
 
-  const convertDate = (date, isDefault) => {
+  const convertDate = (date) => {
     const d = new Date(date)
 
-    const year = d.toLocaleString('default', { year: 'numeric' })
-    const month = d.toLocaleString('default', { month: '2-digit' })
-    const day = d.toLocaleString('default', { day: '2-digit' })
-    const time = d.toLocaleTimeString("en-US", { hour12: false })
+    const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
+    const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
+    const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
 
-    let returnDate
-
-    if (isDefault) {
-      returnDate = year + '-' + month + '-' + day + 'T' + time + '.000Z'
-    } else {
-      returnDate = year + '-' + month + '-' + day + 'T' + time.slice(0, -3)
-    }
+    let returnDate = year + '-' + month + '-' + day
 
     return returnDate
   }
 
   const today = new Date()
-  const graceDate = convertDate(new Date(today.setDate(today.getDate() + 7)), false)
-  const stringDate = convertDate(store.getState().tracks['single'].deliveryDate, false)
+  const graceDate = convertDate(today.setDate(today.getDate() + 7))
+  // const stringDate = new Date(single.deliveryDate).toISOString().split('T')[0]
 
   const [singleState, setSingleState] = useState()
   const [audioState, setAudioState] = useState()
@@ -98,7 +91,7 @@ function SingleEdit() {
       }
       const audio = audioState ? audioState.file : null
 
-      const defaultDate = convertDate(singleState.deliveryDate, true)
+      const defaultDate = convertDate(singleState.deliveryDate)
 
       setFormState((prevState) => ({
         ...prevState,
@@ -254,6 +247,8 @@ function SingleEdit() {
         'trackID': id,
       }))
       dispatch(getAudio(id))
+
+      // console.log(stringDate)
     }
 
     return (() => {
@@ -347,11 +342,11 @@ function SingleEdit() {
 
               <input
                 className={styles.new_input}
-                type="datetime-local"
+                type="date"
                 id="deliveryDate"
                 name="deliveryDate"
                 min={graceDate}
-                defaultValue={stringDate}
+                defaultValue={deliveryDate}
                 onChange={onChange}
               />
             </div>

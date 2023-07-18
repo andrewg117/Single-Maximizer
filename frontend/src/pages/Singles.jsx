@@ -19,8 +19,8 @@ function Singles() {
   useEffect(() => {
     if (!isExpired) {
       dispatch(getTracks())
-      .unwrap()
-      .then((data) => {
+        .unwrap()
+        .then((data) => {
           setTrackState(data)
         })
     }
@@ -29,14 +29,6 @@ function Singles() {
       dispatch(reset())
     }
   }, [dispatch, navigate, isExpired])
-
-  const currentTime = new Date().getTime() / 1000
-  const isDeliverd = (date) => {
-    const d = new Date(date).getTime() / 1000
-    return (
-      d < currentTime ? true : false
-    )
-  }
 
   const editTrack = (e, id) => {
     e.preventDefault()
@@ -70,13 +62,13 @@ function Singles() {
                   <tr key={track._id}>
                     <td>{track.artist}</td>
                     <td>{track.trackTitle}</td>
-                    <td>{new Date(track.deliveryDate).toLocaleString('en-us')}</td>
+                    <td>{new Date(track.deliveryDate).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
                     <td>
-                      {track.deliveryDate ? <button className={isDeliverd(track.deliveryDate) ? styles.delivered : styles.scheduled}>{isDeliverd(track.deliveryDate) ? 'Delivered' : 'Scheduled'}</button> : <button className={styles.pending}>{"Pending"}</button>}
-                      
+                      {track.deliveryDate ? <button className={track.isDelivered ? styles.delivered : styles.scheduled}>{track.isDelivered ? 'Delivered' : 'Scheduled'}</button> : <button className={styles.pending}>{"Pending"}</button>}
+
                     </td>
                     <td>
-                      {!isDeliverd(track.deliveryDate) ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
+                      {!track.isDelivered ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
                     </td>
                   </tr>
                 ))
@@ -85,7 +77,7 @@ function Singles() {
               )}
             </tbody>
           </table>
-          {user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>} 
+          {user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>}
         </div>
 
       </div>

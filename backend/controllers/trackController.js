@@ -63,6 +63,7 @@ const setTrack = asyncHandler(async (req, res) => {
     genres: req.body.genres,
     trackSum: req.body.trackSum,
     pressSum: req.body.pressSum,
+    isDelivered: false,
     user: req.user.id
   })
 

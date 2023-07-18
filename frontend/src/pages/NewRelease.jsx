@@ -16,23 +16,25 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
-
-const minDate = () => {
-  const date = new Date()
-  const graceDate = new Date(date.setDate(date.getDate() + 7))
-
-  const year = graceDate.toLocaleString('default', { year: 'numeric' })
-  const month = graceDate.toLocaleString('default', { month: '2-digit' })
-  const day = graceDate.toLocaleString('default', { day: '2-digit' })
-
-  return year + '-' + month + '-' + day + 'T00:00'
-}
-
 function NewRelease() {
+  const convertDate = (date) => {
+  const d = new Date(date)
+
+  const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
+  const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
+  const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
+
+  let returnDate = year + '-' + month + '-' + day
+
+  return returnDate
+}
+  const today = new Date()
+  const graceDate = convertDate(today.setDate(today.getDate() + 7))
+
   const [formState, setFormState] = useState({
     trackTitle: '',
     artist: '',
-    deliveryDate: minDate(),
+    deliveryDate: graceDate,
     spotify: '',
     features: '',
     apple: '',
@@ -225,11 +227,11 @@ function NewRelease() {
               <label htmlFor="deliveryDate">DELIVERY DATE</label>
               <input
                 className={styles.new_input}
-                type="datetime-local"
+                type="date"
                 id="deliveryDate"
                 name="deliveryDate"
-                min={minDate()}
-                defaultValue={minDate()}
+                min={graceDate}
+                defaultValue={graceDate}
                 onChange={onChange} />
             </div>
             <div>
