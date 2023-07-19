@@ -9,31 +9,6 @@ const EMAILPASS = process.env.EMAILPASS
 
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
-  let tracks
-
-  // tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
-
-  // Updates tracks to be delivered
-  const curDate = new Date()
-  curDate.setHours(23,59,59,999)
-  updateTracks = await Track.updateMany({deliveryDate: { $lt: curDate }, isDelivered: false}, {$set: {isDelivered: true}})
-  tracks = await Track.find({deliveryDate: { $lt: curDate }, isDelivered: false})
-  
-  for (const track in tracks) {
-    console.log(tracks[track].trackTitle)
-    console.log(tracks[track].deliveryDate) 
-    console.log(tracks[track].isDelivered) 
-  }
-
-  // const email = await Email.create({
-  //   recipient: req.body.recipient,
-  //   subject: req.body.subject,
-  //   emailMessage: req.body.emailMessage,
-  //   user: req.user.id,
-  //   trackID: req.body.trackID,
-  //   deliveryDate: req.body.deliveryDate,
-  // })
-
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -45,23 +20,62 @@ const sendScheduledEmail = async () => {
     }
   })
 
+  let tracks
 
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: EMAILTO, // list of receivers
-    subject: 'Register Account', // Subject line
-    text: "Continue creating your account: ", // plain text body
-    html: `<p>Continue creating your account:</p>` // html body
+  // Reset isDelivered 
+  // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
+
+  // Updates tracks to be delivered
+  const curDate = new Date()
+  curDate.setHours(23, 59, 59, 999)
+  // updateTracks = await Track.updateMany({deliveryDate: { $lt: curDate }, isDelivered: false}, {$set: {isDelivered: true}})
+  tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
+
+  for (const track in tracks) {
+    const singleDoc = tracks[track]
+    let emailContent = `<h1>New Single</h1>`
+
+    emailContent += `<h3>Title: </h3><p>${singleDoc.trackTitle}</p>`
+    emailContent += `<h3>Artist: </h3><p>${singleDoc.artist}</p>`
+    emailContent += `<h3>Features: </h3><p>${singleDoc.features}</p>`
+    emailContent += `<h3>Album Name: </h3><p>${singleDoc.album}</p>`
+    emailContent += `<h3>Album Release Date: </h3><p>${singleDoc.albumDate}</p>`
+    emailContent += `<h3>Genres: </h3><p>${singleDoc.genres}</p>`
+    emailContent += `<h3>Producer: </h3><p>${singleDoc.producer}</p>`
+    emailContent += `<h3>Spotify: </h3><p>${singleDoc.spotify}</p>`
+    emailContent += `<h3>Apple: </h3><p>${singleDoc.apple}</p>`
+    emailContent += `<h3>Soundcloud: </h3><p>${singleDoc.scloud}</p>`
+    emailContent += `<h3>YouTube: </h3><p>${singleDoc.ytube}</p>`
+    emailContent += `<h3>Track Summary: </h3><p>${singleDoc.trackSum}</p>`
+    emailContent += `<h3>Recent Press: </h3><p>${singleDoc.pressSum}</p>`
+
+    // setup email data with unicode symbols
+    const mailOptions = {
+      from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+      to: EMAILTO, // list of receivers
+      subject: 'New Single Release!', // Subject line
+      html: emailContent // html body
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error)
+      } else {
+        console.log('Email sent:', info.response)
+      }
+    })
   }
 
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     console.error('Error sending email:', error)
-  //   } else {
-  //     console.log('Email sent:', info.response)
-  //   }
+  // const email = await Email.create({
+  //   recipient: req.body.recipient,
+  //   subject: req.body.subject,
+  //   emailMessage: req.body.emailMessage,
+  //   user: req.user.id,
+  //   trackID: req.body.trackID,
+  //   deliveryDate: req.body.deliveryDate,
   // })
+
+
 
 
   // console.log('Message sent: %s', info.messageId)
