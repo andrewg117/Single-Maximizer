@@ -85,7 +85,7 @@ function SingleEdit() {
 
     if (singleState) {
       let trackBuffer
-      if(trackState) {
+      if (trackState) {
         const image = trackState.file
         trackBuffer = Buffer.from(image.buffer, 'ascii')
       }
@@ -196,6 +196,7 @@ function SingleEdit() {
         })
 
     } else {
+      setShowPopup(false)
       toast.error("Update Fields")
     }
   }
@@ -255,6 +256,7 @@ function SingleEdit() {
       dispatch(resetSingle())
       dispatch(resetImage())
       dispatch(resetAudio())
+      setShowPopup(false)
     })
   }, [isExpired, isError, message, id, dispatch])
 
@@ -265,19 +267,7 @@ function SingleEdit() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={(e) => {
-          setShowPopup(() => {
-            e.preventDefault()
-            return true
-          })
-        }}>
-          {showPopup &&
-            (<ConfirmAlert
-              message="Do you want to save these changes?"
-              onConfirm={onSubmit}
-              onCancel={closeConfirm}
-            />)
-          }
+        <form id={styles.new_form}>
 
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
@@ -475,7 +465,19 @@ function SingleEdit() {
               </div>
             </div>
             <div id={styles.submit_div}>
-              <input type="submit" className={styles.profile_btn} value="SAVE" />
+              <button className={styles.profile_btn} onClick={(e) => {
+                setShowPopup(() => {
+                  e.preventDefault()
+                  return true
+                })
+              }}>Save</button>
+              {showPopup &&
+                (<ConfirmAlert
+                  message="Do you want to save these changes?"
+                  onConfirm={onSubmit}
+                  onCancel={closeConfirm}
+                />)
+              }
               <button className={styles.profile_btn} onClick={(e) => {
                 setShowDelPopup(() => {
                   e.preventDefault()
