@@ -40,11 +40,11 @@ const Profile = () => {
   const dispatch = useDispatch()
   const store = useStore()
 
-  const { isExpired, isLoading, isError, message } = useSelector((state) => state.auth)
+  const { user, isLoading, isError, message } = useSelector((state) => state.auth)
 
 
   store.subscribe(() => {
-    if (!isExpired) {
+    if (user !== null) {
       const userState = store.getState().auth['user']
       const imageState = store.getState().image['image']
 
@@ -94,15 +94,16 @@ const Profile = () => {
       toast.error(message)
     }
 
-    if (!isExpired) {
-      dispatch(getUser())
-      dispatch(getImage({ section: 'avatar' }))
-    }
+    dispatch(getUser()).unwrap()
+      .catch((error) => console.error(error))
+    dispatch(getImage({ section: 'avatar' })).unwrap()
+      .catch((error) => console.error(error))
+      
     return () => {
       dispatch(resetUser())
       dispatch(resetImage())
     }
-  }, [isExpired, isError, message, dispatch])
+  }, [isError, message, dispatch])
 
   if (isLoading) {
     return <Spinner />
@@ -148,7 +149,7 @@ const Profile = () => {
               <ProfileDiv
                 labelID='website'
                 text='WEBSITE'
-                userData={!isExpired ? website : "No data"}
+                userData={website}
               />
               <ProfileDiv
                 labelID='scloud'

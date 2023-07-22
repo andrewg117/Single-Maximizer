@@ -21,32 +21,32 @@ import TokenCheck from './components/TokenCheck'
 import styles from './css/style.module.css';
 
 function MaximizerApp() {
-  const { user, isExpired } = useSelector(
+  const { user } = useSelector(
     (state) => state.auth
   )
   return (
     <>
       <Router>
         <div className={styles.body}>
-          <section id={user === null || isExpired ? styles.body_wrapper : styles.profile_body_wrapper}>
-            {user === null || isExpired ? <NavBar /> : <NavBarLeft />}
+          <section id={user === null ? styles.body_wrapper : styles.profile_body_wrapper}>
+            {user === null ? <NavBar /> : <NavBarLeft />}
             <Routes>
-              {user === null || isExpired ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
+              {user === null ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
               <Route path='/home' element={<Home />} />
               <Route path='/home/signup/:token' element={<SignUp />} />
               <Route path='/home/emailsignup' element={<EmailSignUp />} />
               <Route path='/home/signin' element={<SignIn />} />
               <Route path='/home/forgotpass' element={<ForgotPassword />} />
               <Route path='/home/resetpass/:token' element={<ResetPassword />} />
-              <Route element={<TokenCheck />}>
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/profile/editprofile' element={<ProfileEdit />} />
-                <Route path='/profile/newrelease' element={<NewRelease />} />
-                <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
-                <Route path='/profile/singles' element={<Singles />} />
-                <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
-                <Route path='/admin' element={<Admin />} />
-              </Route>
+              {/* <Route element={<TokenCheck />}> */}
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/profile/editprofile' element={<ProfileEdit />} />
+              <Route path='/profile/newrelease' element={<NewRelease />} />
+              <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
+              <Route path='/profile/singles' element={<Singles />} />
+              <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
+              <Route path='/admin' element={<Admin />} />
+              {/* </Route> */}
             </Routes>
           </section>
         </div>

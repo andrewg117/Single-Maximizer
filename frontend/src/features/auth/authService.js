@@ -40,6 +40,7 @@ const login = async (userData) => {
 
   return response.data
 }
+
 const reset = async (userData) => {
   const response = await axios.put(API_URL + 'reset', userData)
 
@@ -55,9 +56,7 @@ const getUser = async (token) => {
 
   let response
 
-  if (!checkToken(token)) {
-    response = await axios.get(API_URL + 'me', config)
-  }
+  response = await axios.get(API_URL + 'me', config)
 
   return response.data
 }
@@ -70,9 +69,8 @@ const update = async (userData, token) => {
   }
 
   let response
-  if (!checkToken(token)) {
-    response = await axios.put(API_URL + 'me', userData, config)
-  }
+
+  response = await axios.put(API_URL + 'me', userData, config)
 
   return response.data
 }
@@ -88,8 +86,14 @@ const checkToken = (token) => {
   return decodedToken.exp < currentTime
 }
 
-const logout = () => {
-  localStorage.removeItem('user')
+const logout = async () => {
+  const response = await axios.post(API_URL + 'logout')
+
+  if (response.data) {
+    localStorage.removeItem('user')
+  }
+
+  return response.data
 }
 
 const authService = {

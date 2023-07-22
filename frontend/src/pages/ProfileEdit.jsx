@@ -34,7 +34,7 @@ function ProfileEdit() {
   const dispatch = useDispatch()
   let store = useStore()
 
-  const { isExpired, isLoading, isError, message } = useSelector(
+  const { user, isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
 
@@ -48,7 +48,7 @@ function ProfileEdit() {
     const userState = store.getState().auth['user']
     const imageState = store.getState().image['image']
 
-    if (userState !== null && !isExpired) {
+    if (userState !== null && user) {
       let buffer = null
       if (imageState) {
         const image = imageState ? imageState.file : null
@@ -87,16 +87,17 @@ function ProfileEdit() {
       toast.error(message)
     }
 
-    if (!isExpired) {
-      dispatch(getUser())
-      dispatch(getImage({ 'section': 'avatar' }))
-    }
+
+    dispatch(getUser()).unwrap()
+      .catch((error) => console.error(error))
+    dispatch(getImage({ 'section': 'avatar' })).unwrap()
+      .catch((error) => console.error(error))
 
     return (() => {
       dispatch(resetUser())
       dispatch(resetImage())
     })
-  }, [isExpired, navigate, isError, message, dispatch])
+  }, [navigate, isError, message, dispatch])
 
 
   const onSubmit = () => {
@@ -104,7 +105,7 @@ function ProfileEdit() {
       toast.error(message)
     }
 
-    if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && !isExpired) {
+    if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && user) {
 
       dispatch(updateUser({
         fname,
@@ -167,10 +168,12 @@ function ProfileEdit() {
   return (
     <>
       <div id={styles.profile_content_right}>
-        <form id={styles.profile_form} onSubmit={(e) => {setShowPopup(() => {
-          e.preventDefault()
-          return true
-        })}}>
+        <form id={styles.profile_form} onSubmit={(e) => {
+          setShowPopup(() => {
+            e.preventDefault()
+            return true
+          })
+        }}>
           {showPopup &&
             (<ConfirmAlert
               message="Do you want to save these changes?"

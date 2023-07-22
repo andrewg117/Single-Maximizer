@@ -8,7 +8,7 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  isExpired: false,
+  // isExpired: false,
   message: '',
 }
 
@@ -119,7 +119,7 @@ export const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
         state.user = action.payload
       })
       .addCase(register.rejected, (state, action) => {
@@ -134,7 +134,7 @@ export const authSlice = createSlice({
       .addCase(emailUser.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
       })
       .addCase(emailUser.rejected, (state, action) => {
         state.isLoading = false
@@ -147,7 +147,7 @@ export const authSlice = createSlice({
       .addCase(emailData.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
       })
       .addCase(emailData.rejected, (state, action) => {
         state.isLoading = false
@@ -160,7 +160,7 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
         state.user = action.payload
       })
       .addCase(login.rejected, (state, action) => {
@@ -175,7 +175,7 @@ export const authSlice = createSlice({
       .addCase(resetPass.fulfilled, (state) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
       })
       .addCase(resetPass.rejected, (state, action) => {
         state.isLoading = false
@@ -204,7 +204,7 @@ export const authSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.isExpired = false
+        // state.isExpired = false
         state.user = {
           ...state.user,
           ...action.payload
@@ -215,21 +215,21 @@ export const authSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
-      .addCase(getTokenResult.pending, (state) => {
-        state.isLoading = true
-      })
-      .addCase(getTokenResult.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
-        state.isExpired = action.payload
-      })
-      .addCase(getTokenResult.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
-      })
+      // .addCase(getTokenResult.pending, (state) => {
+      //   state.isLoading = true
+      // })
+      // .addCase(getTokenResult.fulfilled, (state, action) => {
+      //   state.isLoading = false
+      //   state.isSuccess = true
+      //   // state.isExpired = action.payload
+      // })
+      // .addCase(getTokenResult.rejected, (state, action) => {
+      //   state.isLoading = false
+      //   state.isError = true
+      //   state.message = action.payload
+      // })
       .addCase(logout.fulfilled, (state) => {
-        state.isExpired = true
+        // state.isExpired = true
         state.user = null
       })
   }

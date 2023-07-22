@@ -11,13 +11,13 @@ function Singles() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isExpired } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const { tracks, isLoading } = useSelector((state) => state.tracks)
 
   const [trackState, setTrackState] = useState(tracks)
 
   useEffect(() => {
-    if (!isExpired) {
+    if (user) {
       dispatch(getTracks())
         .unwrap()
         .then((data) => {
@@ -28,7 +28,7 @@ function Singles() {
     return () => {
       dispatch(reset())
     }
-  }, [dispatch, navigate, isExpired])
+  }, [dispatch, navigate, user])
 
   const editTrack = (e, id) => {
     e.preventDefault()

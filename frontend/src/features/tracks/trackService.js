@@ -1,5 +1,4 @@
 import axios from "axios"
-import authService from "../auth/authService"
 
 const API_URL = '/api/tracks/'
 
@@ -12,9 +11,7 @@ const createTrack = async (trackData, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.post(API_URL, trackData, config)
-  }
+  response = await axios.post(API_URL, trackData, config)
 
   return response.data
 }
@@ -28,9 +25,7 @@ const getTrack = async (token) => {
   
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.get(API_URL, config)
-  }
+  response = await axios.get(API_URL, config)
 
   return response.data
 }
@@ -44,9 +39,7 @@ const getSingle = async (trackId, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.get(API_URL + trackId, config)
-  }
+  response = await axios.get(API_URL + trackId, config)
 
   return response.data
 }
@@ -60,9 +53,7 @@ const updateSingle = async (trackID, trackData, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.put(API_URL + trackID, trackData, config)
-  }
+  response = await axios.put(API_URL + trackID, trackData, config)
 
 
   return response.data
@@ -77,9 +68,7 @@ const deleteTrack = async (trackId, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.delete(API_URL + trackId, config)
-  }
+  response = await axios.delete(API_URL + trackId, config)
 
   return response.data
 }

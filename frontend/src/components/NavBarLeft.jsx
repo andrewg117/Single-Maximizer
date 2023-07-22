@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser, logout, reset } from '../features/auth/authSlice'
+import { getUser, logout } from '../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import styles from '../css/profile_nav.module.css'
 
@@ -9,7 +9,7 @@ function NavBarLeft() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isExpired } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
 
   const [activeLink, setActiveLink] = useState('PROFILE')
 
@@ -34,13 +34,8 @@ function NavBarLeft() {
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ]
   useEffect(() => {
-    if (!isExpired) {
-      dispatch(getUser())
-    }
-    return (() => {
-      dispatch(reset())
-    })
-  }, [dispatch, isExpired])
+    dispatch(getUser())
+  }, [dispatch])
 
   return (
     <>

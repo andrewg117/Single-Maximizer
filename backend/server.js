@@ -3,6 +3,7 @@ const express = require('express')
 const colors = require('colors')
 const dotenv = require('dotenv').config()
 const schedule = require('node-schedule')
+const cookieParser = require('cookie-parser')
 const { sendScheduledEmail } = require('./controllers/emailController')
 const { errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
@@ -13,14 +14,15 @@ connectDB()
 const app = express()
 
 // Daily function
-schedule.scheduleJob('58 13 * * *', function () {
+schedule.scheduleJob('0 12 * * *', function () {
+  sendScheduledEmail()
 })
-  // sendScheduledEmail()
 
 app.use('/api/webhook', require('./routes/webhookRoutes'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 app.use('/api/tracks', require('./routes/trackRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))

@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const nodemailer = require('nodemailer')
 const schedule = require('node-schedule')
+const {generateToken} = require('../utils/generateToken.js')
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
 
@@ -37,6 +38,8 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   if (user) {
+    generateToken(res, user._id, '2h')
+
     res.status(201).json({
       _id: user.id,
       fname: user.fname,
@@ -44,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id, '2h')
+      // token: makeToken(user._id, '2h')
     })
   } else {
     res.status(400)
@@ -53,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 
-// @desc    Register new user
+// @desc    Email new user
 // @route   POST /api/users/email
 // @access  Public
 const checkRegisterEmail = asyncHandler(async (req, res) => {
@@ -80,7 +83,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   })
 
 
-  const token = generateToken(email, '2m')
+  const token = makeToken(email, '2m')
 
   // const link = "http://localhost:3000/home/signup?" + "email=" + email
   const link = `http://localhost:3000/home/signup/${token}`
@@ -125,6 +128,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   res.status(200).json("Email sent")
 })
 
+
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
@@ -134,6 +138,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email })
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    generateToken(res, user._id, '2h')
+
     const userBody = {
       ...user['_doc'],
     }
@@ -142,13 +148,24 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.json({
       ...userBody,
-      token: generateToken(user._id, '2h'),
+      // token: makeToken(user._id, '2h'),
     })
   } else {
     res.status(400)
     throw new Error('Invalid credentials')
   }
 })
+
+// @desc    Logout user / clear cookie
+// @route   POST /api/users/logout
+// @access  Public
+const logoutUser = (req, res) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  })
+  res.status(200).json({ message: 'Logged out successfully' })
+}
 
 
 // @desc    Forgot Password
@@ -177,7 +194,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     }
   })
 
-  const token = generateToken(user.email, '10m')
+  const token = makeToken(user.email, '10m')
 
   // const link = "http://localhost:3000/home/resetpassword?" + "email=" + email
   const link = `http://localhost:3000/home/resetpass/${token}`
@@ -269,7 +286,7 @@ const emailData = asyncHandler(async (req, res) => {
 })
 
 // Generate JWT 
-const generateToken = (id, expire) => {
+const makeToken = (id, expire) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: expire
   })
@@ -284,6 +301,7 @@ module.exports = {
   registerUser,
   checkRegisterEmail,
   loginUser,
+  logoutUser,
   forgotPassword,
   resetPassword,
   updateUser,

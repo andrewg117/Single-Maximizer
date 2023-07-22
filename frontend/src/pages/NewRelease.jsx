@@ -56,7 +56,7 @@ function NewRelease() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isExpired } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
   const [showPopup, setShowPopup] = useState(false)
 
@@ -75,7 +75,7 @@ function NewRelease() {
       dispatch(resetEmail())
       dispatch(resetAudio())
     }
-  }, [isExpired, isError, message, dispatch, navigate, user.trackAllowance])
+  }, [isError, message, dispatch, navigate, user.trackAllowance])
 
 
   const trackEmail = useCallback((title, date, trackID) => {
@@ -92,7 +92,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '' && !isExpired) {
+    if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '') {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))

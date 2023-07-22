@@ -24,11 +24,12 @@ const sendScheduledEmail = async () => {
 
   // Reset isDelivered 
   // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
+  // updateTracks = Track.updateMany({ deliveryDate: { $lt: curDate }, isDelivered: false }, { $set: { isDelivered: true } })
 
   // Updates tracks to be delivered
   const curDate = new Date()
   curDate.setHours(23, 59, 59, 999)
-  // updateTracks = await Track.updateMany({deliveryDate: { $lt: curDate }, isDelivered: false}, {$set: {isDelivered: true}})
+
   tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
 
   for (const track in tracks) {
@@ -57,13 +58,18 @@ const sendScheduledEmail = async () => {
       html: emailContent // html body
     }
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, async (error, info) => {
       if (error) {
         console.error('Error sending email:', error)
       } else {
+        const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+          new: true
+        })
         console.log('Email sent:', info.response)
       }
     })
+
+    // console.log(singleDoc.id)
   }
 
   // const email = await Email.create({

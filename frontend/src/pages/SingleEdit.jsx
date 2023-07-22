@@ -48,7 +48,7 @@ function SingleEdit() {
   const dispatch = useDispatch()
   const store = useStore()
 
-  const { isExpired } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
   const [showPopup, setShowPopup] = useState(false)
   const [showDelPopup, setShowDelPopup] = useState(false)
@@ -128,7 +128,7 @@ function SingleEdit() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && !isExpired) {
+    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && user) {
 
       dispatch(updateSingle({
         trackID: id,
@@ -238,19 +238,20 @@ function SingleEdit() {
       toast.error(message)
     }
 
-    if (!isExpired) {
-      dispatch(getSingle(id))
-      dispatch(getImage({
-        'trackID': id,
-        'section': 'cover'
-      }))
-      dispatch(getPress({
-        'trackID': id,
-      }))
-      dispatch(getAudio(id))
+    dispatch(getSingle(id)).unwrap()
+      .catch((error) => console.error(error))
+    dispatch(getImage({
+      'trackID': id,
+      'section': 'cover'
+    })).unwrap()
+      .catch((error) => console.error(error))
+    dispatch(getPress({
+      'trackID': id,
+    })).unwrap()
+      .catch((error) => console.error(error))
+    dispatch(getAudio(id)).unwrap()
+      .catch((error) => console.error(error))
 
-      // console.log(stringDate)
-    }
 
     return (() => {
       dispatch(resetSingle())
@@ -258,7 +259,7 @@ function SingleEdit() {
       dispatch(resetAudio())
       setShowPopup(false)
     })
-  }, [isExpired, isError, message, id, dispatch])
+  }, [isError, message, id, dispatch])
 
   if (isLoading) {
     return <Spinner />

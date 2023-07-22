@@ -1,5 +1,4 @@
 import axios from "axios"
-import authService from "../auth/authService"
 
 const API_URL = '/api/audio/'
 
@@ -12,9 +11,8 @@ const postAudio = async (audioData, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.post(API_URL, audioData, config)
-  }
+  response = await axios.post(API_URL, audioData, config)
+  
 
   return response.data
 }
@@ -28,9 +26,8 @@ const getAudio = async (trackId, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.get(API_URL + trackId, config)
-  }
+  response = await axios.get(API_URL + trackId, config)
+  
 
   return response.data
 }
@@ -44,9 +41,8 @@ const updateAudio = async (audioData, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.put(API_URL + audioData, audioData, config)
-  }
+  response = await axios.put(API_URL + audioData, audioData, config)
+  
 
   return response.data
 }
@@ -60,9 +56,8 @@ const deleteAudio = async (trackId, token) => {
 
   let response
 
-  if (!authService.checkToken(token)){
-    response = await axios.delete(API_URL + trackId, config)
-  }
+  response = await axios.delete(API_URL + trackId, config)
+  
 
   return response.data
 }
