@@ -47,43 +47,35 @@ const reset = async (userData) => {
   return response.data
 }
 
-const getUser = async (token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const getUser = async () => {
 
   let response
 
-  response = await axios.get(API_URL + 'me', config)
+  response = await axios.get(API_URL + 'me')
 
   return response.data
 }
 
-const update = async (userData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const update = async (userData) => {
 
   let response
 
-  response = await axios.put(API_URL + 'me', userData, config)
+  response = await axios.put(API_URL + 'me', userData)
 
   return response.data
 }
 
-const checkToken = (token) => {
-  if (!token) {
-    return true
+const checkToken = async () => {
+
+  let response
+
+  response = await axios.get(API_URL + 'token')
+  // console.log(response.status)
+  if (response.status === 401) {
+    localStorage.removeItem('user')
   }
 
-  const decodedToken = jwt_decode(token)
-  const currentTime = Date.now() / 1000
-
-  return decodedToken.exp < currentTime
+  return response.data
 }
 
 const logout = async () => {

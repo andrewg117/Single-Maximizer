@@ -254,9 +254,9 @@ function SingleEdit() {
 
 
     return (() => {
-      dispatch(resetSingle())
-      dispatch(resetImage())
-      dispatch(resetAudio())
+      // dispatch(resetSingle())
+      // dispatch(resetImage())
+      // dispatch(resetAudio())
       setShowPopup(false)
     })
   }, [isError, message, id, dispatch])

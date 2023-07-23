@@ -11,7 +11,9 @@ const generateToken = (res, userId, expire) => {
     sameSite: 'strict', // Prevent CSRF attacks
     // maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     maxAge: 2 * 60 * 60 * 1000, // 2 hours
+    // maxAge: 10 * 60 * 1000, // 10 seconds
   })
+  
 }
 
 module.exports = {

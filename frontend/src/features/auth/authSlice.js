@@ -65,8 +65,7 @@ export const resetPass = createAsyncThunk('auth/reset', async (userData, thunkAP
 
 export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await authService.getUser(token)
+    return await authService.getUser()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -76,8 +75,7 @@ export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
 
 export const updateUser = createAsyncThunk('auth/update', async (userData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await authService.update(userData, token)
+    return await authService.update(userData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -87,8 +85,7 @@ export const updateUser = createAsyncThunk('auth/update', async (userData, thunk
 
 export const getTokenResult = createAsyncThunk('auth/token', (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return authService.checkToken(token)
+    return authService.checkToken()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -197,6 +194,7 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isError = true
         state.message = action.payload
+        state.user = null
       })
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true
@@ -215,19 +213,20 @@ export const authSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
-      // .addCase(getTokenResult.pending, (state) => {
-      //   state.isLoading = true
-      // })
-      // .addCase(getTokenResult.fulfilled, (state, action) => {
-      //   state.isLoading = false
-      //   state.isSuccess = true
-      //   // state.isExpired = action.payload
-      // })
-      // .addCase(getTokenResult.rejected, (state, action) => {
-      //   state.isLoading = false
-      //   state.isError = true
-      //   state.message = action.payload
-      // })
+      .addCase(getTokenResult.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getTokenResult.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        // state.isExpired = action.payload
+      })
+      .addCase(getTokenResult.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+        state.user = null
+      })
       .addCase(logout.fulfilled, (state) => {
         // state.isExpired = true
         state.user = null

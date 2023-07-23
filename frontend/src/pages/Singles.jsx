@@ -17,18 +17,16 @@ function Singles() {
   const [trackState, setTrackState] = useState(tracks)
 
   useEffect(() => {
-    if (user) {
-      dispatch(getTracks())
-        .unwrap()
-        .then((data) => {
-          setTrackState(data)
-        })
-    }
+    dispatch(getTracks()).unwrap()
+      .then((data) => {
+        setTrackState(data)
+      })
+      .catch((error) => console.error(error))
 
     return () => {
       dispatch(reset())
     }
-  }, [dispatch, navigate, user])
+  }, [dispatch, navigate])
 
   const editTrack = (e, id) => {
     e.preventDefault()
@@ -77,7 +75,7 @@ function Singles() {
               )}
             </tbody>
           </table>
-          {user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>}
+          {user && user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>}
         </div>
 
       </div>

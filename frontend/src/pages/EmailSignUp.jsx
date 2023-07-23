@@ -28,7 +28,6 @@ function EmailSignUp() {
 
     return () => {
       dispatch(resetUser())
-      toast.dismiss()
     }
   }, [ isError, message, dispatch])
 

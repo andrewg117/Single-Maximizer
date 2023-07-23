@@ -38,15 +38,15 @@ function MaximizerApp() {
               <Route path='/home/signin' element={<SignIn />} />
               <Route path='/home/forgotpass' element={<ForgotPassword />} />
               <Route path='/home/resetpass/:token' element={<ResetPassword />} />
-              {/* <Route element={<TokenCheck />}> */}
-              <Route path='/profile' element={<Profile />} />
-              <Route path='/profile/editprofile' element={<ProfileEdit />} />
-              <Route path='/profile/newrelease' element={<NewRelease />} />
-              <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
-              <Route path='/profile/singles' element={<Singles />} />
-              <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
-              <Route path='/admin' element={<Admin />} />
-              {/* </Route> */}
+              <Route element={<TokenCheck />}>
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/profile/editprofile' element={<ProfileEdit />} />
+                <Route path='/profile/newrelease' element={<NewRelease />} />
+                <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
+                <Route path='/profile/singles' element={<Singles />} />
+                <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
+                <Route path='/admin' element={<Admin />} />
+              </Route>
             </Routes>
           </section>
         </div>

@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const nodemailer = require('nodemailer')
 const schedule = require('node-schedule')
-const {generateToken} = require('../utils/generateToken.js')
+const { generateToken } = require('../utils/generateToken.js')
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
 
@@ -47,7 +47,6 @@ const registerUser = asyncHandler(async (req, res) => {
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
-      // token: makeToken(user._id, '2h')
     })
   } else {
     res.status(400)
@@ -66,10 +65,10 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email })
   // console.log(userExists)
 
-  // if (userExists) {
-  //   res.status(409)
-  //   throw new Error('User exists, use a different email or login')
-  // }
+  if (userExists) {
+    res.status(409)
+    throw new Error('User exists, use a different email or login')
+  }
 
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
@@ -97,31 +96,14 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     html: `<p>Continue creating your account: ${link}</p>` // html body
   }
 
-  const date = new Date(2023, 6, 15, 17, 40, 0)
-  const dateString = new Date('2023-07-16T09:36:00')
-  console.log('Cron: ' + date)
-  console.log('DateTime: ' + dateString)
-
-  const emailJob = schedule.scheduleJob(dateString, function () {
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Error sending email:', error)
-      } else {
-        console.log('Email sent:', info.response)
-      }
-    })
-  })
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     console.error('Error sending email:', error)
-  //   } else {
-  //     console.log('Email sent:', info.response)
-  //   }
-  // })
-
   // send mail with defined transport object
-  // const info = await transporter.sendMail(mailOptions)
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error)
+    } else {
+      console.log('Email sent:', info.response)
+    }
+  })
 
   // console.log('Message sent: %s', info.messageId)
 
@@ -148,7 +130,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.json({
       ...userBody,
-      // token: makeToken(user._id, '2h'),
     })
   } else {
     res.status(400)
@@ -285,6 +266,28 @@ const emailData = asyncHandler(async (req, res) => {
   }
 })
 
+
+// @desc    Get user data
+// @route   GET /api/users/me
+// @access  Private
+const checkUserToken = asyncHandler(async (req, res) => {
+  let token = req.cookies.jwt
+  if(token) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const currentTime = Date.now() / 1000
+
+    const isExpired = decoded.exp < currentTime
+    if(isExpired) {
+      res.status(401).json(401)
+    } else {
+      res.status(200).json('Token')
+    }
+  } else {
+    res.status(401).json(401)
+  }
+  // res.json(req.user)
+})
+
 // Generate JWT 
 const makeToken = (id, expire) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -307,4 +310,5 @@ module.exports = {
   updateUser,
   getMe,
   emailData,
+  checkUserToken,
 }
