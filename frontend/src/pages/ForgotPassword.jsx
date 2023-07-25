@@ -105,7 +105,7 @@ function ForgotPassword() {
                   <h1>Check your email to recover your account</h1>
                   <h3>{email}</h3>
                   <div className={styles.submit_div}>
-                    <input type="submit" id={styles.signin_submit} value="Resend Email" />
+                    <input type="submit" id={styles.signin_submit} value="RESEND EMAIL" />
                   </div>
                 </div>
               </form>}

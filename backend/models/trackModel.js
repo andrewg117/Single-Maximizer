@@ -28,6 +28,10 @@ const trackSchema = mongoose.Schema({
     type: String,
     required: false
   },
+  label: {
+    type: String,
+    required: false
+  },
   apple: {
     type: String,
     required: false

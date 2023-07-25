@@ -1,11 +1,40 @@
 const nodemailer = require('nodemailer')
 const Email = require('../models/emailModel')
 const Track = require('../models/trackModel')
+const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
 const schedule = require('node-schedule')
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
+
+// Template email
+const templateEmail = (singleDoc) => {
+  let emailContent = `<h1>New Single</h1>`
+
+  emailContent += `<h3>Title: </h3><p>${singleDoc.trackTitle}</p>`
+  emailContent += `<h3>Artist: </h3><p>${singleDoc.artist}</p>`
+  emailContent += `<h3>Features: </h3><p>${singleDoc.features}</p>`
+  emailContent += `<h3>Album Name: </h3><p>${singleDoc.album}</p>`
+  emailContent += `<h3>Album Release Date: </h3><p>${singleDoc.albumDate}</p>`
+  emailContent += `<h3>Genres: </h3><p>${singleDoc.genres}</p>`
+  emailContent += `<h3>Producer: </h3><p>${singleDoc.producer}</p>`
+  emailContent += `<h3>Spotify: </h3><p>${singleDoc.spotify}</p>`
+  emailContent += `<h3>Apple: </h3><p>${singleDoc.apple}</p>`
+  emailContent += `<h3>Soundcloud: </h3><p>${singleDoc.scloud}</p>`
+  emailContent += `<h3>YouTube: </h3><p>${singleDoc.ytube}</p>`
+  emailContent += `<h3>Track Summary: </h3><p>${singleDoc.trackSum}</p>`
+  emailContent += `<h3>Recent Press: </h3><p>${singleDoc.pressSum}</p>`
+
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+    to: EMAILTO, // list of receivers
+    subject: `New Single Release!`, // Subject line
+    html: emailContent // html body
+  }
+  return mailOptions
+}
 
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
@@ -20,8 +49,6 @@ const sendScheduledEmail = async () => {
     }
   })
 
-  let tracks
-
   // Reset isDelivered 
   // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
   // updateTracks = Track.updateMany({ deliveryDate: { $lt: curDate }, isDelivered: false }, { $set: { isDelivered: true } })
@@ -30,31 +57,40 @@ const sendScheduledEmail = async () => {
   const curDate = new Date()
   curDate.setHours(23, 59, 59, 999)
 
-  tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
+  let tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
 
   for (const track in tracks) {
     const singleDoc = tracks[track]
-    let emailContent = `<h1>New Single</h1>`
+    const userDoc = await User.findById(singleDoc.user)
+    let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
 
-    emailContent += `<h3>Title: </h3><p>${singleDoc.trackTitle}</p>`
-    emailContent += `<h3>Artist: </h3><p>${singleDoc.artist}</p>`
-    emailContent += `<h3>Features: </h3><p>${singleDoc.features}</p>`
-    emailContent += `<h3>Album Name: </h3><p>${singleDoc.album}</p>`
-    emailContent += `<h3>Album Release Date: </h3><p>${singleDoc.albumDate}</p>`
-    emailContent += `<h3>Genres: </h3><p>${singleDoc.genres}</p>`
-    emailContent += `<h3>Producer: </h3><p>${singleDoc.producer}</p>`
-    emailContent += `<h3>Spotify: </h3><p>${singleDoc.spotify}</p>`
-    emailContent += `<h3>Apple: </h3><p>${singleDoc.apple}</p>`
-    emailContent += `<h3>Soundcloud: </h3><p>${singleDoc.scloud}</p>`
-    emailContent += `<h3>YouTube: </h3><p>${singleDoc.ytube}</p>`
-    emailContent += `<h3>Track Summary: </h3><p>${singleDoc.trackSum}</p>`
-    emailContent += `<h3>Recent Press: </h3><p>${singleDoc.pressSum}</p>`
+    emailContent += `<p>Featured Artist(s): ${singleDoc.features || ''}</p>`
+    emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
+    emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
+    emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
+    emailContent += `<p>Album Release Date: ${singleDoc.albumDate || ''}</p>`
+    // TODO: Add input for label
+    emailContent += `<p>Label: ${singleDoc.label || ''}</p>`
+    emailContent += `<br><br>`
+    emailContent += `<p>Bio: </p><p>${userDoc.bio_text}</p>`
+    emailContent += `<br>`
+    emailContent += `<p>Website: ${userDoc.website || ''}</p>`
+    emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
+    emailContent += `<p>Facebook: ${userDoc.fbook || ''}</p>`
+    emailContent += `<br>`
+    emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
+    emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
+    emailContent += `<br>`
+    // TODO: Create image/audio links in AWS
+    emailContent += `<p>Song Link: ${'trackDoc.audio'}</p>`
+    emailContent += `<p>Cover Link: ${'trackDoc.cover'}</p>`
+    emailContent += `<p>Press Photo Link: ${'trackDoc.press'}</p>`
 
     // setup email data with unicode symbols
     const mailOptions = {
       from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
       to: EMAILTO, // list of receivers
-      subject: 'New Single Release!', // Subject line
+      subject: `${singleDoc.artist} - ${singleDoc.trackTitle}`, // Subject line
       html: emailContent // html body
     }
 
@@ -69,7 +105,6 @@ const sendScheduledEmail = async () => {
       }
     })
 
-    // console.log(singleDoc.id)
   }
 
   // const email = await Email.create({
@@ -80,12 +115,9 @@ const sendScheduledEmail = async () => {
   //   trackID: req.body.trackID,
   //   deliveryDate: req.body.deliveryDate,
   // })
-
-
-
-
-  // console.log('Message sent: %s', info.messageId)
 }
+
+
 
 // @desc    Send Email
 // @route   POST /api/send
