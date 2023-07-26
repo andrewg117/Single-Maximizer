@@ -2,7 +2,7 @@ const e = require('express')
 const asyncHandler = require('express-async-handler')
 const stripe = require('stripe')(process.env.SK_TEST)
 const User = require('../models/userModel')
-const Track = require('../models/trackModel')
+const Purchase = require('../models/purchaseModel')
 
 const YOUR_DOMAIN = 'http://localhost:3000/'
 
@@ -10,7 +10,28 @@ const YOUR_DOMAIN = 'http://localhost:3000/'
 const endpointSecret = process.env.SK_ENDPOINT
 
 const postPayment = asyncHandler(async (req, res) => {
+  // Create Stripe Customer
+  let userStripeID
+  let customerData
+  if(req.user.stripeID){
+    userStripeID = req.user.stripeID
+  } else {
+    customerData = await stripe.customers.create({
+      email: req.user.email,
+      name: `${req.user.fname} ${req.user.lname}`,
+      metadata: {'userID': req.user._id.toString()}
+    })
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+      $set: { stripeID: customerData.id }
+    }, {
+      new: true
+    })
+  }
+
+  // Create Stripe Session Link
   const session = await stripe.checkout.sessions.create({
+    customer: userStripeID ? userStripeID :  customerData.id,
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -67,16 +88,17 @@ const postEndpoint = asyncHandler(async (req, res) => {
     // fulfillOrder(lineItems)
     // console.log(sessionWithLineItems.client_reference_id)
     if (sessionWithLineItems.client_reference_id) {
-      // newSingle = await Track.create({
-      //   trackTitle: 'New Single',
-      //   user: sessionWithLineItems.client_reference_id
-      // }) 
 
       // Update User's trackAllowance after purchase is complete
       updatedUser = await User.findByIdAndUpdate(sessionWithLineItems.client_reference_id, {
         $inc: { trackAllowance: 1 }
       }, {
         new: true
+      })
+
+      const savePurchase = await Purchase.create({
+        user: sessionWithLineItems.client_reference_id,
+        session: sessionWithLineItems
       })
 
     }
