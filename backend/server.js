@@ -4,9 +4,11 @@ const colors = require('colors')
 const dotenv = require('dotenv').config()
 const schedule = require('node-schedule')
 const cookieParser = require('cookie-parser')
+const { PutBucketCorsCommand, GetBucketCorsCommand } = require("@aws-sdk/client-s3") 
 const { sendScheduledEmail } = require('./controllers/emailController')
 const { errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
+const {runS3Commands} = require('./config/s3helper')
 const port = process.env.Port || 5000
 
 connectDB()
@@ -17,6 +19,8 @@ const app = express()
 schedule.scheduleJob('0 12 * * *', function () {
   sendScheduledEmail()
 })
+
+runS3Commands()
 
 app.use('/api/webhook', require('./routes/webhookRoutes'))
 
