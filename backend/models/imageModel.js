@@ -11,6 +11,10 @@ const imageSchema = mongoose.Schema({
     required: false,
     ref: 'Track'
   },
+  s3ImageURL: {
+    type: String,
+    required: false
+  },
   section: {
     type: String,
     required: false

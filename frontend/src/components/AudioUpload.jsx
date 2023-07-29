@@ -5,7 +5,7 @@ import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
 import 'react-h5-audio-player/lib/styles.css'
 
-function AudioUpload({ changeFile, file, fieldname }) {
+function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
@@ -60,12 +60,12 @@ function AudioUpload({ changeFile, file, fieldname }) {
         <p>Drag and drop or click to upload audio</p>
       </div>
       <div>
-        {file !== null ?
+        {file ?
           <>
             {isEdit === true ?
               <>
                 <AudioPlayer
-                  src={makeBlob()}
+                  src={url}
                   controls
                   layout="horizontal"
                   autoPlayAfterSrcChange={false}

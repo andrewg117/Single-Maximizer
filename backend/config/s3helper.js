@@ -39,12 +39,15 @@ const getObject = new GetObjectCommand({
 })
 
 
-const uploadObject = new PutObjectCommand({
-  Bucket: "singlemax-bucket",
-  Key: "hello-s3.txt",
-  Body: "Hello S3!",
-  // MaxKeys: 1,
-})
+const uploadObject = (fileName, fileBody, mimetype) =>{
+  return new PutObjectCommand({
+    Bucket: "singlemax-bucket",
+    Key: fileName,
+    Body: fileBody,
+    ContentType: mimetype
+    // MaxKeys: 1,
+  })
+} 
 
 
 const runS3Commands = async () => {
@@ -65,4 +68,5 @@ const runS3Commands = async () => {
 module.exports = {
   s3,
   runS3Commands,
+  uploadObject,
 }

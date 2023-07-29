@@ -1,4 +1,5 @@
 const Audio = require('../models/audioModel')
+const { s3, uploadObject } = require('../config/s3helper')
 const asyncHandler = require('express-async-handler')
 
 // @desc    Post audio
@@ -18,6 +19,16 @@ const uploadAudio = asyncHandler(async (req, res) => {
     trackID: req.body.trackID,
     file: req.file,
   })
+
+  const updatedAudio = await Audio.findByIdAndUpdate(audio._id, {
+    $set: {
+      s3AudioURL: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
+    }
+  }, {
+    new: true
+  })
+
+  const response = await s3.send(uploadObject(updatedAudio._id.toString(), req.file.buffer, req.file.mimetype))
 
   if (audio) {
     res.json(audio)

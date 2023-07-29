@@ -53,16 +53,16 @@ function PressUpload({ changeFile, trackPress }) {
     }))
   }
 
-  useEffect(() => {
-    return () => {
-      // files.map((item, index) => {
-      //   return []
-      // })
-      // URL.revokeObjectURL(blob)
-      if(trackPress.length > 0) {
-      }
-    }
-  }, [trackPress])
+  // useEffect(() => {
+  //   return () => {
+  //     // files.map((item, index) => {
+  //     //   return []
+  //     // })
+  //     // URL.revokeObjectURL(blob)
+  //     if(trackPress.length > 0) {
+  //     }
+  //   }
+  // }, [trackPress])
 
   return (
     <div id={styles.press_upload}>

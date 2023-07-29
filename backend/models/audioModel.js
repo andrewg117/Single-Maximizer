@@ -11,6 +11,10 @@ const audioSchema = mongoose.Schema({
     required: true,
     ref: 'Track'
   },
+  s3AudioURL: {
+    type: String,
+    required: false
+  },
   file: {
     type: mongoose.Schema.Types.Mixed,
     required: true

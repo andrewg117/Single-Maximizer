@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 
-const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
+const ImageUpload = ({ changeFile, file, fieldname, url, urlField, altText }) => {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
@@ -52,9 +52,9 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
       {
         file ?
           <>
-            {isEdit === true ?
-              <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
-              // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
+            {url !== '' ?
+              // <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
+              <img src={url} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
               :
               <>
                 <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
@@ -68,7 +68,8 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
                 setEdit(false)
                 changeFile((prevState) => ({
                   ...prevState,
-                  [fieldname]: null
+                  [fieldname]: null,
+                  [urlField]: ''
                 }))
               }}>
               X

@@ -48,10 +48,12 @@ function NewRelease() {
     pressSum: '',
     trackCover: null,
     trackAudio: null,
-    trackPress: []
+    trackPress: [],
+    s3ImageURL: '',
+    s3AudioURL: '',
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -176,6 +178,8 @@ function NewRelease() {
                   changeFile={setFormState}
                   file={trackCover}
                   fieldname={'trackCover'}
+                  url={s3ImageURL}
+                  urlField={'s3ImageURL'}
                   altText={'Upload Track Cover'}
                 />
               </div>
@@ -211,7 +215,8 @@ function NewRelease() {
                 changeFile={setFormState}
                 file={trackAudio}
                 fieldname={'trackAudio'}
-                altText={'Upload Track Audio'}
+                url={s3AudioURL}
+                urlField={'s3AudioURL'}
               />
             </div>
             <div className={styles.top_input_div}>

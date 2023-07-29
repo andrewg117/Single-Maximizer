@@ -1,4 +1,5 @@
 const Image = require('../models/imageModel')
+const { s3, uploadObject } = require('../config/s3helper')
 const asyncHandler = require('express-async-handler')
 
 // @desc    Post image
@@ -30,6 +31,18 @@ const uploadImage = asyncHandler(async (req, res) => {
     })
   }
 
+  const updatedImage = await Image.findByIdAndUpdate(image._id, {
+    $set: {
+      s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+    }
+  }, {
+    new: true
+  })
+
+  const response = await s3.send(uploadObject(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+
+  // console.log(response)
+
   if (image) {
     res.json(image)
   }
@@ -54,6 +67,16 @@ const uploadPress = asyncHandler(async (req, res) => {
       section: req.body.section,
       file: file,
     })
+
+    const updatedImage = await Image.findByIdAndUpdate(image._id, {
+      $set: {
+        s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+      }
+    }, {
+      new: true
+    })
+
+    const response = await s3.send(uploadObject(updatedImage._id.toString(), file.buffer, file.mimetype))
 
   })
 
@@ -144,18 +167,22 @@ const updateImage = asyncHandler(async (req, res) => {
 
   // console.log('Image: ' + track)
   // console.log('Params: ' + JSON.stringify(req.params))
-  // console.log('File: ' + JSON.stringify(req.files))
+  // console.log('File: ' + JSON.stringify(req.file))
   // console.log('Body: ' + JSON.stringify(req.body))
 
   const newBody = {
     ...req.body,
-    file: req.file
+    file: req.file,
+    s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString(),
   }
 
-  const updatedImage = await Image.findOneAndUpdate({ trackID: req.body.trackID }, newBody, {
+  const updatedImage = await Image.findByIdAndUpdate(image._id, newBody, {
     new: true
   })
 
+  const response = await s3.send(uploadObject(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+
+  // console.log(response)
 
   res.json(updatedImage)
 })
