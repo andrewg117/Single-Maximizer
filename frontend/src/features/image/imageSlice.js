@@ -13,8 +13,7 @@ const initialState = {
 
 export const postImage = createAsyncThunk('image/post', async (imageData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.postImage(imageData, token)
+    return await imageService.postImage(imageData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -24,8 +23,7 @@ export const postImage = createAsyncThunk('image/post', async (imageData, thunkA
 
 export const postPress = createAsyncThunk('press/post', async (pressData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.postPress(pressData, token)
+    return await imageService.postPress(pressData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -35,8 +33,7 @@ export const postPress = createAsyncThunk('press/post', async (pressData, thunkA
 
 export const getImage = createAsyncThunk('image/get', async (imageData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.getImage(imageData, token)
+    return await imageService.getImage(imageData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -46,8 +43,7 @@ export const getImage = createAsyncThunk('image/get', async (imageData, thunkAPI
 
 export const getPress = createAsyncThunk('press/get', async (pressData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.getPress(pressData, token)
+    return await imageService.getPress(pressData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -57,8 +53,7 @@ export const getPress = createAsyncThunk('press/get', async (pressData, thunkAPI
 
 export const updateImage = createAsyncThunk('image/put', async (imageData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.updateImage(imageData, token)
+    return await imageService.updateImage(imageData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -68,8 +63,7 @@ export const updateImage = createAsyncThunk('image/put', async (imageData, thunk
 
 export const deleteImage = createAsyncThunk('image/delete', async (trackID, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.deleteImage(trackID, token)
+    return await imageService.deleteImage(trackID)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -79,8 +73,7 @@ export const deleteImage = createAsyncThunk('image/delete', async (trackID, thun
 
 export const deletePress = createAsyncThunk('press/delete', async (trackID, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await imageService.deletePress(trackID, token)
+    return await imageService.deletePress(trackID)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

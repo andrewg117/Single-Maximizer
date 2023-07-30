@@ -11,8 +11,7 @@ const initialState = {
 
 export const postAudio = createAsyncThunk('audio/post', async (audioData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await audioService.postAudio(audioData, token)
+    return await audioService.postAudio(audioData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -22,8 +21,7 @@ export const postAudio = createAsyncThunk('audio/post', async (audioData, thunkA
 
 export const getAudio = createAsyncThunk('audio/get', async (id, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await audioService.getAudio(id, token)
+    return await audioService.getAudio(id)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -33,8 +31,7 @@ export const getAudio = createAsyncThunk('audio/get', async (id, thunkAPI) => {
 
 export const updateAudio = createAsyncThunk('audio/put', async (audioData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await audioService.updateAudio(audioData, token)
+    return await audioService.updateAudio(audioData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -44,8 +41,7 @@ export const updateAudio = createAsyncThunk('audio/put', async (audioData, thunk
 
 export const deleteAudio = createAsyncThunk('audio/delete', async (id, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await audioService.deleteAudio(id, token)
+    return await audioService.deleteAudio(id)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

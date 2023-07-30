@@ -11,12 +11,9 @@ import ConfirmAlert from '../components/ConfirmAlert'
 import GenreCheckBox from '../components/GenreCheckBox'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
-import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
-  // const { press } = useSelector((state) => state.image)
-
   const [formState, setFormState] = useState({
     trackTitle: '',
     artist: '',
@@ -37,9 +34,11 @@ function SingleEdit() {
     trackPress: [],
     newPressList: [],
     deletePressList: [],
+    s3ImageURL: '',
+    s3AudioURL: '',
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList, s3ImageURL, s3AudioURL } = formState
 
 
   const { isPressSuccess } = useSelector((state) => state.image)
@@ -70,12 +69,12 @@ function SingleEdit() {
 
   const today = new Date()
   const graceDate = convertDate(today.setDate(today.getDate() + 7))
-  // const stringDate = new Date(single.deliveryDate).toISOString().split('T')[0]
 
   const [singleState, setSingleState] = useState()
   const [audioState, setAudioState] = useState()
-  const [trackState, setTrackState] = useState()
+  const [imageState, setTrackState] = useState()
   const [pressState, setPressState] = useState()
+
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
@@ -84,12 +83,6 @@ function SingleEdit() {
     setPressState(store.getState().image['press'])
 
     if (singleState) {
-      let trackBuffer
-      if (trackState) {
-        const image = trackState.file
-        trackBuffer = Buffer.from(image.buffer, 'ascii')
-      }
-      const audio = audioState ? audioState.file : null
 
       const defaultDate = convertDate(singleState.deliveryDate)
 
@@ -109,9 +102,9 @@ function SingleEdit() {
         genres: singleState.genres,
         trackSum: singleState.trackSum,
         pressSum: singleState.pressSum,
-        trackCover: trackBuffer,
-        trackAudio: audio,
-        trackPress: pressState ? pressState : []
+        trackPress: pressState ? pressState : [],
+        s3ImageURL: imageState ? imageState.s3ImageURL : '',
+        s3AudioURL: audioState ? audioState.s3AudioURL : '',
       }))
 
     } else {
@@ -128,8 +121,7 @@ function SingleEdit() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && user) {
-
+    if (user) {
       dispatch(updateSingle({
         trackID: id,
         trackTitle,
@@ -148,31 +140,20 @@ function SingleEdit() {
         pressSum,
       })).unwrap()
         .then((data) => {
-          if (trackCover instanceof FormData) {
+          if (trackCover) {
             let imageData = new FormData()
             imageData.append("Image", trackCover.get('Image'))
             imageData.append("trackID", id)
             imageData.append("section", 'cover')
             dispatch(updateImage(imageData))
-          } else {
-            let imageData = new FormData()
-            imageData.append("Image", trackCover)
-            imageData.append("trackID", id)
-            imageData.append("section", 'cover')
-            dispatch(updateImage(imageData))
-          }
+          } 
 
-          if (trackAudio instanceof FormData) {
+          if (trackAudio) {
             let audioData = new FormData()
             audioData.append("trackAudio", trackAudio.get('trackAudio'))
             audioData.append("trackID", id)
             dispatch(updateAudio(audioData))
-          } else {
-            let audioData = new FormData()
-            audioData.append("trackAudio", trackAudio)
-            audioData.append("trackID", id)
-            dispatch(updateAudio(audioData))
-          }
+          } 
 
           if (newPressList.length > 0) {
             let pressData = new FormData()
@@ -185,7 +166,6 @@ function SingleEdit() {
           }
           if (deletePressList.length > 0) {
             deletePressList.forEach((item) => {
-              // console.log(item._id)
               dispatch(deletePress(item._id))
             })
           }
@@ -278,6 +258,8 @@ function SingleEdit() {
                   changeFile={setFormState}
                   file={trackCover}
                   fieldname={'trackCover'}
+                  url={s3ImageURL}
+                  urlField={'s3ImageURL'}
                   altText={'Upload Track Cover'}
                 />
               </div>
@@ -313,6 +295,8 @@ function SingleEdit() {
                 changeFile={setFormState}
                 file={trackAudio}
                 fieldname={'trackAudio'}
+                url={s3AudioURL}
+                urlField={'s3AudioURL'}
               />
             </div>
             <div className={styles.top_input_div}>
@@ -337,7 +321,7 @@ function SingleEdit() {
                 id="deliveryDate"
                 name="deliveryDate"
                 min={graceDate}
-                defaultValue={deliveryDate}
+                value={deliveryDate}
                 onChange={onChange}
               />
             </div>

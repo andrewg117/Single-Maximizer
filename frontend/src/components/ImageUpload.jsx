@@ -45,23 +45,35 @@ const ImageUpload = ({ changeFile, file, fieldname, url, urlField, altText }) =>
 
   return (
     <>
-      <div {...getRootProps()} hidden={file}>
+      <div {...getRootProps()} hidden={file || url}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload image</p>
       </div>
+      {url !== '' ?
+        <>
+          <img src={url} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+          <div
+            id={styles.remove_image}
+            onClick={(e) => {
+              setEdit(false)
+              changeFile((prevState) => ({
+                ...prevState,
+                [fieldname]: null,
+                [urlField]: ''
+              }))
+            }}>
+            X
+          </div>
+        </>
+        :
+        <></>
+      }
       {
         file ?
           <>
-            {url !== '' ?
-              // <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
-              <img src={url} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
-              :
-              <>
-                <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
-                <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
-                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
-              </>
-            }
+            <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+            <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
+            <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
             <div
               id={styles.remove_image}
               onClick={(e) => {

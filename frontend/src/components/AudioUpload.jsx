@@ -55,23 +55,41 @@ function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
 
   return (
     <>
-      <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
+      <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file || url}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload audio</p>
       </div>
       <div>
+        {url ?
+          <>
+            <AudioPlayer
+              src={url}
+              controls
+              layout="horizontal"
+              autoPlayAfterSrcChange={false}
+              volume={.2}
+            />
+            <p
+              id={styles.remove_audio}
+              onClick={(e) => {
+                setEdit(false)
+                getBlob(null)
+                URL.revokeObjectURL(blob)
+                changeFile((prevState) => ({
+                  ...prevState,
+                  [fieldname]: null,
+                  [urlField]: null
+                }))
+              }}>
+              Remove Audio
+            </p>
+          </>
+          :
+          <></>}
         {file ?
           <>
             {isEdit === true ?
-              <>
-                <AudioPlayer
-                  src={url}
-                  controls
-                  layout="horizontal"
-                  autoPlayAfterSrcChange={false}
-                  volume={.2}
-                />
-              </>
+              <></>
               :
               <>
                 <AudioPlayer
@@ -83,21 +101,22 @@ function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
                 />
                 <p>{file instanceof FormData ? file.get('trackAudio').name : ''}</p>
                 <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
+                <p
+                  id={styles.remove_audio}
+                  onClick={(e) => {
+                    setEdit(false)
+                    getBlob(null)
+                    URL.revokeObjectURL(blob)
+                    changeFile((prevState) => ({
+                      ...prevState,
+                      [fieldname]: null,
+                      [urlField]: null
+                    }))
+                  }}>
+                  Remove Audio
+                </p>
               </>
             }
-            <p
-              id={styles.remove_audio}
-              onClick={(e) => {
-                setEdit(false)
-                getBlob(null)
-                URL.revokeObjectURL(blob)
-                changeFile((prevState) => ({
-                  ...prevState,
-                  [fieldname]: null
-                }))
-              }}>
-              Remove
-            </p>
           </>
           :
           <>

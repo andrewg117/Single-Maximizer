@@ -2,42 +2,29 @@ import axios from "axios"
 
 const API_URL = '/api/image/'
 
-const postImage = async (imageData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const postImage = async (imageData) => {
 
   let response
 
-  response = await axios.post(API_URL, imageData, config)
+  response = await axios.post(API_URL, imageData)
 
 
   return response.data
 }
 
-const postPress = async (pressData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const postPress = async (pressData) => {
 
   let response
 
-  response = await axios.post(API_URL + 'press', pressData, config)
+  response = await axios.post(API_URL + 'press', pressData)
 
 
   return response.data
 }
 
 
-const getImage = async (imageData, token) => {
+const getImage = async (imageData) => {
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
     params: {
       ...imageData
     }
@@ -50,11 +37,8 @@ const getImage = async (imageData, token) => {
   return response.data
 }
 
-const getPress = async (pressData, token) => {
+const getPress = async (pressData) => {
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
     params: {
       ...pressData
     }
@@ -67,46 +51,31 @@ const getPress = async (pressData, token) => {
   return response.data
 }
 
-const updateImage = async (imageData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-  }
+const updateImage = async (imageData) => {
 
   let response
 
-  response = await axios.put(API_URL + imageData, imageData, config)
+  response = await axios.put(API_URL + imageData, imageData)
 
 
   return response.data
 }
 
-const deleteImage = async (trackID, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const deleteImage = async (trackID) => {
 
   let response
 
-  response = await axios.delete(API_URL + trackID, config)
+  response = await axios.delete(API_URL + trackID)
 
 
   return response.data
 }
 
-const deletePress = async (trackID, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const deletePress = async (trackID) => {
 
   let response
 
-  response = await axios.delete(API_URL + 'press/' + trackID, config)
+  response = await axios.delete(API_URL + 'press/' + trackID)
 
 
   return response.data

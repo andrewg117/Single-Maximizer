@@ -1,4 +1,4 @@
-const { S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3")
+const { S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3")
 
 const dotenv = require('dotenv').config()
 const port = process.env.Port || 5000
@@ -39,13 +39,19 @@ const getObject = new GetObjectCommand({
 })
 
 
-const uploadObject = (fileName, fileBody, mimetype) =>{
+const uploadS3Object = (fileName, fileBody, mimetype) =>{
   return new PutObjectCommand({
     Bucket: "singlemax-bucket",
     Key: fileName,
     Body: fileBody,
     ContentType: mimetype
-    // MaxKeys: 1,
+  })
+} 
+
+const deleteS3Object = (fileName) =>{
+  return new DeleteObjectCommand({
+    Bucket: "singlemax-bucket",
+    Key: fileName,
   })
 } 
 
@@ -55,7 +61,7 @@ const runS3Commands = async () => {
     // let {Contents} = await s3.send(searchBucket)
     // console.log(Contents)
 
-    // const response = await s3.send(uploadObject)
+    // const response = await s3.send(uploadS3Object)
     // console.log(response)
 
     const response = await s3.send(getObject)
@@ -68,5 +74,6 @@ const runS3Commands = async () => {
 module.exports = {
   s3,
   runS3Commands,
-  uploadObject,
+  uploadS3Object,
+  deleteS3Object,
 }

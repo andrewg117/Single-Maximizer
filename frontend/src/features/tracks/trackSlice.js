@@ -12,8 +12,7 @@ const initialState = {
 
 export const createTrack = createAsyncThunk('tracks/post', async (trackData, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await trackService.createTrack(trackData, token)
+    return await trackService.createTrack(trackData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -23,8 +22,7 @@ export const createTrack = createAsyncThunk('tracks/post', async (trackData, thu
 
 export const getTracks = createAsyncThunk('tracks/getAll', async (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await trackService.getTrack(token)
+    return await trackService.getTrack()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -34,8 +32,7 @@ export const getTracks = createAsyncThunk('tracks/getAll', async (_, thunkAPI) =
 
 export const getSingle = createAsyncThunk('tracks/single', async (id, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await trackService.getSingle(id, token)
+    return await trackService.getSingle(id)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -47,8 +44,7 @@ export const updateSingle = createAsyncThunk('tracks/putSingle', async (args, th
   try {
     const { trackID, ...trackData } = args
 
-    const token = thunkAPI.getState().auth.user.token
-    return await trackService.updateSingle(trackID, trackData, token)
+    return await trackService.updateSingle(trackID, trackData)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -58,8 +54,7 @@ export const updateSingle = createAsyncThunk('tracks/putSingle', async (args, th
 
 export const deleteTrack = createAsyncThunk('tracks/delete', async (id, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await trackService.deleteTrack(id, token)
+    return await trackService.deleteTrack(id)
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

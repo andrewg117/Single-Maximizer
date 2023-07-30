@@ -1,5 +1,5 @@
 const Image = require('../models/imageModel')
-const { s3, uploadObject } = require('../config/s3helper')
+const { s3, uploadS3Object, deleteS3Object } = require('../config/s3helper')
 const asyncHandler = require('express-async-handler')
 
 // @desc    Post image
@@ -39,7 +39,7 @@ const uploadImage = asyncHandler(async (req, res) => {
     new: true
   })
 
-  const response = await s3.send(uploadObject(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+  const response = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
   // console.log(response)
 
@@ -76,7 +76,7 @@ const uploadPress = asyncHandler(async (req, res) => {
       new: true
     })
 
-    const response = await s3.send(uploadObject(updatedImage._id.toString(), file.buffer, file.mimetype))
+    const response = await s3.send(uploadS3Object(updatedImage._id.toString(), file.buffer, file.mimetype))
 
   })
 
@@ -180,7 +180,7 @@ const updateImage = asyncHandler(async (req, res) => {
     new: true
   })
 
-  const response = await s3.send(uploadObject(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+  const response = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
   // console.log(response)
 
@@ -212,8 +212,9 @@ const deleteImage = asyncHandler(async (req, res) => {
   image.forEach(async (item) => {
     // console.log(item._id)
     const deleteImage = await Image.findByIdAndDelete(item._id)
-  })
 
+    const response = await s3.send(deleteS3Object(item._id.toString()))
+  })
 
   res.json(req.params.id)
 })
@@ -241,6 +242,8 @@ const deletePress = asyncHandler(async (req, res) => {
   }
 
   const deleteImage = await Image.findByIdAndDelete(req.params.id)
+
+  const response = await s3.send(deleteS3Object(image._id.toString()))
 
   res.json(deleteImage.id)
 })

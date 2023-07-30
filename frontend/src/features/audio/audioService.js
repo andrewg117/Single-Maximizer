@@ -2,61 +2,41 @@ import axios from "axios"
 
 const API_URL = '/api/audio/'
 
-const postAudio = async (audioData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const postAudio = async (audioData) => {
 
   let response
 
-  response = await axios.post(API_URL, audioData, config)
+  response = await axios.post(API_URL, audioData)
   
 
   return response.data
 }
 
-const getAudio = async (trackId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const getAudio = async (trackId) => {
 
   let response
 
-  response = await axios.get(API_URL + trackId, config)
+  response = await axios.get(API_URL + trackId)
   
 
   return response.data
 }
 
-const updateAudio = async (audioData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const updateAudio = async (audioData) => {
 
   let response
 
-  response = await axios.put(API_URL + audioData, audioData, config)
+  response = await axios.put(API_URL + audioData, audioData)
   
 
   return response.data
 }
 
-const deleteAudio = async (trackId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+const deleteAudio = async (trackId) => {
 
   let response
 
-  response = await axios.delete(API_URL + trackId, config)
+  response = await axios.delete(API_URL + trackId)
   
 
   return response.data
