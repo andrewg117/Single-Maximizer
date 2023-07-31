@@ -5,7 +5,7 @@ import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
 import 'react-h5-audio-player/lib/styles.css'
 
-function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
+function AudioUpload({ changeFile, file, fieldname }) {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
@@ -55,41 +55,23 @@ function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
 
   return (
     <>
-      <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file || url}>
+      <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload audio</p>
       </div>
       <div>
-        {url ?
-          <>
-            <AudioPlayer
-              src={url}
-              controls
-              layout="horizontal"
-              autoPlayAfterSrcChange={false}
-              volume={.2}
-            />
-            <p
-              id={styles.remove_audio}
-              onClick={(e) => {
-                setEdit(false)
-                getBlob(null)
-                URL.revokeObjectURL(blob)
-                changeFile((prevState) => ({
-                  ...prevState,
-                  [fieldname]: null,
-                  [urlField]: null
-                }))
-              }}>
-              Remove Audio
-            </p>
-          </>
-          :
-          <></>}
-        {file ?
+        {file !== null ?
           <>
             {isEdit === true ?
-              <></>
+              <>
+                <AudioPlayer
+                  src={makeBlob()}
+                  controls
+                  layout="horizontal"
+                  autoPlayAfterSrcChange={false}
+                  volume={.2}
+                />
+              </>
               :
               <>
                 <AudioPlayer
@@ -101,22 +83,21 @@ function AudioUpload({ changeFile, file, fieldname, url, urlField }) {
                 />
                 <p>{file instanceof FormData ? file.get('trackAudio').name : ''}</p>
                 <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
-                <p
-                  id={styles.remove_audio}
-                  onClick={(e) => {
-                    setEdit(false)
-                    getBlob(null)
-                    URL.revokeObjectURL(blob)
-                    changeFile((prevState) => ({
-                      ...prevState,
-                      [fieldname]: null,
-                      [urlField]: null
-                    }))
-                  }}>
-                  Remove Audio
-                </p>
               </>
             }
+            <p
+              id={styles.remove_audio}
+              onClick={(e) => {
+                setEdit(false)
+                getBlob(null)
+                URL.revokeObjectURL(blob)
+                changeFile((prevState) => ({
+                  ...prevState,
+                  [fieldname]: null
+                }))
+              }}>
+              Remove
+            </p>
           </>
           :
           <>

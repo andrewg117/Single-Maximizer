@@ -31,7 +31,7 @@ const uploadImage = asyncHandler(async (req, res) => {
     })
   }
 
-  const updatedImage = await Image.findByIdAndUpdate(image._id, {
+  const uploadedImage = await Image.findByIdAndUpdate(image._id, {
     $set: {
       s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
     }
@@ -39,9 +39,9 @@ const uploadImage = asyncHandler(async (req, res) => {
     new: true
   })
 
-  const response = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+  const response = await s3.send(uploadS3Object(uploadedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
-  // console.log(response)
+  // console.log("Post: " + response)
 
   if (image) {
     res.json(image)
@@ -180,9 +180,11 @@ const updateImage = asyncHandler(async (req, res) => {
     new: true
   })
 
-  const response = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+  // const delResponse = await s3.send(deleteS3Object(image._id.toString()))
 
-  // console.log(response)
+  const putResponse = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
+
+  // console.log("Put: " + JSON.stringify(response))
 
   res.json(updatedImage)
 })

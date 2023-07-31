@@ -85,7 +85,7 @@ const updateAudio = asyncHandler(async (req, res) => {
   // console.log('File: ' + JSON.stringify(req.files))
   // console.log('Body: ' + JSON.stringify(req.body))
 
-  const newBody = {
+  const newBody = { 
     ...req.body,
     file: req.file
   }
@@ -94,7 +94,7 @@ const updateAudio = asyncHandler(async (req, res) => {
     new: true
   })
   const delResponse = await s3.send(deleteS3Object(audio._id.toString()))
-  console.log(delResponse)
+  // console.log(delResponse)
 
   const putResponse = await s3.send(uploadS3Object(audio._id.toString(), req.file.buffer, req.file.mimetype))
 

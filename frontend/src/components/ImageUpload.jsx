@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 
-const ImageUpload = ({ changeFile, file, fieldname, url, urlField, altText }) => {
+const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
   const [isEdit, setEdit] = useState(true)
 
   const makeBlob = useCallback(() => {
@@ -45,43 +45,30 @@ const ImageUpload = ({ changeFile, file, fieldname, url, urlField, altText }) =>
 
   return (
     <>
-      <div {...getRootProps()} hidden={file || url}>
+      <div {...getRootProps()} hidden={file}>
         <input {...getInputProps()} />
         <p>Drag and drop or click to upload image</p>
       </div>
-      {url !== '' ?
-        <>
-          <img src={url} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
-          <div
-            id={styles.remove_image}
-            onClick={(e) => {
-              setEdit(false)
-              changeFile((prevState) => ({
-                ...prevState,
-                [fieldname]: null,
-                [urlField]: ''
-              }))
-            }}>
-            X
-          </div>
-        </>
-        :
-        <></>
-      }
       {
         file ?
           <>
-            <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
-            <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
-            <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
+            {isEdit === true ?
+              <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
+              // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
+              :
+              <>
+                <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+                <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
+                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
+              </>
+            }
             <div
               id={styles.remove_image}
               onClick={(e) => {
                 setEdit(false)
                 changeFile((prevState) => ({
                   ...prevState,
-                  [fieldname]: null,
-                  [urlField]: ''
+                  [fieldname]: null
                 }))
               }}>
               X

@@ -93,16 +93,14 @@ const Profile = () => {
     if (isError) {
       toast.error(message)
     }
+    dispatch(resetUser())
+    dispatch(resetImage())
 
     dispatch(getUser()).unwrap()
       .catch((error) => console.error(error))
     dispatch(getImage({ section: 'avatar' })).unwrap()
       .catch((error) => console.error(error))
       
-    return () => {
-      dispatch(resetUser())
-      dispatch(resetImage())
-    }
   }, [isError, message, dispatch])
 
   if (isLoading) {

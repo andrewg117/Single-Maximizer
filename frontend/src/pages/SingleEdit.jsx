@@ -11,6 +11,7 @@ import ConfirmAlert from '../components/ConfirmAlert'
 import GenreCheckBox from '../components/GenreCheckBox'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
+import { Buffer } from 'buffer'
 import styles from '../css/new_release_style.module.css'
 
 function SingleEdit() {
@@ -34,11 +35,9 @@ function SingleEdit() {
     trackPress: [],
     newPressList: [],
     deletePressList: [],
-    s3ImageURL: '',
-    s3AudioURL: '',
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList, s3ImageURL, s3AudioURL } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
 
 
   const { isPressSuccess } = useSelector((state) => state.image)
@@ -83,6 +82,12 @@ function SingleEdit() {
     setPressState(store.getState().image['press'])
 
     if (singleState) {
+      let trackBuffer
+      if (imageState) {
+        const image = imageState.file
+        trackBuffer = Buffer.from(image.buffer, 'ascii')
+      }
+      const audio = audioState ? audioState.file : null
 
       const defaultDate = convertDate(singleState.deliveryDate)
 
@@ -102,9 +107,9 @@ function SingleEdit() {
         genres: singleState.genres,
         trackSum: singleState.trackSum,
         pressSum: singleState.pressSum,
-        trackPress: pressState ? pressState : [],
-        s3ImageURL: imageState ? imageState.s3ImageURL : '',
-        s3AudioURL: audioState ? audioState.s3AudioURL : '',
+        trackCover: trackBuffer,
+        trackAudio: audio,
+        trackPress: pressState ? pressState : []
       }))
 
     } else {
@@ -121,7 +126,8 @@ function SingleEdit() {
       toast.error(message)
     }
 
-    if (user) {
+    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && user) {
+
       dispatch(updateSingle({
         trackID: id,
         trackTitle,
@@ -140,7 +146,7 @@ function SingleEdit() {
         pressSum,
       })).unwrap()
         .then((data) => {
-          if (trackCover) {
+          if (trackCover instanceof FormData) {
             let imageData = new FormData()
             imageData.append("Image", trackCover.get('Image'))
             imageData.append("trackID", id)
@@ -148,7 +154,7 @@ function SingleEdit() {
             dispatch(updateImage(imageData))
           } 
 
-          if (trackAudio) {
+          if (trackAudio instanceof FormData) {
             let audioData = new FormData()
             audioData.append("trackAudio", trackAudio.get('trackAudio'))
             audioData.append("trackID", id)
@@ -217,6 +223,9 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
+    dispatch(resetSingle())
+    dispatch(resetImage())
+    dispatch(resetAudio())
 
     dispatch(getSingle(id)).unwrap()
       .catch((error) => console.error(error))
@@ -258,8 +267,6 @@ function SingleEdit() {
                   changeFile={setFormState}
                   file={trackCover}
                   fieldname={'trackCover'}
-                  url={s3ImageURL}
-                  urlField={'s3ImageURL'}
                   altText={'Upload Track Cover'}
                 />
               </div>
@@ -295,8 +302,6 @@ function SingleEdit() {
                 changeFile={setFormState}
                 file={trackAudio}
                 fieldname={'trackAudio'}
-                url={s3AudioURL}
-                urlField={'s3AudioURL'}
               />
             </div>
             <div className={styles.top_input_div}>

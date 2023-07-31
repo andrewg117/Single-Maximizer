@@ -6,7 +6,7 @@ const ImageFrame = ({ blob, id, removePress }) => {
   return (
     <>
       <div id={styles.press_frame}>
-        <img src={blob} alt={'N/A'} />
+        <img src={`data:image/*;base64,${blob}`} alt={'N/A'} />
         <p id={styles.remove_press} onClick={(e) => removePress(e, id)}>
           X
         </p>
@@ -105,7 +105,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
         {
           trackPress.length > 0 ?
             trackPress.map((item, index) => {
-              return <ImageFrame key={index} id={item._id} blob={item.s3ImageURL} removePress={removePress} />
+              return <ImageFrame key={index} id={item._id} blob={item.file.buffer} removePress={removePress} />
             })
             :
             []

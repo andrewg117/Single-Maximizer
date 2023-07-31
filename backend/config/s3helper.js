@@ -44,7 +44,7 @@ const uploadS3Object = (fileName, fileBody, mimetype) =>{
     Bucket: "singlemax-bucket",
     Key: fileName,
     Body: fileBody,
-    ContentType: mimetype
+    ContentType: mimetype,
   })
 } 
 

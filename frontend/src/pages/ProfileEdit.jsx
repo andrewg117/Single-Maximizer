@@ -26,10 +26,9 @@ function ProfileEdit() {
     tiktok: '',
     bio_text: '',
     profileImage: null,
-    s3ImageURL: '',
   })
 
-  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage, s3ImageURL } = formState
+  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -73,7 +72,6 @@ function ProfileEdit() {
         tiktok: userState.tiktok,
         bio_text: userState.bio_text,
         profileImage: buffer,
-        s3ImageURL: imageState ? imageState.s3ImageURL : '',
       }))
 
     } else {
@@ -192,8 +190,6 @@ function ProfileEdit() {
                   changeFile={setFormState}
                   file={profileImage}
                   fieldname={'profileImage'}
-                  url={s3ImageURL}
-                  urlField={'s3ImageURL'}
                   altText={'Upload Profile Image'}
                 />
               </div>
