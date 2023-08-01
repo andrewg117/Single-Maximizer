@@ -1,4 +1,5 @@
 const Audio = require('../models/audioModel')
+const Track = require('../models/trackModel')
 const { s3, uploadS3Object, deleteS3Object } = require('../config/s3helper')
 const asyncHandler = require('express-async-handler')
 
@@ -21,6 +22,14 @@ const uploadAudio = asyncHandler(async (req, res) => {
   })
 
   const updatedAudio = await Audio.findByIdAndUpdate(audio._id, {
+    $set: {
+      s3AudioURL: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
+    }
+  }, {
+    new: true
+  })
+  
+  const updateTrack = await Track.findByIdAndUpdate(audio.trackID, {
     $set: {
       s3AudioURL: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
     }
@@ -124,6 +133,7 @@ const deleteAudio = asyncHandler(async (req, res) => {
 
   const deleteAudio = await Audio.findByIdAndDelete(audio._id)
 
+  const response = await s3.send(deleteS3Object(audio._id.toString()))
 
   res.json(deleteAudio.id)
 })

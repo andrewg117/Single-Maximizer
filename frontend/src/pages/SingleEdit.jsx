@@ -468,12 +468,12 @@ function SingleEdit() {
                   onCancel={closeConfirm}
                 />)
               }
-              {/* <button className={styles.profile_btn} onClick={(e) => {
+              <button className={styles.profile_btn} onClick={(e) => {
                 setShowDelPopup(() => {
                   e.preventDefault()
                   return true
                 })
-              }}>DELETE</button> */}
+              }}>DELETE</button>
               {showDelPopup &&
                 (<ConfirmAlert
                   message="Do you want to delete this Single?"

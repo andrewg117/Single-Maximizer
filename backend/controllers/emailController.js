@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer')
 const Email = require('../models/emailModel')
+const Image = require('../models/imageModel')
 const Track = require('../models/trackModel')
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
@@ -36,6 +37,43 @@ const templateEmail = (singleDoc) => {
   return mailOptions
 }
 
+// Template email
+const generalEmail = async (singleDoc) => {
+  const userDoc = await User.findById(singleDoc.user)
+  let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
+
+  emailContent += `<p>Featured Artist(s): ${singleDoc.features || ''}</p>`
+  emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
+  emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
+  emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
+  emailContent += `<p>Album Release Date: ${singleDoc.albumDate || ''}</p>`
+  // TODO: Add input for label
+  emailContent += `<p>Label: ${singleDoc.label || ''}</p>`
+  emailContent += `<br><br>`
+  emailContent += `<p>Bio: </p><p>${userDoc.bio_text}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Website: ${userDoc.website || ''}</p>`
+  emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
+  emailContent += `<p>Facebook: ${userDoc.fbook || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
+  emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
+  emailContent += `<br>`
+  // TODO: Create image/audio links in AWS
+  emailContent += `<p>Song Link: ${singleDoc.audio || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc.cover || ''}</p>`
+
+  const pressDocs = await Image.find({ trackID: singleDoc.trackID, section: 'press' })
+  let pressURLs = []
+  pressDocs.forEach((press) => {
+    pressURLs.push(press.s3ImageURL)
+  })
+  emailContent += `<p>Press Photo Link: ${pressURLs || ''}</p>`
+
+
+  return emailContent
+}
+
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
   // create reusable transporter object using the default SMTP transport
@@ -61,6 +99,7 @@ const sendScheduledEmail = async () => {
 
   for (const track in tracks) {
     const singleDoc = tracks[track]
+
     const userDoc = await User.findById(singleDoc.user)
     let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
 
@@ -72,7 +111,7 @@ const sendScheduledEmail = async () => {
     // TODO: Add input for label
     emailContent += `<p>Label: ${singleDoc.label || ''}</p>`
     emailContent += `<br><br>`
-    emailContent += `<p>Bio: </p><p>${userDoc.bio_text}</p>`
+    emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
     emailContent += `<br>`
     emailContent += `<p>Website: ${userDoc.website || ''}</p>`
     emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
@@ -82,9 +121,15 @@ const sendScheduledEmail = async () => {
     emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
     emailContent += `<br>`
     // TODO: Create image/audio links in AWS
-    emailContent += `<p>Song Link: ${'trackDoc.audio'}</p>`
-    emailContent += `<p>Cover Link: ${'trackDoc.cover'}</p>`
-    emailContent += `<p>Press Photo Link: ${'trackDoc.press'}</p>`
+    emailContent += `<p>Song Link: ${singleDoc.s3AudioURL || ''}</p>`
+    emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
+
+    emailContent += `<p>Press Photo Link(s): </p>`
+    // let pressURLs = []
+    
+    singleDoc.s3PressURL.forEach(async (press) => {
+      emailContent += `<p>${press || ''}</p>`
+    })
 
     // setup email data with unicode symbols
     const mailOptions = {

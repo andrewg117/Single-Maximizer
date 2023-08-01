@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Track = require('../models/trackModel')
+const User = require('../models/userModel')
 
 // @desc    Get tracks
 // @route   GET /api/track
@@ -64,6 +65,7 @@ const setTrack = asyncHandler(async (req, res) => {
     trackSum: req.body.trackSum,
     pressSum: req.body.pressSum,
     isDelivered: false,
+    s3PressURL: [],
     user: req.user.id
   })
 
@@ -127,6 +129,12 @@ const deleteTrack = asyncHandler(async (req, res) => {
   }
 
   const deleteTrack = await Track.findByIdAndDelete(req.params.id)
+
+  const updateUser = await User.findByIdAndUpdate(req.user.id, {
+    $inc: { trackAllowance: 1 }
+  }, {
+    new: true
+  })
 
   res.json(deleteTrack.id)
 })

@@ -73,6 +73,18 @@ const trackSchema = mongoose.Schema({
     default: false,
     required: false
   },
+  s3ImageURL: {
+    type: String,
+    required: false
+  },
+  s3AudioURL: {
+    type: String,
+    required: false
+  },
+  s3PressURL: {
+    type: Array,
+    required: false
+  },
 },
 {
   timestamps: true,

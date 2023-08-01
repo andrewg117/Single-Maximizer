@@ -1,4 +1,5 @@
 const Image = require('../models/imageModel')
+const Track = require('../models/trackModel')
 const { s3, uploadS3Object, deleteS3Object } = require('../config/s3helper')
 const asyncHandler = require('express-async-handler')
 
@@ -39,6 +40,14 @@ const uploadImage = asyncHandler(async (req, res) => {
     new: true
   })
 
+  const updateTrack = await Track.findByIdAndUpdate(image.trackID, {
+    $set: {
+      s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+    }
+  }, {
+    new: true
+  })
+
   const response = await s3.send(uploadS3Object(uploadedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
   // console.log("Post: " + response)
@@ -58,6 +67,7 @@ const uploadPress = asyncHandler(async (req, res) => {
   }
 
   // console.log('Body: ' + JSON.stringify(req.body))
+
   req.files.forEach(async (file) => {
     let image
     // console.log(file.originalname)
@@ -71,6 +81,14 @@ const uploadPress = asyncHandler(async (req, res) => {
     const updatedImage = await Image.findByIdAndUpdate(image._id, {
       $set: {
         s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+      }
+    }, {
+      new: true
+    })
+
+    const updateTrack = await Track.findByIdAndUpdate(req.body.trackID, {
+      $push: {
+        s3PressURL: updatedImage.s3ImageURL
       }
     }, {
       new: true
@@ -180,8 +198,6 @@ const updateImage = asyncHandler(async (req, res) => {
     new: true
   })
 
-  // const delResponse = await s3.send(deleteS3Object(image._id.toString()))
-
   const putResponse = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
   // console.log("Put: " + JSON.stringify(response))
@@ -243,7 +259,14 @@ const deletePress = asyncHandler(async (req, res) => {
     throw new Error('User not authorized')
   }
 
+  const updateTrack = await Track.findByIdAndUpdate(image.trackID, {
+    $pull: { s3PressURL: image.s3ImageURL }
+  }, {
+    new: true
+  })
+
   const deleteImage = await Image.findByIdAndDelete(req.params.id)
+
 
   const response = await s3.send(deleteS3Object(image._id.toString()))
 
