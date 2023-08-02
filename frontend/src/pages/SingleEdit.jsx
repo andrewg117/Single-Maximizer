@@ -25,6 +25,7 @@ function SingleEdit() {
     producer: '',
     scloud: '',
     album: '',
+    trackLabel: '',
     ytube: '',
     albumDate: '',
     genres: [],
@@ -37,7 +38,7 @@ function SingleEdit() {
     deletePressList: [],
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
 
 
   const { isPressSuccess } = useSelector((state) => state.image)
@@ -102,6 +103,7 @@ function SingleEdit() {
         producer: singleState.producer,
         scloud: singleState.scloud,
         album: singleState.album,
+        trackLabel: singleState.trackLabel,
         ytube: singleState.ytube,
         albumDate: singleState.albumDate,
         genres: singleState.genres,
@@ -128,23 +130,7 @@ function SingleEdit() {
 
     if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && user) {
 
-      dispatch(updateSingle({
-        trackID: id,
-        trackTitle,
-        artist,
-        deliveryDate,
-        spotify,
-        features,
-        apple,
-        producer,
-        scloud,
-        album,
-        ytube,
-        albumDate,
-        genres,
-        trackSum,
-        pressSum,
-      })).unwrap()
+      dispatch(updateSingle({ trackID: id, trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
         .then((data) => {
           if (trackCover instanceof FormData) {
             let imageData = new FormData()
@@ -415,7 +401,7 @@ function SingleEdit() {
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="albumdate">ALBUM RELEASE DATE</label>
+                <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
                 <input
                   className={styles.new_input}
                   type="text"
@@ -425,6 +411,19 @@ function SingleEdit() {
                   defaultValue={albumDate}
                   onChange={onChange} />
               </div>
+              <div>
+                <label htmlFor="trackLabel">LABEL</label>
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="trackLabel"
+                  name="trackLabel"
+                  placeholder="What is the Label for the track?"
+                  defaultValue={trackLabel}
+                  onChange={onChange} />
+              </div>
+            </div>
+            <div className={styles.input_div}>
               <div>
                 <label htmlFor="genres">GENRES</label>
                 <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />

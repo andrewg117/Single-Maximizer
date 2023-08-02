@@ -18,16 +18,16 @@ import styles from '../css/new_release_style.module.css'
 
 function NewRelease() {
   const convertDate = (date) => {
-  const d = new Date(date)
+    const d = new Date(date)
 
-  const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
-  const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
-  const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
+    const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
+    const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
+    const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
 
-  let returnDate = year + '-' + month + '-' + day
+    let returnDate = year + '-' + month + '-' + day
 
-  return returnDate
-}
+    return returnDate
+  }
   const today = new Date()
   const graceDate = convertDate(today.setDate(today.getDate() + 7))
 
@@ -41,6 +41,7 @@ function NewRelease() {
     producer: '',
     scloud: '',
     album: '',
+    trackLabel: '',
     ytube: '',
     albumDate: '',
     genres: [],
@@ -53,7 +54,7 @@ function NewRelease() {
     s3AudioURL: '',
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
+  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -67,7 +68,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if(user.trackAllowance === 0) {
+    if (user.trackAllowance === 0) {
       navigate('/profile/singles')
     }
 
@@ -109,7 +110,7 @@ function NewRelease() {
       })
       pressData.append("section", 'press')
 
-      dispatch(createTrack({ trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
+      dispatch(createTrack({ trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
         .then((data) => {
           const trackID = data._id
 
@@ -157,17 +158,19 @@ function NewRelease() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={(e) => {setShowPopup(() => {
-          e.preventDefault()
-          return true
-        })}}>
-        {showPopup &&
-          (<ConfirmAlert
-            message="Do you want to save these changes?"
-            onConfirm={onSubmit}
-            onCancel={closeConfirm}
-          />)
-        }
+        <form id={styles.new_form} onSubmit={(e) => {
+          setShowPopup(() => {
+            e.preventDefault()
+            return true
+          })
+        }}>
+          {showPopup &&
+            (<ConfirmAlert
+              message="Do you want to save these changes?"
+              onConfirm={onSubmit}
+              onCancel={closeConfirm}
+            />)
+          }
 
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
@@ -293,7 +296,7 @@ function NewRelease() {
                   type="text"
                   id="scloud"
                   name="scloud"
-                  placeholder="Enter the track's Soundcloud link" 
+                  placeholder="Enter the track's Soundcloud link"
                   value={scloud}
                   onChange={onChange} />
               </div>
@@ -306,7 +309,7 @@ function NewRelease() {
                   type="text"
                   id="album"
                   name="album"
-                  placeholder="Is this song part of an album?" 
+                  placeholder="Is this song part of an album?"
                   value={album}
                   onChange={onChange} />
               </div>
@@ -317,7 +320,7 @@ function NewRelease() {
                   type="text"
                   id="ytube"
                   name="ytube"
-                  placeholder="Enter the Youtube video link" 
+                  placeholder="Enter the Youtube video link"
                   value={ytube}
                   onChange={onChange} />
               </div>
@@ -330,10 +333,23 @@ function NewRelease() {
                   type="text"
                   id="albumDate"
                   name="albumDate"
-                  placeholder="When will the album be released?" 
+                  placeholder="When will the album be released?"
                   value={albumDate}
                   onChange={onChange} />
               </div>
+              <div>
+                <label htmlFor="trackLabel">LABEL</label>
+                <input
+                  className={styles.new_input}
+                  type="text"
+                  id="trackLabel"
+                  name="trackLabel"
+                  placeholder="What is the Label for the track?"
+                  value={trackLabel}
+                  onChange={onChange} />
+              </div>
+            </div>
+            <div className={styles.input_div}>
               <div>
                 <label htmlFor="genres">GENRES</label>
                 <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
@@ -346,7 +362,7 @@ function NewRelease() {
                   name="trackSum"
                   id="trackSum"
                   cols="30" rows="10"
-                  placeholder="Enter your track details here" 
+                  placeholder="Enter your track details here"
                   value={trackSum}
                   onChange={onChange}></textarea>
               </div>
@@ -358,7 +374,7 @@ function NewRelease() {
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"
-                  placeholder="Enter recent accomplishments" 
+                  placeholder="Enter recent accomplishments"
                   value={pressSum}
                   onChange={onChange}></textarea>
               </div>

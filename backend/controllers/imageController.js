@@ -108,9 +108,9 @@ const getImage = asyncHandler(async (req, res) => {
   let image
 
   if (req.query.section === 'avatar') {
-    image = await Image.findOne({ user: req.user.id })
+    image = await Image.findOne({ user: req.user.id, section: 'avatar' })
   } else if (req.query.section === 'cover') {
-    image = await Image.findOne({ trackID: req.query.trackID })
+    image = await Image.findOne({ trackID: req.query.trackID, section: 'cover' })
   }
 
   if (!image) {

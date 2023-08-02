@@ -43,17 +43,19 @@ function ProfileEdit() {
   )
 
   const [showPopup, setShowPopup] = useState(false)
+  const [imageState, setImageState] = useState(null)
+  const [userState, setUserState] = useState(null)
 
   store.subscribe(() => {
-    const userState = store.getState().auth['user']
-    const imageState = store.getState().image['image']
+    setUserState(store.getState().auth['user'])
+    setImageState(store.getState().image['image'])
 
-    if (userState !== null && user) {
-      let buffer = null
+    if (userState) {
+      let buffer
       if (imageState) {
-        const image = imageState ? imageState.file : null
+        const imageFile = imageState.file
 
-        buffer = Buffer.from(image.buffer, 'ascii')
+        buffer = Buffer.from(imageFile.buffer, 'ascii')
       }
 
       setFormState((prevState) => ({
@@ -128,18 +130,23 @@ function ProfileEdit() {
             imageData.append("Image", profileImage.get('Image'))
             imageData.append("section", 'avatar')
             dispatch(postImage(imageData))
+              .catch((error) => console.error(error))
           } else if (profileImage instanceof FormData) {
             let imageData = new FormData()
             imageData.append("Image", profileImage.get('Image'))
             imageData.append("section", 'avatar')
             dispatch(updateImage(imageData))
+              .catch((error) => console.error(error))
           } else {
-            let imageData = new FormData()
-            imageData.append("Image", profileImage)
-            imageData.append("section", 'avatar')
-            dispatch(updateImage(imageData))
+            // console.log('Test')
+            // let imageData = new FormData()
+            // imageData.append("Image", profileImage)
+            // imageData.append("section", 'avatar')
+            // dispatch(updateImage(imageData))
+            //   .catch((error) => console.error(error))
           }
         })
+        .catch((error) => console.error(error))
 
       toast.success("Update Successful")
       navigate('/profile')
@@ -205,7 +212,7 @@ function ProfileEdit() {
                   id='fname'
                   name='fname'
                   placeholder="Enter your first name"
-                  value={fname}
+                  defaultValue={fname}
                   onChange={onChange} />
               </div>
               <div>
@@ -216,7 +223,7 @@ function ProfileEdit() {
                   id='lname'
                   name='lname'
                   placeholder="Enter your last name"
-                  value={lname}
+                  defaultValue={lname}
                   onChange={onChange} />
               </div>
             </div>
@@ -229,7 +236,7 @@ function ProfileEdit() {
                   id='username'
                   name='username'
                   placeholder="Enter your username"
-                  value={username}
+                  defaultValue={username}
                   onChange={onChange} />
               </div>
               <div>
@@ -240,7 +247,7 @@ function ProfileEdit() {
                   id="email"
                   name="email"
                   placeholder="Enter your email address"
-                  value={email}
+                  defaultValue={email}
                   onChange={onChange} />
               </div>
             </div>
@@ -253,7 +260,7 @@ function ProfileEdit() {
                   id="website"
                   name="website"
                   placeholder="Enter your website starting with http://"
-                  value={website}
+                  defaultValue={website}
                   onChange={onChange} />
               </div>
               <div>
@@ -264,7 +271,7 @@ function ProfileEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter your soundcloud link"
-                  value={scloud}
+                  defaultValue={scloud}
                   onChange={onChange} />
               </div>
             </div>
@@ -277,7 +284,7 @@ function ProfileEdit() {
                   id="twitter"
                   name="twitter"
                   placeholder="Enter your twitter handle"
-                  value={twitter}
+                  defaultValue={twitter}
                   onChange={onChange} />
               </div>
               <div>
@@ -288,7 +295,7 @@ function ProfileEdit() {
                   id="igram"
                   name="igram"
                   placeholder="Enter your instagram username"
-                  value={igram}
+                  defaultValue={igram}
                   onChange={onChange} />
               </div>
             </div>
@@ -301,7 +308,7 @@ function ProfileEdit() {
                   id="fbook"
                   name="fbook"
                   placeholder="Enter your facebook handle"
-                  value={fbook}
+                  defaultValue={fbook}
                   onChange={onChange} />
               </div>
               <div>
@@ -312,7 +319,7 @@ function ProfileEdit() {
                   id="spotify"
                   name="spotify"
                   placeholder="Enter your spotify URI"
-                  value={spotify}
+                  defaultValue={spotify}
                   onChange={onChange} />
               </div>
             </div>
@@ -325,7 +332,7 @@ function ProfileEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter your youtube profile link"
-                  value={ytube}
+                  defaultValue={ytube}
                   onChange={onChange} />
               </div>
               <div>
@@ -336,7 +343,7 @@ function ProfileEdit() {
                   id="tiktok"
                   name="tiktok"
                   placeholder="Enter your tiktok username"
-                  value={tiktok}
+                  defaultValue={tiktok}
                   onChange={onChange} />
               </div>
             </div>
@@ -348,7 +355,7 @@ function ProfileEdit() {
                   id="bio_text"
                   cols="30" rows="10"
                   placeholder="Enter your artist bio here"
-                  value={bio_text ? bio_text : ""}
+                  defaultValue={bio_text ? bio_text : ""}
                   onChange={onChange}></textarea>
               </div>
             </div>

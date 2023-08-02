@@ -48,6 +48,10 @@ const trackSchema = mongoose.Schema({
     type: String,
     required: false
   },
+  trackLabel: {
+    type: String,
+    required: false
+  },
   ytube: {
     type: String,
     required: false

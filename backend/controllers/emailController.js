@@ -37,20 +37,21 @@ const templateEmail = (singleDoc) => {
   return mailOptions
 }
 
-// Template email
-const generalEmail = async (singleDoc) => {
+// General email
+const generalEmail = async (singleDoc, transporter, subjectType) => {
+  let emailContent
+
   const userDoc = await User.findById(singleDoc.user)
-  let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
+  emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
 
   emailContent += `<p>Featured Artist(s): ${singleDoc.features || ''}</p>`
   emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
   emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
   emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
   emailContent += `<p>Album Release Date: ${singleDoc.albumDate || ''}</p>`
-  // TODO: Add input for label
-  emailContent += `<p>Label: ${singleDoc.label || ''}</p>`
+  emailContent += `<p>Label: ${singleDoc.trackLabel || ''}</p>`
   emailContent += `<br><br>`
-  emailContent += `<p>Bio: </p><p>${userDoc.bio_text}</p>`
+  emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
   emailContent += `<br>`
   emailContent += `<p>Website: ${userDoc.website || ''}</p>`
   emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
@@ -59,19 +60,109 @@ const generalEmail = async (singleDoc) => {
   emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
   emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
   emailContent += `<br>`
-  // TODO: Create image/audio links in AWS
-  emailContent += `<p>Song Link: ${singleDoc.audio || ''}</p>`
-  emailContent += `<p>Cover Link: ${singleDoc.cover || ''}</p>`
+  emailContent += `<p>Song Link: ${singleDoc.s3AudioURL || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
 
-  const pressDocs = await Image.find({ trackID: singleDoc.trackID, section: 'press' })
-  let pressURLs = []
-  pressDocs.forEach((press) => {
-    pressURLs.push(press.s3ImageURL)
+  emailContent += `<p>Press Photo Link(s): </p>`
+
+  singleDoc.s3PressURL.forEach((press) => {
+    emailContent += `<p>${press || ''}</p>`
   })
-  emailContent += `<p>Press Photo Link: ${pressURLs || ''}</p>`
 
+  let subjectLine
+  switch (subjectType) {
+    case 'default':
+      subjectLine = `${singleDoc.artist} - ${singleDoc.trackTitle}`
+      break
+    case 'Mizfitz':
+      subjectLine = `Artist Music Submission - ${singleDoc.artist}`
+      break
+    case 'Hop Nation':
+      subjectLine = `Podcast Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`
+      break
+    case 'Brooklyn Radio':
+      subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`
+  }
 
-  return emailContent
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+    to: EMAILTO, // list of receivers
+    subject: subjectLine, // Subject line
+    html: emailContent // html body
+  }
+
+  transporter.sendMail(mailOptions, async (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error)
+    } else {
+      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+      //   new: true
+      // })
+      console.log('Email sent:', info.response)
+    }
+  })
+}
+
+// Alternate email 
+const altEmail = async (singleDoc, transporter, subjectType) => {
+
+  const userDoc = await User.findById(singleDoc.user)
+
+  let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Featured: ${singleDoc.features || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Spotify Link: ${userDoc.spotify || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Download Link: ${singleDoc.s3AudioURL || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
+  emailContent += `<br>`
+  emailContent += `<br>`
+  emailContent += `<p>Press Photos: </p>`
+  singleDoc.s3PressURL.forEach((press) => {
+    emailContent += `<p>${press || ''}</p>`
+  })
+  emailContent += `<br>`
+  emailContent += `<br>`
+  emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
+
+  let subjectLine
+  switch (subjectType) {
+    case 'Rapzilla':
+      subjectLine = `New Stream: ${singleDoc.artist} - ${singleDoc.trackTitle}`
+      break
+    case 'KDHX':
+      subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`
+  }
+
+  // setup email data with unicode symbols
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+    to: EMAILTO, // list of receivers
+    subject: subjectLine, // Subject line
+    html: emailContent // html body
+  }
+
+  transporter.sendMail(mailOptions, async (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error)
+    } else {
+      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+      //   new: true
+      // })
+      console.log('Email sent:', info.response)
+    }
+  })
 }
 
 // @desc    Send Scheduled Email
@@ -100,55 +191,12 @@ const sendScheduledEmail = async () => {
   for (const track in tracks) {
     const singleDoc = tracks[track]
 
-    const userDoc = await User.findById(singleDoc.user)
-    let emailContent = `<p>Artist: ${singleDoc.artist || ''}</p>`
-
-    emailContent += `<p>Featured Artist(s): ${singleDoc.features || ''}</p>`
-    emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
-    emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
-    emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
-    emailContent += `<p>Album Release Date: ${singleDoc.albumDate || ''}</p>`
-    // TODO: Add input for label
-    emailContent += `<p>Label: ${singleDoc.label || ''}</p>`
-    emailContent += `<br><br>`
-    emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
-    emailContent += `<br>`
-    emailContent += `<p>Website: ${userDoc.website || ''}</p>`
-    emailContent += `<p>Twitter: ${userDoc.twitter || ''}</p>`
-    emailContent += `<p>Facebook: ${userDoc.fbook || ''}</p>`
-    emailContent += `<br>`
-    emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
-    emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
-    emailContent += `<br>`
-    // TODO: Create image/audio links in AWS
-    emailContent += `<p>Song Link: ${singleDoc.s3AudioURL || ''}</p>`
-    emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
-
-    emailContent += `<p>Press Photo Link(s): </p>`
-    // let pressURLs = []
-    
-    singleDoc.s3PressURL.forEach(async (press) => {
-      emailContent += `<p>${press || ''}</p>`
-    })
-
-    // setup email data with unicode symbols
-    const mailOptions = {
-      from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-      to: EMAILTO, // list of receivers
-      subject: `${singleDoc.artist} - ${singleDoc.trackTitle}`, // Subject line
-      html: emailContent // html body
-    }
-
-    transporter.sendMail(mailOptions, async (error, info) => {
-      if (error) {
-        console.error('Error sending email:', error)
-      } else {
-        const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-          new: true
-        })
-        console.log('Email sent:', info.response)
-      }
-    })
+    // generalEmail(singleDoc, transporter, 'default')
+    // generalEmail(singleDoc, transporter, 'Mizfitz')
+    // generalEmail(singleDoc, transporter, 'Hop Nation')
+    // generalEmail(singleDoc, transporter, 'Brooklyn Radio')
+    altEmail(singleDoc, transporter, 'Rapzilla')
+    altEmail(singleDoc, transporter, 'KDHX')
 
   }
 

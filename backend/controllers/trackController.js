@@ -59,6 +59,7 @@ const setTrack = asyncHandler(async (req, res) => {
     producer: req.body.producer,
     scloud: req.body.scloud,
     album: req.body.album,
+    trackLabel: req.body.trackLabel,
     ytube: req.body.ytube,
     albumDate: req.body.albumDate,
     genres: req.body.genres,
