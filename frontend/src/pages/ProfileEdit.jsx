@@ -192,7 +192,7 @@ function ProfileEdit() {
 
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                <label>PROFILE IMAGE</label>
+                {/* <label>PROFILE IMAGE</label> */}
                 <ImageUpload
                   changeFile={setFormState}
                   file={profileImage}

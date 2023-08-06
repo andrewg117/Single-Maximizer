@@ -3,7 +3,31 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser, logout } from '../features/auth/authSlice'
 import { toast } from 'react-toastify'
+import { FaBars } from 'react-icons/fa'
 import styles from '../css/profile_nav.module.css'
+
+const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNav }) => {
+  return (
+    <div className={styles.navbar_left_links} id={styles.navbar_top_links}>
+      {menuItems
+        .filter(menu => menu.name !== 'ADMIN')
+        .map(menu => (
+          <Link
+            key={menu.name}
+            to={menu.path}
+            className={activeLink === menu.name ? styles.active : styles.inactive}
+            onClick={() => {
+              menu.name === 'LOGOUT' ? onLogout() :
+              toggleTopNav()
+              setActiveLink(menu.name)
+            }}
+          >
+            {menu.name}
+          </Link>
+        ))}
+    </div>
+  )
+}
 
 function NavBarLeft() {
   const navigate = useNavigate()
@@ -13,7 +37,13 @@ function NavBarLeft() {
 
   const [activeLink, setActiveLink] = useState('PROFILE')
 
-  const onLogout = () => {
+  const [showTopNav, setTopNav] = useState(false)
+
+  const toggleTopNav = (e) => {
+    showTopNav === false ? setTopNav(true) : setTopNav(false)
+  }
+
+  const onLogout = (e) => {
     toast.clearWaitingQueue()
     dispatch(logout())
     navigate('/home')
@@ -39,6 +69,18 @@ function NavBarLeft() {
 
   return (
     <>
+      <section id={styles.top_nav_container}>
+        <FaBars id={styles.fabars} onClick={toggleTopNav} />
+        <h1>Single Maximizer</h1>
+      </section>
+      {showTopNav ?
+        <NavBarTop
+          menuItems={menuItems}
+          activeLink={activeLink}
+          setActiveLink={setActiveLink}
+          onLogout={onLogout}
+          toggleTopNav={toggleTopNav}
+        /> : null}
       <section id={styles.navbar_container}>
         <div id={styles.navbar_header}>
           <h1>{'Welcome, ' + user.username}</h1>

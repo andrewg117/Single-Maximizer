@@ -66,9 +66,9 @@
 }
 
 #remove_image {
-  position: absolute;
+  /* position: absolute;
   top: 5px;
-  right: 5px;
+  right: 5px; */
   cursor: pointer;
 }
 
