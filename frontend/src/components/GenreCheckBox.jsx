@@ -10,7 +10,7 @@ const CheckBox = (props) => {
         checked={props.list.includes(props.item)}
         onChange={props.onChange}
       />
-      <label htmlFor={props.item}>{props.item}</label>
+      <p htmlFor={props.item}>{props.item}</p>
     </>
   )
 }

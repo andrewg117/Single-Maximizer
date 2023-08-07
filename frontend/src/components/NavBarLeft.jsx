@@ -10,7 +10,7 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNa
   return (
     <div className={styles.navbar_left_links} id={styles.navbar_top_links}>
       {menuItems
-        .filter(menu => menu.name !== 'ADMIN')
+        .filter(menu => menu.name !== 'SETTINGS')
         .map(menu => (
           <Link
             key={menu.name}
@@ -59,8 +59,8 @@ function NavBarLeft() {
     // { name: 'CHECKOUT', path: "/profile/checkoutpage", position: 'top' },
     { name: 'SINGLES', path: "/profile/singles", position: 'top' },
     // { name: 'EMAIL', path: "/email", position: 'top' },
-    { name: 'ADMIN', path: "/admin", position: 'bot' },
-    { name: 'SETTINGS', path: "/", position: 'bot' },
+    // { name: 'ADMIN', path: "/admin", position: 'bot' },
+    // { name: 'SETTINGS', path: "/", position: 'bot' },
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ]
   useEffect(() => {
@@ -69,10 +69,10 @@ function NavBarLeft() {
 
   return (
     <>
-      <section id={styles.top_nav_container}>
-        <FaBars id={styles.fabars} onClick={toggleTopNav} />
+      <div id={styles.top_nav_container} onClick={toggleTopNav}>
+        <FaBars id={styles.fabars} />
         <h1>Single Maximizer</h1>
-      </section>
+      </div>
       {showTopNav ?
         <NavBarTop
           menuItems={menuItems}

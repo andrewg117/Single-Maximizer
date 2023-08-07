@@ -71,7 +71,7 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
                   [fieldname]: null
                 }))
               }}>
-              X Change Avatar
+              X Change Image
             </div>
           </>
           :

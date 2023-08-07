@@ -42,7 +42,6 @@ function Singles() {
   return (
     <>
       <div id={styles.content_right}>
-        {/* https://datatables.net/index */}
         <div id={styles.table_div}>
           <table id={styles.singles_table}>
             <thead id={styles.singles_header}>

@@ -138,14 +138,14 @@ function SingleEdit() {
             imageData.append("trackID", id)
             imageData.append("section", 'cover')
             dispatch(updateImage(imageData))
-          } 
+          }
 
           if (trackAudio instanceof FormData) {
             let audioData = new FormData()
             audioData.append("trackAudio", trackAudio.get('trackAudio'))
             audioData.append("trackID", id)
             dispatch(updateAudio(audioData))
-          } 
+          }
 
           if (newPressList.length > 0) {
             let pressData = new FormData()
@@ -284,6 +284,7 @@ function SingleEdit() {
               </div>
             </div>
             <div className={styles.top_input_div}>
+              <label>AUDIO UPLOAD</label>
               <AudioUpload
                 changeFile={setFormState}
                 file={trackAudio}

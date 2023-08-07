@@ -176,7 +176,6 @@ function NewRelease() {
             <div id={styles.top_div}>
               <div id={styles.image_div}>
                 <label>COVER ART</label>
-                <p>Size Limit: 10 MB</p>
                 <ImageUpload
                   changeFile={setFormState}
                   file={trackCover}
@@ -185,6 +184,7 @@ function NewRelease() {
                   urlField={'s3ImageURL'}
                   altText={'Upload Track Cover'}
                 />
+                <p>Size Limit: 10 MB</p>
               </div>
               <div className={styles.top_input_div}>
                 <div>

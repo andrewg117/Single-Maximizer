@@ -101,6 +101,33 @@
   }
 }
 
+@media (min-height: 700px) {
+  #top_nav_container { 
+    display: none;
+  }
+}
+
+
+@media (max-height: 600px) {
+  #navbar_container {
+    display: none;
+    grid-template-rows: 100%;
+  }
+
+  #body-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  
+  #top_nav_container { 
+    display: grid;
+    grid-template-columns: 1fr;
+    align-content: center;
+    justify-items: center;
+  }
+  
+}
 
 @media (max-width: 700px) {
   #navbar_container {
@@ -112,8 +139,11 @@
     grid-template-columns: 100%;
   }
 
-  /* #top_nav_container { 
-    
-  } */
+  #top_nav_container { 
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-content: normal;
+    justify-items: normal;
+  }
   
 }

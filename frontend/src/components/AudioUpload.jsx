@@ -96,7 +96,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
                   [fieldname]: null
                 }))
               }}>
-              Remove
+              X Change Audio
             </p>
           </>
           :
