@@ -2,11 +2,18 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
-const nodemailer = require('nodemailer')
+const formData = require('form-data')
+const Mailgun = require('mailgun.js')
 const schedule = require('node-schedule')
 const { generateToken } = require('../utils/generateToken.js')
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
+const MAILGUN_API = process.env.MAILGUN_API
+
+// Mailgun email setup
+const mailgun = new Mailgun(formData)
+const mg = mailgun.client({username: 'api', key: MAILGUN_API})
+const mgDomain = 'mail.trackstarz.com'
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -70,18 +77,6 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     throw new Error('User exists, use a different email or login')
   }
 
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: EMAILUSER,
-      pass: EMAILPASS
-    }
-  })
-
-
   const token = makeToken(email, '2m')
 
   // const link = "http://localhost:3000/home/signup?" + "email=" + email
@@ -96,14 +91,10 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     html: `<p>Continue creating your account: ${link}</p>` // html body
   }
 
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error)
-    } else {
-      console.log('Email sent:', info.response)
-    }
-  })
+  
+  mg.messages.create(mgDomain, mailOptions)
+    .then(msg => console.log(msg)) 
+    .catch(err => console.error(err))
 
   // console.log('Message sent: %s', info.messageId)
 
@@ -164,16 +155,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error('User does not exists, use a different email or login')
   }
 
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: EMAILUSER,
-      pass: EMAILPASS
-    }
-  })
 
   const token = makeToken(user.email, '10m')
 
@@ -189,8 +170,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
     html: `<p>Hello ${user.username},</p><p>Reset Password: ${link}</p>` // html body
   }
 
-  // send mail with defined transport object
-  const info = await transporter.sendMail(mailOptions)
+  mg.messages.create(mgDomain, mailOptions)
+    .then(msg => console.log(msg)) 
+    .catch(err => console.error(err))
 
   // console.log('Message sent: %s', info.messageId)
 

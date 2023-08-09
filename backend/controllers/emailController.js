@@ -1,44 +1,26 @@
-const nodemailer = require('nodemailer')
 const Email = require('../models/emailModel')
 const Image = require('../models/imageModel')
 const Track = require('../models/trackModel')
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
 const schedule = require('node-schedule')
+const formData = require('form-data')
+const Mailgun = require('mailgun.js')
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
+const MAILGUN_API = process.env.MAILGUN_API
 
-// Template email
-const templateEmail = (singleDoc) => {
-  let emailContent = `<h1>New Single</h1>`
+// Mailgun email setup
+const mailgun = new Mailgun(formData)
+const mg = mailgun.client({username: 'api', key: MAILGUN_API})
+const mgDomain = 'mail.trackstarz.com'
 
-  emailContent += `<h3>Title: </h3><p>${singleDoc.trackTitle}</p>`
-  emailContent += `<h3>Artist: </h3><p>${singleDoc.artist}</p>`
-  emailContent += `<h3>Features: </h3><p>${singleDoc.features}</p>`
-  emailContent += `<h3>Album Name: </h3><p>${singleDoc.album}</p>`
-  emailContent += `<h3>Album Release Date: </h3><p>${singleDoc.albumDate}</p>`
-  emailContent += `<h3>Genres: </h3><p>${singleDoc.genres}</p>`
-  emailContent += `<h3>Producer: </h3><p>${singleDoc.producer}</p>`
-  emailContent += `<h3>Spotify: </h3><p>${singleDoc.spotify}</p>`
-  emailContent += `<h3>Apple: </h3><p>${singleDoc.apple}</p>`
-  emailContent += `<h3>Soundcloud: </h3><p>${singleDoc.scloud}</p>`
-  emailContent += `<h3>YouTube: </h3><p>${singleDoc.ytube}</p>`
-  emailContent += `<h3>Track Summary: </h3><p>${singleDoc.trackSum}</p>`
-  emailContent += `<h3>Recent Press: </h3><p>${singleDoc.pressSum}</p>`
-
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: EMAILTO, // list of receivers
-    subject: `New Single Release!`, // Subject line
-    html: emailContent // html body
-  }
-  return mailOptions
-}
+// COMPLETE: https://www.npmjs.com/package/mailgun.js?utm_source=recordnotfound.com
+// TODO: add attatchments to emails
 
 // General email
-const generalEmail = async (singleDoc, transporter, subjectType) => {
+const generalEmail = async (singleDoc, subjectType) => {
   let emailContent
 
   const userDoc = await User.findById(singleDoc.user)
@@ -92,20 +74,13 @@ const generalEmail = async (singleDoc, transporter, subjectType) => {
     html: emailContent // html body
   }
 
-  transporter.sendMail(mailOptions, async (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error)
-    } else {
-      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-      //   new: true
-      // })
-      console.log('Email sent:', info.response)
-    }
-  })
+  mg.messages.create(mgDomain, mailOptions)
+    .then(msg => console.log(msg)) 
+    .catch(err => console.error(err))
 }
 
 // Alternate email 
-const altEmail = async (singleDoc, transporter, subjectType) => {
+const altEmail = async (singleDoc, subjectType) => {
 
   const userDoc = await User.findById(singleDoc.user)
 
@@ -153,30 +128,15 @@ const altEmail = async (singleDoc, transporter, subjectType) => {
     html: emailContent // html body
   }
 
-  transporter.sendMail(mailOptions, async (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error)
-    } else {
-      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-      //   new: true
-      // })
-      console.log('Email sent:', info.response)
-    }
-  })
+ 
+  mg.messages.create(mgDomain, mailOptions)
+    .then(msg => console.log(msg)) 
+    .catch(err => console.error(err))
 }
 
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: EMAILUSER,
-      pass: EMAILPASS
-    }
-  })
+  
 
   // Reset isDelivered 
   // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
@@ -191,12 +151,12 @@ const sendScheduledEmail = async () => {
   for (const track in tracks) {
     const singleDoc = tracks[track]
 
-    // generalEmail(singleDoc, transporter, 'default')
-    // generalEmail(singleDoc, transporter, 'Mizfitz')
-    // generalEmail(singleDoc, transporter, 'Hop Nation')
-    // generalEmail(singleDoc, transporter, 'Brooklyn Radio')
-    altEmail(singleDoc, transporter, 'Rapzilla')
-    altEmail(singleDoc, transporter, 'KDHX')
+    generalEmail(singleDoc, 'default')
+    // generalEmail(singleDoc, 'Mizfitz')
+    // generalEmail(singleDoc, 'Hop Nation')
+    // generalEmail(singleDoc, 'Brooklyn Radio')
+    // altEmail(singleDoc, 'Rapzilla')
+    // altEmail(singleDoc, 'KDHX')
 
   }
 
@@ -236,16 +196,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     deliveryDate: req.body.deliveryDate,
   })
 
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: EMAILUSER,
-      pass: EMAILPASS
-    }
-  })
+  
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -256,8 +207,10 @@ const sendEmail = asyncHandler(async (req, res) => {
     html: `<p>${req.body.emailMessage}</p>` // html body
   }
 
-  // send mail with defined transport object
-  const info = await transporter.sendMail(mailOptions)
+  
+  mg.messages.create(mgDomain, mailOptions)
+    .then(msg => console.log(msg)) 
+    .catch(err => console.error(err))
 
   console.log('Message sent: %s', info.messageId)
 
