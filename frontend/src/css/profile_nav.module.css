@@ -91,7 +91,7 @@
   color: white;
   border: 1px solid #ccc;
   border-radius: 2em;
-  padding: 1em;
+  padding: .5em;
   cursor: pointer;
 }
 
@@ -108,25 +108,26 @@
 }
 
 
-@media (max-height: 600px) {
+@media (max-height: 700px) {
   #navbar_container {
     display: none;
     grid-template-rows: 100%;
   }
 
   #body-wrapper {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
+    grid-template-columns: 100%;
   }
 
   
   #top_nav_container { 
     display: grid;
-    grid-template-columns: 1fr;
     align-content: center;
     justify-items: center;
   }
   
+  #navbar_top_links{
+    width: 100%;
+  }
 }
 
 @media (max-width: 700px) {
