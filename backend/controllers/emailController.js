@@ -6,6 +6,7 @@ const asyncHandler = require('express-async-handler')
 const schedule = require('node-schedule')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
+const request = require('request')
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const EMAILPASS = process.env.EMAILPASS
@@ -13,11 +14,11 @@ const MAILGUN_API = process.env.MAILGUN_API
 
 // Mailgun email setup
 const mailgun = new Mailgun(formData)
-const mg = mailgun.client({username: 'api', key: MAILGUN_API})
+const mg = mailgun.client({ username: 'api', key: MAILGUN_API })
 const mgDomain = 'mail.trackstarz.com'
 
 // COMPLETE: https://www.npmjs.com/package/mailgun.js?utm_source=recordnotfound.com
-// TODO: add attatchments to emails
+// COMPLETE: add attatchments to emails
 
 // General email
 const generalEmail = async (singleDoc, subjectType) => {
@@ -47,8 +48,11 @@ const generalEmail = async (singleDoc, subjectType) => {
 
   emailContent += `<p>Press Photo Link(s): </p>`
 
+  let getAttachments = []
+
   singleDoc.s3PressURL.forEach((press) => {
     emailContent += `<p>${press || ''}</p>`
+    getAttachments.push(request(press))
   })
 
   let subjectLine
@@ -66,16 +70,29 @@ const generalEmail = async (singleDoc, subjectType) => {
       subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
 
+  getAttachments =  [
+    ...getAttachments,
+    request(singleDoc.s3AudioURL),
+    request(singleDoc.s3ImageURL),
+  ]
+
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: EMAILTO, // list of receivers
     subject: subjectLine, // Subject line
-    html: emailContent // html body
+    html: emailContent, // html body
+    attachment: getAttachments
   }
 
   mg.messages.create(mgDomain, mailOptions)
-    .then(msg => console.log(msg)) 
+    .then(async (msg) => {
+      console.log(msg)
+
+      const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+        new: true
+      })
+    })
     .catch(err => console.error(err))
 }
 
@@ -104,8 +121,12 @@ const altEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`
   emailContent += `<br>`
   emailContent += `<p>Press Photos: </p>`
+  
+  let getAttachments = []
+
   singleDoc.s3PressURL.forEach((press) => {
     emailContent += `<p>${press || ''}</p>`
+    getAttachments.push(request(press))
   })
   emailContent += `<br>`
   emailContent += `<br>`
@@ -119,24 +140,37 @@ const altEmail = async (singleDoc, subjectType) => {
     case 'KDHX':
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
+  
+  getAttachments =  [
+    ...getAttachments,
+    request(singleDoc.s3AudioURL),
+    request(singleDoc.s3ImageURL),
+  ]
 
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: EMAILTO, // list of receivers
     subject: subjectLine, // Subject line
-    html: emailContent // html body
+    html: emailContent, // html body
+    attachment: getAttachments
   }
 
- 
+
   mg.messages.create(mgDomain, mailOptions)
-    .then(msg => console.log(msg)) 
+    .then(async (msg) => {
+      console.log(msg)
+
+      const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+        new: true
+      })
+    })
     .catch(err => console.error(err))
 }
 
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
-  
+
 
   // Reset isDelivered 
   // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
@@ -196,7 +230,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     deliveryDate: req.body.deliveryDate,
   })
 
-  
+
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -207,9 +241,9 @@ const sendEmail = asyncHandler(async (req, res) => {
     html: `<p>${req.body.emailMessage}</p>` // html body
   }
 
-  
+
   mg.messages.create(mgDomain, mailOptions)
-    .then(msg => console.log(msg)) 
+    .then(msg => console.log(msg))
     .catch(err => console.error(err))
 
   console.log('Message sent: %s', info.messageId)
