@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { resetPass, emailData, reset as resetUser } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
+import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
+import signinImage from '../images/signinImage.png'
 import styles from '../css/sign_in_style.module.css'
 
 function ResetPassword() {
@@ -91,11 +93,11 @@ function ResetPassword() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div id={styles.block_left}>
-            <h1>Image</h1>
+          <div id={styles.block_left} style={{ backgroundImage: `url(${signinImage})` }}>
           </div>
 
           <div id={styles.block_right}>
+            <img src={SMLogo} alt="Home" id={styles.logo} />
             <h1>Reset Password</h1>
             {isReset ?
               <form id={styles.signin_form} onSubmit={toSignIn}>

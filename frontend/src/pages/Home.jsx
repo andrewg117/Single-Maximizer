@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
+import homeImage from '../images/homeImage.png'
 import styles from '../css/style.module.css'
 
 function Home() {
   return (
     <>
-      <section id={styles.home_block}>
+      <section id={styles.home_block} style={{backgroundImage: `url(${homeImage})`}}>
+        {/* <img src={homeImage} alt="Home" id={styles.image} /> */}
         <div id={styles.intro_text}>
           <p>
             GET YOUR

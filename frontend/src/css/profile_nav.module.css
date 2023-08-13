@@ -2,7 +2,7 @@
   position: relative;
   display: grid;
   grid-template-rows: 10% 60%;
-  background-color: rgb(44, 44, 44);
+  background-color: var(--main-nv-color);
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -19,7 +19,7 @@
 }
 
 #navbar_header h1 {
-  color: white;
+  color: var(--main-wht-color);
 }
 
 #navbar_footer {
@@ -58,15 +58,15 @@
 }
 
 .navbar_left_links a:hover {
-  color: #8a1a1a;
+  color: var(--main-btn-color);
 }
 
 .active {
-  color: #8a1a1a;
+  color: var(--main-btn-color);
 }
 
 .inactive {
-  color: white;
+  color: var(--main-wht-color);
 }
 
 #navbar_top_links {
@@ -83,12 +83,12 @@
   grid-template-columns: 10% 80% 10%;
   align-items: center;
   padding-left: 5%;
-  background-color: rgb(44, 44, 44);
-  color: white;
+  background-color: var(--main-nv-color);
+  color: var(--main-wht-color);
 }
 
 #fabars { 
-  color: white;
+  color: var(--main-wht-color);
   border: 1px solid #ccc;
   border-radius: 2em;
   padding: .5em;

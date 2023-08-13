@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { emailUser, reset as resetUser } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
+import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
+import signupImage from '../images/signupImage.png'
 import styles from '../css/sign_in_style.module.css'
 
 function EmailSignUp() {
@@ -74,12 +76,12 @@ function EmailSignUp() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div id={styles.block_left}>
-            <h1>Image</h1>
+          <div id={styles.block_left} style={{ backgroundImage: `url(${signupImage})` }}>
           </div>
 
           <div id={styles.block_right}>
-            <h1>Sign Up</h1>
+            <img src={SMLogo} alt="Home" id={styles.logo} />
+            {/* <h1>Sign In</h1> */}
             {emailSent === false ?
               <form id={styles.signin_form} onSubmit={onSubmit}>
                 <div className={styles.signin_form_div}>

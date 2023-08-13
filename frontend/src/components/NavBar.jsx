@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
+import SMLogo from '../images/smLogo.png'
 import styles from '../css/navbar.module.css'
 
 const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
@@ -56,6 +57,7 @@ function NavBar() {
           toggleTopNav={toggleTopNav}
         /> : null}
       <nav id={styles.navbar}>
+        <img src={SMLogo} alt="Home" id={styles.logo} />
         <div id={styles.nav_links}>
           {menuItems.map(menu => (
             <Link
