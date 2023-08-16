@@ -70,11 +70,11 @@ const generalEmail = async (singleDoc, subjectType) => {
       subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
 
-  getAttachments =  [
-    ...getAttachments,
-    request(singleDoc.s3AudioURL),
-    request(singleDoc.s3ImageURL),
-  ]
+  const audioURL = singleDoc.s3AudioURL
+  const imageURL = singleDoc.s3ImageURL
+
+  audioURL ? getAttachments.push(request(audioURL)) : null
+  imageURL ? getAttachments.push(request(imageURL)) : null
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -93,7 +93,7 @@ const generalEmail = async (singleDoc, subjectType) => {
         new: true
       })
     })
-    .catch(err => console.error(err))
+    .catch(err => console.log(err))
 }
 
 // Alternate email 
@@ -121,7 +121,7 @@ const altEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`
   emailContent += `<br>`
   emailContent += `<p>Press Photos: </p>`
-  
+
   let getAttachments = []
 
   singleDoc.s3PressURL.forEach((press) => {
@@ -140,12 +140,12 @@ const altEmail = async (singleDoc, subjectType) => {
     case 'KDHX':
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
-  
-  getAttachments =  [
-    ...getAttachments,
-    request(singleDoc.s3AudioURL),
-    request(singleDoc.s3ImageURL),
-  ]
+
+  const audioURL = singleDoc.s3AudioURL
+  const imageURL = singleDoc.s3ImageURL
+
+  audioURL ? getAttachments.push(request(audioURL)) : null
+  imageURL ? getAttachments.push(request(imageURL)) : null
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -165,7 +165,7 @@ const altEmail = async (singleDoc, subjectType) => {
         new: true
       })
     })
-    .catch(err => console.error(err))
+    .catch(err => console.log(err))
 }
 
 // @desc    Send Scheduled Email
@@ -186,11 +186,11 @@ const sendScheduledEmail = async () => {
     const singleDoc = tracks[track]
 
     generalEmail(singleDoc, 'default')
-    // generalEmail(singleDoc, 'Mizfitz')
-    // generalEmail(singleDoc, 'Hop Nation')
-    // generalEmail(singleDoc, 'Brooklyn Radio')
-    // altEmail(singleDoc, 'Rapzilla')
-    // altEmail(singleDoc, 'KDHX')
+    generalEmail(singleDoc, 'Mizfitz')
+    generalEmail(singleDoc, 'Hop Nation')
+    generalEmail(singleDoc, 'Brooklyn Radio')
+    altEmail(singleDoc, 'Rapzilla')
+    altEmail(singleDoc, 'KDHX')
 
   }
 
@@ -244,7 +244,7 @@ const sendEmail = asyncHandler(async (req, res) => {
 
   mg.messages.create(mgDomain, mailOptions)
     .then(msg => console.log(msg))
-    .catch(err => console.error(err))
+    .catch(err => console.log(err))
 
   console.log('Message sent: %s', info.messageId)
 
