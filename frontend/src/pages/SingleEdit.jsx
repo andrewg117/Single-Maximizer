@@ -90,13 +90,14 @@ function SingleEdit() {
       }
       const audio = audioState ? audioState.file : null
 
-      const defaultDate = convertDate(singleState.deliveryDate)
+      const defaultDelDate = convertDate(singleState.deliveryDate)
+      const defaultAlbDate = convertDate(singleState.albumDate)
 
       setFormState((prevState) => ({
         ...prevState,
         trackTitle: singleState.trackTitle,
         artist: singleState.artist,
-        deliveryDate: defaultDate,
+        deliveryDate: defaultDelDate,
         spotify: singleState.spotify,
         features: singleState.features,
         apple: singleState.apple,
@@ -105,7 +106,7 @@ function SingleEdit() {
         album: singleState.album,
         trackLabel: singleState.trackLabel,
         ytube: singleState.ytube,
-        albumDate: singleState.albumDate,
+        albumDate: defaultAlbDate,
         genres: singleState.genres,
         trackSum: singleState.trackSum,
         pressSum: singleState.pressSum,
@@ -128,7 +129,7 @@ function SingleEdit() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackTitle !== '' && artist !== '' && user) {
+    if (trackCover !== null && trackAudio !== null && user) {
 
       dispatch(updateSingle({ trackID: id, trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
         .then((data) => {
@@ -243,7 +244,19 @@ function SingleEdit() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form}>
+        <form id={styles.new_form} onSubmit={(e) => {
+          setShowPopup(() => {
+            e.preventDefault()
+            return true
+          })
+        }}>
+          {showPopup &&
+            (<ConfirmAlert
+              message="Do you want to save these changes?"
+              onConfirm={onSubmit}
+              onCancel={closeConfirm}
+            />)
+          }
 
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
@@ -260,6 +273,7 @@ function SingleEdit() {
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
                   <input
+                    required
                     className={styles.new_input}
                     type="text"
                     id="artist"
@@ -272,6 +286,7 @@ function SingleEdit() {
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
                   <input
+                    required
                     className={styles.new_input}
                     type="text"
                     id="trackTitle"
@@ -303,35 +318,38 @@ function SingleEdit() {
                 :
                 <></>}
             </div>
-            <div className={styles.input_div} />
-            <div>
-              <label htmlFor="deliveryDate">DELIVERY DATE</label>
+            <div className={styles.input_div}>
+              <div>
+                <label htmlFor="deliveryDate">DELIVERY DATE</label>
 
-              <input
-                className={styles.new_input}
-                type="date"
-                id="deliveryDate"
-                name="deliveryDate"
-                min={graceDate}
-                value={deliveryDate}
-                onChange={onChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="spotify">SPOTIFY TRACK URI</label>
-              <input
-                className={styles.new_input}
-                type="text"
-                id="spotify"
-                name="spotify"
-                placeholder="Enter the URI of your track on Spotify"
-                defaultValue={spotify}
-                onChange={onChange} />
+                <input
+                  required
+                  className={styles.new_input}
+                  type="date"
+                  id="deliveryDate"
+                  name="deliveryDate"
+                  min={graceDate}
+                  value={deliveryDate}
+                  onChange={onChange} />
+              </div>
+              <div>
+                <label htmlFor="spotify">SPOTIFY TRACK URI</label>
+                <input
+                  required
+                  className={styles.new_input}
+                  type="text"
+                  id="spotify"
+                  name="spotify"
+                  placeholder="Enter the URI of your track on Spotify"
+                  defaultValue={spotify}
+                  onChange={onChange} />
+              </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="features">FEATURES</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="features"
@@ -343,6 +361,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="apple"
@@ -356,6 +375,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="producer">PRODUCER</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="producer"
@@ -367,6 +387,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="scloud"
@@ -380,6 +401,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="album">ALBUM</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="album"
@@ -391,6 +413,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="ytubelink">YOUTUBE LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="ytube"
@@ -404,17 +427,18 @@ function SingleEdit() {
               <div>
                 <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
                 <input
+                  required
                   className={styles.new_input}
-                  type="text"
+                  type="date"
                   id="albumDate"
                   name="albumDate"
-                  placeholder="When will the album be released?"
-                  defaultValue={albumDate}
+                  value={albumDate}
                   onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="trackLabel"
@@ -434,6 +458,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="tracksum">TRACK SUMMARY</label>
                 <textarea
+                  required
                   name="trackSum"
                   id="trackSum"
                   cols="30" rows="10"
@@ -446,6 +471,7 @@ function SingleEdit() {
               <div>
                 <label htmlFor="press">RECENT PRESS</label>
                 <textarea
+                  required
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"
@@ -455,19 +481,7 @@ function SingleEdit() {
               </div>
             </div>
             <div id={styles.submit_div}>
-              <button className={styles.profile_btn} onClick={(e) => {
-                setShowPopup(() => {
-                  e.preventDefault()
-                  return true
-                })
-              }}>SAVE</button>
-              {showPopup &&
-                (<ConfirmAlert
-                  message="Do you want to save these changes?"
-                  onConfirm={onSubmit}
-                  onCancel={closeConfirm}
-                />)
-              }
+              <button type='submit' className={styles.profile_btn}>SAVE</button>
               <button className={styles.profile_btn} onClick={(e) => {
                 setShowDelPopup(() => {
                   e.preventDefault()
