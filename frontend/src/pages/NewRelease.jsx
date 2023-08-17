@@ -95,7 +95,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackPress !== [] && trackTitle !== '' && artist !== '') {
+    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user) {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))
@@ -190,6 +190,7 @@ function NewRelease() {
                 <div>
                   <label htmlFor="artist">ARTIST NAME</label>
                   <input
+                    required
                     className={styles.new_input}
                     type="text"
                     id="artist"
@@ -201,6 +202,7 @@ function NewRelease() {
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
                   <input
+                    required
                     className={styles.new_input}
                     type="text"
                     id="trackTitle"
@@ -230,33 +232,37 @@ function NewRelease() {
                 trackPress={trackPress}
               />
             </div>
-            <div className={styles.input_div} />
-            <div>
-              <label htmlFor="deliveryDate">DELIVERY DATE</label>
-              <input
-                className={styles.new_input}
-                type="date"
-                id="deliveryDate"
-                name="deliveryDate"
-                min={graceDate}
-                defaultValue={graceDate}
-                onChange={onChange} />
-            </div>
-            <div>
-              <label htmlFor="spotify">SPOTIFY TRACK URI</label>
-              <input
-                className={styles.new_input}
-                type="text"
-                id="spotify"
-                name="spotify"
-                placeholder="Enter the URI of your track on Spotify"
-                value={spotify}
-                onChange={onChange} />
+            <div className={styles.input_div}>
+              <div>
+                <label htmlFor="deliveryDate">DELIVERY DATE</label>
+                <input
+                  required
+                  className={styles.new_input}
+                  type="date"
+                  id="deliveryDate"
+                  name="deliveryDate"
+                  min={graceDate}
+                  defaultValue={graceDate}
+                  onChange={onChange} />
+              </div>
+              <div>
+                <label htmlFor="spotify">SPOTIFY TRACK URI</label>
+                <input
+                  required
+                  className={styles.new_input}
+                  type="text"
+                  id="spotify"
+                  name="spotify"
+                  placeholder="Enter the URI of your track on Spotify"
+                  value={spotify}
+                  onChange={onChange} />
+              </div>
             </div>
             <div className={styles.input_div}>
               <div>
                 <label htmlFor="features">FEATURES</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="features"
@@ -268,6 +274,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="apple"
@@ -281,6 +288,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="producer">PRODUCER</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="producer"
@@ -292,6 +300,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="scloud"
@@ -305,6 +314,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="album">ALBUM</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="album"
@@ -316,6 +326,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="ytube">YOUTUBE LINK</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="ytube"
@@ -329,17 +340,18 @@ function NewRelease() {
               <div>
                 <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
                 <input
+                  required
                   className={styles.new_input}
-                  type="text"
+                  type="date"
                   id="albumDate"
                   name="albumDate"
-                  placeholder="When will the album be released?"
                   value={albumDate}
                   onChange={onChange} />
               </div>
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
                 <input
+                  required
                   className={styles.new_input}
                   type="text"
                   id="trackLabel"
@@ -359,6 +371,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="trackSum">TRACK SUMMARY</label>
                 <textarea
+                  required
                   name="trackSum"
                   id="trackSum"
                   cols="30" rows="10"
@@ -371,6 +384,7 @@ function NewRelease() {
               <div>
                 <label htmlFor="pressSum">RECENT PRESS</label>
                 <textarea
+                  required
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"
@@ -380,7 +394,7 @@ function NewRelease() {
               </div>
             </div>
             <div id={styles.submit_div}>
-              <input type="submit" className={styles.profile_btn} value="SAVE" />
+              <button type="submit" className={styles.profile_btn}>SAVE</button>
               <Link to={'/profile'} className={styles.profile_btn}>CANCEL</Link>
             </div>
 

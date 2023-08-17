@@ -57,7 +57,7 @@ const trackSchema = mongoose.Schema({
     required: false
   },
   albumDate: {
-    type: String,
+    type: Date,
     required: false
   },
   genres: {

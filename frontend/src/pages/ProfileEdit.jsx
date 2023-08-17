@@ -107,23 +107,9 @@ function ProfileEdit() {
       toast.error(message)
     }
 
-    if (profileImage !== null && username.trim() !== '' && email.trim() !== '' && user) {
+    if (profileImage !== null && user) {
 
-      dispatch(updateUser({
-        fname,
-        lname,
-        username,
-        email,
-        website,
-        scloud,
-        twitter,
-        igram,
-        fbook,
-        spotify,
-        ytube,
-        tiktok,
-        bio_text,
-      })).unwrap()
+      dispatch(updateUser({ fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text })).unwrap()
         .then(() => {
           if (image === null) {
             let imageData = new FormData()
@@ -153,7 +139,8 @@ function ProfileEdit() {
       setShowPopup(false)
 
     } else {
-      toast.error('Empty field')
+      setShowPopup(false)
+      toast.error('Upload Avatar')
     }
   }
 
@@ -192,7 +179,7 @@ function ProfileEdit() {
 
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                {/* <label>PROFILE IMAGE</label> */}
+                {/* <label>PROFILE AVATAR</label> */}
                 <ImageUpload
                   changeFile={setFormState}
                   file={profileImage}
@@ -207,6 +194,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="fname">FIRST NAME</label>
                 <input
+                  required
                   type="text"
                   className={styles.profile_input}
                   id='fname'
@@ -218,6 +206,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="lname">LAST NAME</label>
                 <input
+                  required
                   type="text"
                   className={styles.profile_input}
                   id='lname'
@@ -231,6 +220,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="username">USERNAME</label>
                 <input
+                  required
                   type="text"
                   className={styles.profile_input}
                   id='username'
@@ -241,20 +231,32 @@ function ProfileEdit() {
               </div>
               <div>
                 <label htmlFor="email">EMAIL</label>
-                <input
+                {/* <input
+                  required
+                  readOnly
                   className={styles.profile_input}
                   type="email"
                   id="email"
                   name="email"
                   placeholder="Enter your email address"
                   defaultValue={email}
-                  onChange={onChange} />
+                  onChange={onChange} /> */}
+                <p
+                  className={styles.profile_input}
+                  type="email"
+                  id="email"
+                  name="email"
+                  style={{ 'border': 'none' }}
+                >
+                  {email}
+                </p>
               </div>
             </div>
             <div className={styles.profile_input_div}>
               <div>
                 <label htmlFor="website">WEBSITE</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="website"
@@ -266,6 +268,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="scloud"
@@ -279,6 +282,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="twitter">TWITTER</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="twitter"
@@ -290,6 +294,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="igram">INSTAGRAM</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="igram"
@@ -303,6 +308,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="fbook">FACEBOOK</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="fbook"
@@ -314,6 +320,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="spotify">SPOTIFY</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="spotify"
@@ -327,6 +334,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="ytube">YOUTUBE</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="ytube"
@@ -338,6 +346,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="tiktok">TIKTOK</label>
                 <input
+                  required
                   className={styles.profile_input}
                   type="url"
                   id="tiktok"
@@ -351,6 +360,7 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="bio_text">BIO</label>
                 <textarea
+                  required
                   name="bio_text"
                   id="bio_text"
                   cols="30" rows="10"
@@ -360,7 +370,14 @@ function ProfileEdit() {
               </div>
             </div>
             <div id={styles.profile_submit_div}>
-              <input type="submit" className={styles.profile_btn} value="SAVE" />
+              <button type='submit' className={styles.profile_btn}>SAVE</button>
+              {/* {showPopup &&
+                (<ConfirmAlert
+                  message="Do you want to save these changes?"
+                  onConfirm={onSubmit}
+                  onCancel={closeConfirm}
+                />)
+              } */}
               <Link to={'/profile'} className={styles.profile_btn}>CANCEL</Link>
             </div>
           </div>
