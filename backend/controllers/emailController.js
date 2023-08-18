@@ -1,15 +1,14 @@
 const Email = require('../models/emailModel')
-const Image = require('../models/imageModel')
 const Track = require('../models/trackModel')
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
-const schedule = require('node-schedule')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
-const request = require('request')
+// TODO: add replacement for attachments
+const axios = require('axios')
+const fsPromises = require('fs').promises
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
-const EMAILPASS = process.env.EMAILPASS
 const MAILGUN_API = process.env.MAILGUN_API
 
 // Mailgun email setup
@@ -52,7 +51,10 @@ const generalEmail = async (singleDoc, subjectType) => {
 
   singleDoc.s3PressURL.forEach((press) => {
     emailContent += `<p>${press || ''}</p>`
-    getAttachments.push(request(press))
+    getAttachments.push({
+      filename: press,
+      data: Buffer.from(press)
+    })
   })
 
   let subjectLine
@@ -73,8 +75,15 @@ const generalEmail = async (singleDoc, subjectType) => {
   const audioURL = singleDoc.s3AudioURL
   const imageURL = singleDoc.s3ImageURL
 
-  audioURL ? getAttachments.push(request(audioURL)) : null
-  imageURL ? getAttachments.push(request(imageURL)) : null
+  audioURL ? getAttachments.push({
+    filename: audioURL,
+    data: Buffer.from(audioURL)
+  }) : null
+  
+  imageURL ? getAttachments.push({
+    filename: imageURL,
+    data: Buffer.from(imageURL)
+  }) : null
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -126,7 +135,10 @@ const altEmail = async (singleDoc, subjectType) => {
 
   singleDoc.s3PressURL.forEach((press) => {
     emailContent += `<p>${press || ''}</p>`
-    getAttachments.push(request(press))
+    getAttachments.push({
+      filename: press,
+      data: Buffer.from(press)
+    })
   })
   emailContent += `<br>`
   emailContent += `<br>`
@@ -144,8 +156,16 @@ const altEmail = async (singleDoc, subjectType) => {
   const audioURL = singleDoc.s3AudioURL
   const imageURL = singleDoc.s3ImageURL
 
-  audioURL ? getAttachments.push(request(audioURL)) : null
-  imageURL ? getAttachments.push(request(imageURL)) : null
+  audioURL ? getAttachments.push({
+    filename: audioURL,
+    data: Buffer.from(audioURL)
+  }) : null
+  
+  imageURL ? getAttachments.push({
+    filename: imageURL,
+    data: Buffer.from(imageURL)
+  }) : null
+
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -186,11 +206,11 @@ const sendScheduledEmail = async () => {
     const singleDoc = tracks[track]
 
     generalEmail(singleDoc, 'default')
-    generalEmail(singleDoc, 'Mizfitz')
-    generalEmail(singleDoc, 'Hop Nation')
-    generalEmail(singleDoc, 'Brooklyn Radio')
-    altEmail(singleDoc, 'Rapzilla')
-    altEmail(singleDoc, 'KDHX')
+    // generalEmail(singleDoc, 'Mizfitz')
+    // generalEmail(singleDoc, 'Hop Nation')
+    // generalEmail(singleDoc, 'Brooklyn Radio')
+    // altEmail(singleDoc, 'Rapzilla')
+    // altEmail(singleDoc, 'KDHX')
 
   }
 

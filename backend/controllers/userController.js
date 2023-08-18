@@ -4,10 +4,8 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
-const schedule = require('node-schedule')
 const { generateToken } = require('../utils/generateToken.js')
 const EMAILUSER = process.env.EMAILUSER
-const EMAILPASS = process.env.EMAILPASS
 const MAILGUN_API = process.env.MAILGUN_API
 
 // Mailgun email setup
