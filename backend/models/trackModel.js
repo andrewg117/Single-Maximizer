@@ -78,11 +78,11 @@ const trackSchema = mongoose.Schema({
     required: false
   },
   s3ImageURL: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: false
   },
   s3AudioURL: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: false
   },
   s3PressURL: {

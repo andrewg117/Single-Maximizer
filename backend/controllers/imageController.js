@@ -42,7 +42,10 @@ const uploadImage = asyncHandler(async (req, res) => {
 
   const updateTrack = await Track.findByIdAndUpdate(image.trackID, {
     $set: {
-      s3ImageURL: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+      s3ImageURL: {
+        name: image.file.originalname,
+        url: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+      }
     }
   }, {
     new: true
@@ -88,7 +91,10 @@ const uploadPress = asyncHandler(async (req, res) => {
 
     const updateTrack = await Track.findByIdAndUpdate(req.body.trackID, {
       $push: {
-        s3PressURL: updatedImage.s3ImageURL
+        s3PressURL: {
+          name: file.originalname,
+          url: updatedImage.s3ImageURL
+        }
       }
     }, {
       new: true
@@ -197,6 +203,18 @@ const updateImage = asyncHandler(async (req, res) => {
   const updatedImage = await Image.findByIdAndUpdate(image._id, newBody, {
     new: true
   })
+  
+  const updateTrack = await Track.findByIdAndUpdate(image.trackID, {
+    $set: {
+      s3ImageURL: {
+        name: req.file.originalname,
+        url: 'https://singlemax-bucket.s3.amazonaws.com/' + image._id.toString()
+      }
+    }
+  }, {
+    new: true
+  })
+
 
   const putResponse = await s3.send(uploadS3Object(updatedImage._id.toString(), req.file.buffer, req.file.mimetype))
 
@@ -260,7 +278,7 @@ const deletePress = asyncHandler(async (req, res) => {
   }
 
   const updateTrack = await Track.findByIdAndUpdate(image.trackID, {
-    $pull: { s3PressURL: image.s3ImageURL }
+    $pull: { s3PressURL: { url: image.s3ImageURL } }
   }, {
     new: true
   })

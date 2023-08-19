@@ -4,9 +4,7 @@ const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
-// TODO: add replacement for attachments
 const axios = require('axios')
-const fsPromises = require('fs').promises
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const MAILGUN_API = process.env.MAILGUN_API
@@ -30,7 +28,7 @@ const generalEmail = async (singleDoc, subjectType) => {
   emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
   emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
   emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
-  emailContent += `<p>Album Release Date: ${singleDoc.albumDate || ''}</p>`
+  emailContent += `<p>Album Release Date: ${singleDoc.albumDate.toLocaleString('default', { timeZone: 'UTC' }).split(',')[0] || ''}</p>`
   emailContent += `<p>Label: ${singleDoc.trackLabel || ''}</p>`
   emailContent += `<br><br>`
   emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
@@ -42,18 +40,21 @@ const generalEmail = async (singleDoc, subjectType) => {
   emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
   emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Song Link: ${singleDoc.s3AudioURL || ''}</p>`
-  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
+  emailContent += `<p>Song Link: ${singleDoc.s3AudioURL.url || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL.url || ''}</p>`
 
   emailContent += `<p>Press Photo Link(s): </p>`
 
   let getAttachments = []
 
-  singleDoc.s3PressURL.forEach((press) => {
-    emailContent += `<p>${press || ''}</p>`
+  singleDoc.s3PressURL.forEach(async (press) => {
+    emailContent += `<p>${press.url || ''}</p>`
+
+    const image = await axios.get(press.url, { responseType: 'stream' })
+
     getAttachments.push({
-      filename: press,
-      data: Buffer.from(press)
+      filename: press.name,
+      data: image.data
     })
   })
 
@@ -72,17 +73,18 @@ const generalEmail = async (singleDoc, subjectType) => {
       subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
 
-  const audioURL = singleDoc.s3AudioURL
-  const imageURL = singleDoc.s3ImageURL
+
+  const audioURL = await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' })
+  const imageURL = await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' })
 
   audioURL ? getAttachments.push({
-    filename: audioURL,
-    data: Buffer.from(audioURL)
+    filename: singleDoc.s3AudioURL.name,
+    data: audioURL.data
   }) : null
-  
+
   imageURL ? getAttachments.push({
-    filename: imageURL,
-    data: Buffer.from(imageURL)
+    filename: singleDoc.s3ImageURL.name,
+    data: imageURL.data
   }) : null
 
   // setup email data with unicode symbols
@@ -98,9 +100,9 @@ const generalEmail = async (singleDoc, subjectType) => {
     .then(async (msg) => {
       console.log(msg)
 
-      const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-        new: true
-      })
+      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+      //   new: true
+      // })
     })
     .catch(err => console.log(err))
 }
@@ -124,22 +126,26 @@ const altEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`
   emailContent += `<p>Spotify Link: ${userDoc.spotify || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Download Link: ${singleDoc.s3AudioURL || ''}</p>`
+  emailContent += `<p>Download Link: ${singleDoc.s3AudioURL.url || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL.url || ''}</p>`
   emailContent += `<br>`
   emailContent += `<br>`
   emailContent += `<p>Press Photos: </p>`
 
   let getAttachments = []
 
-  singleDoc.s3PressURL.forEach((press) => {
-    emailContent += `<p>${press || ''}</p>`
+  singleDoc.s3PressURL.forEach(async (press) => {
+    emailContent += `<p>${press.url || ''}</p>`
+
+    const image = await axios.get(press.url, { responseType: 'stream' })
+
     getAttachments.push({
-      filename: press,
-      data: Buffer.from(press)
+      filename: press.name,
+      data: image.data
     })
   })
+
   emailContent += `<br>`
   emailContent += `<br>`
   emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
@@ -153,17 +159,17 @@ const altEmail = async (singleDoc, subjectType) => {
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
 
-  const audioURL = singleDoc.s3AudioURL
-  const imageURL = singleDoc.s3ImageURL
+  const audioURL = await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' })
+  const imageURL = await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' })
 
   audioURL ? getAttachments.push({
-    filename: audioURL,
-    data: Buffer.from(audioURL)
+    filename: singleDoc.s3AudioURL.name,
+    data: audioURL.data
   }) : null
-  
+
   imageURL ? getAttachments.push({
-    filename: imageURL,
-    data: Buffer.from(imageURL)
+    filename: singleDoc.s3ImageURL.name,
+    data: imageURL.data
   }) : null
 
 
@@ -190,7 +196,6 @@ const altEmail = async (singleDoc, subjectType) => {
 
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
-
 
   // Reset isDelivered 
   // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})

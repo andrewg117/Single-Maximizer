@@ -75,6 +75,7 @@ function SingleEdit() {
   const [imageState, setTrackState] = useState()
   const [pressState, setPressState] = useState()
 
+  // TODO: fix file.get error when page is loading
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])

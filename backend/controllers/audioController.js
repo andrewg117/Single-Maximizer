@@ -31,7 +31,10 @@ const uploadAudio = asyncHandler(async (req, res) => {
   
   const updateTrack = await Track.findByIdAndUpdate(audio.trackID, {
     $set: {
-      s3AudioURL: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
+      s3AudioURL: {
+        name: req.file.originalname,
+        url: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
+      }
     }
   }, {
     new: true
@@ -102,6 +105,18 @@ const updateAudio = asyncHandler(async (req, res) => {
   const updatedAudio = await Audio.findByIdAndUpdate(audio._id, newBody, {
     new: true
   })
+  
+  const updateTrack = await Track.findByIdAndUpdate(audio.trackID, {
+    $set: {
+      s3AudioURL: {
+        name: req.file.originalname,
+        url: 'https://singlemax-bucket.s3.amazonaws.com/' + audio._id.toString()
+      }
+    }
+  }, {
+    new: true
+  })
+  
   const delResponse = await s3.send(deleteS3Object(audio._id.toString()))
   // console.log(delResponse)
 
