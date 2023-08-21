@@ -75,7 +75,7 @@ function SingleEdit() {
   const [imageState, setTrackState] = useState()
   const [pressState, setPressState] = useState()
 
-  // TODO: fix file.get error when page is loading
+  // COMPLETE: fix file.get error when page is loading
 
   store.subscribe(() => {
     setSingleState(store.getState().tracks['single'])
@@ -262,7 +262,7 @@ function SingleEdit() {
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                <label>COVER ART</label>
+                {/* <label>COVER ART</label> */}
                 <ImageUpload
                   changeFile={setFormState}
                   file={trackCover}

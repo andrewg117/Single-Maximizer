@@ -47,13 +47,14 @@ label {
   height: 90%;
   width: 90%;
   margin-bottom: 1em;
+  cursor: pointer;
 }
 
-/* #image_div label {
-  position: absolute;
-  top: 0;
-  left: 0;
-} */
+#image_upload_div {
+  display: grid;
+  position: relative;
+  border: 2px dashed #dfdfdf;
+}
 
 #image_div p {
   cursor: pointer;
@@ -62,6 +63,13 @@ label {
 #image_div img {
   max-width: 100%;
   max-height: 100%;
+}
+
+.edit_image {
+  position: absolute;
+  justify-self: right;
+  bottom: 0;
+  /* font-size: 2em; */
 }
 
 #remove_image {

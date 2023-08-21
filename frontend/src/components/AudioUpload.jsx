@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Buffer } from 'buffer'
+import { FaEdit } from 'react-icons/fa'
 import AudioPlayer from 'react-h5-audio-player'
 import styles from '../css/new_release_style.module.css'
 import 'react-h5-audio-player/lib/styles.css'
@@ -55,10 +56,6 @@ function AudioUpload({ changeFile, file, fieldname }) {
 
   return (
     <>
-      <div style={{ cursor: 'pointer' }} {...getRootProps()} hidden={file}>
-        <input {...getInputProps()} />
-        <p>Drag and drop or click to upload audio</p>
-      </div>
       <div>
         {file !== null ?
           <>
@@ -85,25 +82,34 @@ function AudioUpload({ changeFile, file, fieldname }) {
                 <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
               </>
             }
-            <p
-              id={styles.remove_audio}
-              onClick={(e) => {
-                setEdit(false)
-                getBlob(null)
-                URL.revokeObjectURL(blob)
-                changeFile((prevState) => ({
-                  ...prevState,
-                  [fieldname]: null
-                }))
-              }}>
-              X Change Audio
-            </p>
+            {/* <p
+          id={styles.remove_audio}
+          onClick={(e) => {
+            setEdit(false)
+            getBlob(null)
+            URL.revokeObjectURL(blob)
+            changeFile((prevState) => ({
+              ...prevState,
+              [fieldname]: null
+            }))
+          }}>
+          X Change Audio
+        </p> */}
           </>
           :
           <>
           </>
         }
       </div>
+      <div style={{ cursor: 'pointer' }} {...getRootProps()} >
+        <input {...getInputProps()} />
+        <p hidden={file}>Drag and drop or click to upload audio</p>
+        <div>
+          <p><FaEdit hidden={!file} /> Change Audio</p>
+          
+        </div>
+      </div>
+
     </>
   )
 }

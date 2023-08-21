@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { FaEdit } from 'react-icons/fa'
 import styles from '../css/new_release_style.module.css'
 
 const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
@@ -45,24 +46,24 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
 
   return (
     <>
-      <div {...getRootProps()} hidden={file}>
+      <div id={styles.image_upload_div} {...getRootProps()}>
         <input {...getInputProps()} />
-        <p>Drag and drop or click to upload image</p>
-      </div>
-      {
-        file ?
-          <>
-            {isEdit === true ?
-              <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
-              // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
-              :
-              <>
-                <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
-                <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
-                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
-              </>
-            }
-            <div
+        <p hidden={file}>Drag and drop or click to upload image</p>
+        {
+          file ?
+            <>
+              {isEdit === true ?
+                <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
+                // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
+                :
+                <>
+                  <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+                  {/* <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
+                  <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p> */}
+                </>
+              }
+              <FaEdit className={styles.edit_image} />
+              {/* <div
               id={styles.remove_image}
               onClick={(e) => {
                 setEdit(false)
@@ -72,11 +73,13 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
                 }))
               }}>
               X Change Image
-            </div>
-          </>
-          :
-          <></>
-      }
+            </div> */}
+            </>
+            :
+            <></>
+        }
+      </div>
+
     </>
   )
 }
