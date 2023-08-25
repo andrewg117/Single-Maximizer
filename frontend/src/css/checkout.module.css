@@ -1,0 +1,32 @@
+#profile_content_right {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background-color: var(--main-cnt-color);
+  color: var(--main-wht-color);
+}
+
+#logo {
+  width: 80%;
+  height: auto;
+}
+
+#description {
+  font-size: 1.5em;
+}
+
+#submit {
+  background-color: var(--main-btn-color);
+  color: white;
+  text-align: center;
+  /* position: absolute; */
+  /* right: 20%;
+  bottom: 0; */
+  padding: 1em 3em;
+  font-size: 1.2em;
+  border: none;
+}

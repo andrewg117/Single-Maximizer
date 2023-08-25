@@ -94,4 +94,8 @@
   td {
     font-size: .8em;
   }
+
+  .tblhide {
+    display: none;
+  }
 }

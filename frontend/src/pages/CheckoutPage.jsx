@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice'
 import { toast } from 'react-toastify'
-// import styles from '../css/new_release_style.module.css'
+import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
+import styles from '../css/checkout.module.css'
 
 const ProductDisplay = () => {
   const dispatch = useDispatch()
@@ -17,19 +18,16 @@ const ProductDisplay = () => {
   }
 
   return (
-    <section>
-      <div className="product">
-        <img
-          src="https://trackstarz.com/wp-content/uploads/2021/06/single-maximizer-logo-white-text-1024x717.png.webp"
-          alt="Single Maximizer"
-        />
-        <div className="description">
-          <h1>Create New Single</h1>
-          <h5>$50.00</h5>
-        </div>
+    <section id={styles.profile_content_right}>
+      <div id={styles.product}>
+        <img src={SMLogo} alt="Single Maximizer" id={styles.logo} />
       </div>
       <form onSubmit={onSubmit}>
-        <button type="submit">
+        <div id={styles.description}>
+          <h1>Purchase New Single</h1>
+          <h5>$50.00</h5>
+        </div>
+        <button type="submit" id={styles.submit}>
           Purchase
         </button>
       </form>

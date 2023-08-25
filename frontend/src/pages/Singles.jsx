@@ -46,9 +46,9 @@ function Singles() {
           <table id={styles.singles_table}>
             <thead id={styles.singles_header}>
               <tr>
-                <th>ARTIST</th>
+                <th className={styles.tblhide}>ARTIST</th>
                 <th>TITLE</th>
-                <th>DELIVERY DATE</th>
+                <th className={styles.tblhide}>DELIVERY DATE</th>
                 <th>STATUS</th>
                 <th>EDIT</th>
               </tr>
@@ -57,9 +57,9 @@ function Singles() {
               {trackState.length > 0 ? (
                 trackState.map((track) => (
                   <tr key={track._id}>
-                    <td>{track.artist}</td>
+                    <td className={styles.tblhide}>{track.artist}</td>
                     <td>{track.trackTitle}</td>
-                    <td>{new Date(track.deliveryDate).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
+                    <td className={styles.tblhide}>{new Date(track.deliveryDate).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
                     <td>
                       {track.deliveryDate ? <button className={track.isDelivered ? styles.delivered : styles.scheduled}>{track.isDelivered ? 'Delivered' : 'Scheduled'}</button> : <button className={styles.pending}>{"Pending"}</button>}
 
