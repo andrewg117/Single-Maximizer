@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getTracks, reset } from '../features/tracks/trackSlice'
-import Spinner from '../components/Spinner'
+import { toast } from 'react-toastify'
 import { FaEdit } from 'react-icons/fa'
+import Spinner from '../components/Spinner'
 import styles from '../css/singles_style.module.css'
 
 function Singles() {
@@ -26,7 +27,7 @@ function Singles() {
     return () => {
       dispatch(reset())
     }
-  }, [dispatch, navigate])
+  }, [dispatch])
 
   const editTrack = (e, id) => {
     e.preventDefault()

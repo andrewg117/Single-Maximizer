@@ -120,8 +120,7 @@ body {
 
   
   #body_wrapper {
-    display: grid;
-    height: 100%;
+    height: auto;
   }
 
   #profile_body_wrapper {
@@ -158,6 +157,10 @@ body {
 
 @media (max-height: 700px) and (min-width: 700px) {
 
+  #body_wrapper {
+    height: auto;
+  }
+  
   #home_block {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -177,5 +180,9 @@ body {
 
   #intro_btn a {
     font-size: 20px;
+  }
+
+  #profile_body_wrapper {
+    grid-template-columns: 100%;
   }
 }

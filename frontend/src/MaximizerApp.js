@@ -13,7 +13,7 @@ import Profile from './pages/Profile'
 import ProfileEdit from './pages/ProfileEdit'
 import Singles from './pages/Singles'
 import SingleEdit from './pages/SingleEdit'
-import Admin from './pages/Admin'
+// import Admin from './pages/Admin'
 import NewRelease from './pages/NewRelease'
 import CheckoutPage from './pages/CheckoutPage'
 import NavBarLeft from './components/NavBarLeft'
@@ -45,13 +45,13 @@ function MaximizerApp() {
                 <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
                 <Route path='/profile/singles' element={<Singles />} />
                 <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
-                <Route path='/admin' element={<Admin />} />
+                {/* <Route path='/admin' element={<Admin />} /> */}
               </Route>
             </Routes>
           </section>
         </div>
       </Router>
-      <ToastContainer />
+      <ToastContainer autoClose={3000} limit={1} />
     </>
   )
 }

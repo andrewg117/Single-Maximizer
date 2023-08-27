@@ -59,7 +59,7 @@ function CheckoutPage() {
       toast.info("Order canceled")
     }
     return () => {
-      toast.clearWaitingQueue()
+      // toast.clearWaitingQueue()
       dispatch(resetPurchase())
     }
   }, [dispatch])

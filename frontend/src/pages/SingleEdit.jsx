@@ -126,14 +126,11 @@ function SingleEdit() {
 
 
   const onSubmit = () => {
-    if (isError) {
-      toast.error(message)
-    }
 
     if (trackCover !== null && trackAudio !== null && user) {
 
       dispatch(updateSingle({ trackID: id, trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
-        .then((data) => {
+        .then(() => {
           if (trackCover instanceof FormData) {
             let imageData = new FormData()
             imageData.append("Image", trackCover.get('Image'))
@@ -211,9 +208,6 @@ function SingleEdit() {
     if (isError) {
       toast.error(message)
     }
-    dispatch(resetSingle())
-    dispatch(resetImage())
-    dispatch(resetAudio())
 
     dispatch(getSingle(id)).unwrap()
       .catch((error) => console.error(error))
@@ -231,9 +225,9 @@ function SingleEdit() {
 
 
     return (() => {
-      // dispatch(resetSingle())
-      // dispatch(resetImage())
-      // dispatch(resetAudio())
+      dispatch(resetSingle())
+      dispatch(resetImage())
+      dispatch(resetAudio())
       setShowPopup(false)
     })
   }, [isError, message, id, dispatch])

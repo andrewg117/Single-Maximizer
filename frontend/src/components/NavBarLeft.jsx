@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser, logout } from '../features/auth/authSlice'
-import { toast } from 'react-toastify'
 import { FaBars } from 'react-icons/fa'
 import styles from '../css/profile_nav.module.css'
 
@@ -44,7 +43,6 @@ function NavBarLeft() {
   }
 
   const onLogout = (e) => {
-    toast.clearWaitingQueue()
     dispatch(logout())
     navigate('/home')
   }
