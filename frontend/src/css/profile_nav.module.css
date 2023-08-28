@@ -142,7 +142,6 @@
 
   #top_nav_container { 
     display: grid;
-    grid-template-rows: 1fr 1fr;
     align-content: normal;
     justify-items: normal;
   }

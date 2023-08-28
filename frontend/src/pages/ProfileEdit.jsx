@@ -161,7 +161,7 @@ function ProfileEdit() {
 
   return (
     <>
-      <div id={styles.profile_content_right}>
+      <div id={styles.edit_profile_content_right}>
         <form id={styles.profile_form} onSubmit={(e) => {
           setShowPopup(() => {
             e.preventDefault()
