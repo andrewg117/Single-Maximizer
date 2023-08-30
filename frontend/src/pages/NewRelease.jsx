@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 // import Notification from '../components/Notification'
-import { updateUser, reset as resetUser } from '../features/auth/authSlice'
+import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
 import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
 import { postImage, postPress, reset as resetImage } from '../features/image/imageSlice'
@@ -67,9 +67,11 @@ function NewRelease() {
     if (isError) {
       toast.error(message)
     }
+    
+    dispatch(getUser())
 
     if (user.trackAllowance === 0) {
-      navigate('/profile/singles')
+      navigate('/profile/checkoutpage')
     }
 
     return () => {

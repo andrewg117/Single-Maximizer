@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { getUser } from '../features/auth/authSlice'
 import { getTracks, reset } from '../features/tracks/trackSlice'
 import { toast } from 'react-toastify'
 import { FaEdit } from 'react-icons/fa'
@@ -18,6 +19,8 @@ function Singles() {
   const [trackState, setTrackState] = useState(tracks)
 
   useEffect(() => {
+    dispatch(getUser())
+
     dispatch(getTracks()).unwrap()
       .then((data) => {
         setTrackState(data)

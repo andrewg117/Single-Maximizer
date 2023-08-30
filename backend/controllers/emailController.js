@@ -5,17 +5,17 @@ const asyncHandler = require('express-async-handler')
 const formData = require('form-data')
 const Mailgun = require('mailgun.js')
 const axios = require('axios')
+// TODO: Get email list for EMAILTO 
 const EMAILTO = process.env.EMAILTO
 const EMAILUSER = process.env.EMAILUSER
 const MAILGUN_API = process.env.MAILGUN_API
+
 
 // Mailgun email setup
 const mailgun = new Mailgun(formData)
 const mg = mailgun.client({ username: 'api', key: MAILGUN_API })
 const mgDomain = 'mail.trackstarz.com'
 
-// COMPLETE: https://www.npmjs.com/package/mailgun.js?utm_source=recordnotfound.com
-// COMPLETE: add attatchments to emails
 
 // General email
 const generalEmail = async (singleDoc, subjectType) => {
@@ -91,6 +91,7 @@ const generalEmail = async (singleDoc, subjectType) => {
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: EMAILTO, // list of receivers
+    bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
     attachment: getAttachments
@@ -177,6 +178,7 @@ const altEmail = async (singleDoc, subjectType) => {
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: EMAILTO, // list of receivers
+    bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
     attachment: getAttachments
@@ -187,9 +189,9 @@ const altEmail = async (singleDoc, subjectType) => {
     .then(async (msg) => {
       console.log(msg)
 
-      const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-        new: true
-      })
+      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+      //   new: true
+      // })
     })
     .catch(err => console.log(err))
 }
@@ -218,15 +220,6 @@ const sendScheduledEmail = async () => {
     // altEmail(singleDoc, 'KDHX')
 
   }
-
-  // const email = await Email.create({
-  //   recipient: req.body.recipient,
-  //   subject: req.body.subject,
-  //   emailMessage: req.body.emailMessage,
-  //   user: req.user.id,
-  //   trackID: req.body.trackID,
-  //   deliveryDate: req.body.deliveryDate,
-  // })
 }
 
 

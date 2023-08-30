@@ -11,8 +11,7 @@ const initialState = {
 
 export const makePurchase = createAsyncThunk('purchase/post', async (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await purchaseService.makePurchase(token)
+    return await purchaseService.makePurchase()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 
@@ -22,8 +21,7 @@ export const makePurchase = createAsyncThunk('purchase/post', async (_, thunkAPI
 
 export const getPurchase = createAsyncThunk('purchase/get', async (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token
-    return await purchaseService.getPurchase(token)
+    return await purchaseService.getPurchase()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

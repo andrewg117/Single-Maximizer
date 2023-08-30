@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice'
 import { toast } from 'react-toastify'
 import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
@@ -7,15 +8,30 @@ import styles from '../css/checkout.module.css'
 
 const ProductDisplay = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
+  // TODO: remove stripe link for demo
+  // const onSubmit = (e) => {
+  //   e.preventDefault()
+  //   dispatch(makePurchase())
+  //     .unwrap()
+  //     .then((data) => {
+  //       window.location.href = data
+  //     })
+  // }
+
+  // Demo Submit
   const onSubmit = (e) => {
     e.preventDefault()
-    dispatch(makePurchase())
-      .unwrap()
-      .then((data) => {
-        window.location.href = data
+    dispatch(makePurchase()).unwrap()
+      .then(() => {
+        toast.success('Purchase Successful')
+        navigate('/profile/newrelease')
+        // navigate(0)
       })
+      .catch((err) => console.error(err))
   }
+
 
   return (
     <section id={styles.profile_content_right}>
@@ -43,10 +59,18 @@ const Message = ({ message }) => (
 
 function CheckoutPage() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const { user } = useSelector((state) => state.auth)
 
   const [message, setMessage] = useState("")
 
   useEffect(() => {
+
+    if (user.trackAllowance > 0) {
+      navigate('/profile/newrelease')
+    }
+
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search)
 
@@ -62,7 +86,7 @@ function CheckoutPage() {
       // toast.clearWaitingQueue()
       dispatch(resetPurchase())
     }
-  }, [dispatch])
+  }, [dispatch, navigate, user.trackAllowance])
 
   return message ? (
     <Message message={message} />

@@ -52,7 +52,6 @@ label {
 }
 
 #image_upload_div {
-  width: 90dvw;
   align-self: center;
   border: 2px dashed #dfdfdf;
 }

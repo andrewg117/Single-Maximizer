@@ -7,7 +7,6 @@ import Spinner from '../components/Spinner'
 import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
 import signinImage from '../images/signinImage.png'
 import styles from '../css/sign_in_style.module.css'
-// TODO: fix css at bottom of screen
 
 function SignIn() {
   const [formData, setFormData] = useState({

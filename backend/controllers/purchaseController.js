@@ -9,17 +9,21 @@ const YOUR_DOMAIN = 'http://localhost:3000/'
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.SK_ENDPOINT
 
+
+// @desc    Post purchase
+// @route   POST /api/purchase
+// @access  Private
 const postPayment = asyncHandler(async (req, res) => {
   // Create Stripe Customer
   let userStripeID
   let customerData
-  if(req.user.stripeID){
+  if (req.user.stripeID) {
     userStripeID = req.user.stripeID
   } else {
     customerData = await stripe.customers.create({
       email: req.user.email,
       name: `${req.user.fname} ${req.user.lname}`,
-      metadata: {'userID': req.user._id.toString()}
+      metadata: { 'userID': req.user._id.toString() }
     })
 
     const updatedUser = await User.findByIdAndUpdate(req.user._id, {
@@ -31,7 +35,7 @@ const postPayment = asyncHandler(async (req, res) => {
 
   // Create Stripe Session Link
   const session = await stripe.checkout.sessions.create({
-    customer: userStripeID ? userStripeID :  customerData.id,
+    customer: userStripeID ? userStripeID : customerData.id,
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -50,14 +54,30 @@ const postPayment = asyncHandler(async (req, res) => {
 })
 
 
-// const fulfillOrder = (lineItems) => {
-//   // TODO: fill me in
-//   console.log("Fulfilling order", lineItems)
-// }
+// @desc    Post demo purchase
+// @route   POST /api/purchase
+// @access  Private
+const postDemoPayment = asyncHandler(async (req, res) => {
+
+  const user = await User.findById(req.user._id)
+
+  if (user) {
+    // Update User's trackAllowance after purchase is complete
+    const updatedUser = await User.findByIdAndUpdate(user._id, {
+      $inc: { trackAllowance: 1 }
+    }, {
+      new: true
+    })
+  
+    res.status(200).json('Purchase Made')
+  } else {
+    res.status(401)
+  }
+})
 
 // @desc    Post endpoint
 // @route   POST /api/webhook
-// @access  Private
+// @access  Public
 // Card 4242 4242 4242 4242
 const postEndpoint = asyncHandler(async (req, res) => {
   const payload = req.body
@@ -109,5 +129,6 @@ const postEndpoint = asyncHandler(async (req, res) => {
 
 module.exports = {
   postPayment,
+  postDemoPayment,
   postEndpoint
 }
