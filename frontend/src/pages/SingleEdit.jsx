@@ -256,7 +256,7 @@ function SingleEdit() {
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                {/* <label>COVER ART</label> */}
+                <label>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
                   file={trackCover}
@@ -293,25 +293,25 @@ function SingleEdit() {
                 </div>
               </div>
             </div>
-            <div className={styles.top_input_div}>
-              <label>AUDIO UPLOAD</label>
-              <AudioUpload
-                changeFile={setFormState}
-                file={trackAudio}
-                fieldname={'trackAudio'}
-              />
-            </div>
-            <div className={styles.top_input_div}>
-              <label>PRESS PHOTOS</label>
-              {isPressSuccess ?
-                <PressEdit
+            <div className={styles.file_input_div}>
+                <label>AUDIO UPLOAD</label>
+                <AudioUpload
                   changeFile={setFormState}
-                  trackPress={trackPress}
-                  newPressList={newPressList}
-                  deletePressList={deletePressList}
+                  file={trackAudio}
+                  fieldname={'trackAudio'}
                 />
-                :
-                <></>}
+            </div>
+            <div className={styles.file_input_div}>
+                <label>PRESS PHOTOS</label>
+                {isPressSuccess ?
+                  <PressEdit
+                    changeFile={setFormState}
+                    trackPress={trackPress}
+                    newPressList={newPressList}
+                    deletePressList={deletePressList}
+                  />
+                  :
+                  <></>}
             </div>
             <div className={styles.input_div}>
               <div>

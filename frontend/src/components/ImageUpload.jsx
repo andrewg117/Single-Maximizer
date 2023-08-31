@@ -53,27 +53,18 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
           file ?
             <>
               {isEdit === true ?
-                <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
-                // <img src={makeBlob()} alt={altText}  onLoad={() => { URL.revokeObjectURL(blob) }} />
+                <>
+                  <img src={`data:image/*;base64,${makeBlob()}`} alt={altText} />
+                  <FaEdit className={styles.edit_image} />
+                </>
                 :
                 <>
                   <img src={makeBlob()} alt={altText} onLoad={() => { URL.revokeObjectURL(blob) }} />
+                  <FaEdit className={styles.edit_image} />
                   {/* <p>{file instanceof FormData ? file.get('Image').name : ''}</p>
                   <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p> */}
                 </>
               }
-              <FaEdit className={styles.edit_image} />
-              {/* <div
-              id={styles.remove_image}
-              onClick={(e) => {
-                setEdit(false)
-                changeFile((prevState) => ({
-                  ...prevState,
-                  [fieldname]: null
-                }))
-              }}>
-              X Change Image
-            </div> */}
             </>
             :
             <></>

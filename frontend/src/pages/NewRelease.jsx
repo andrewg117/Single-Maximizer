@@ -67,12 +67,8 @@ function NewRelease() {
     if (isError) {
       toast.error(message)
     }
-    
-    dispatch(getUser())
 
-    if (user.trackAllowance === 0) {
-      navigate('/profile/checkoutpage')
-    }
+    dispatch(getUser())
 
     return () => {
       dispatch(resetTracks())
@@ -80,7 +76,7 @@ function NewRelease() {
       dispatch(resetEmail())
       dispatch(resetAudio())
     }
-  }, [isError, message, dispatch, navigate, user.trackAllowance])
+  }, [isError, message, dispatch, navigate])
 
 
   const trackEmail = useCallback((title, date, trackID) => {
@@ -97,7 +93,16 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user) {
+    // TODO: Create a file size check
+    let sizeCheck = true
+    if(trackCover.get('size') > .01) {
+      toast.error("File is too large")
+      sizeCheck = false
+    } else {
+      sizeCheck = true
+    }
+
+    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user && sizeCheck) {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))
@@ -186,7 +191,7 @@ function NewRelease() {
                   urlField={'s3ImageURL'}
                   altText={'Upload Track Cover'}
                 />
-                <p>Size Limit: 10 MB</p>
+                <p>Size Limit: {trackCover ? trackCover.get('size') : 0} / 10 MB</p>
               </div>
               <div className={styles.top_input_div}>
                 <div>
@@ -215,24 +220,27 @@ function NewRelease() {
                 </div>
               </div>
             </div>
-            <div className={styles.top_input_div}>
-              <label>AUDIO UPLOAD</label>
-              <p>Size Limit: 21 MB</p>
-              <AudioUpload
-                changeFile={setFormState}
-                file={trackAudio}
-                fieldname={'trackAudio'}
-                url={s3AudioURL}
-                urlField={'s3AudioURL'}
-              />
+            <div className={styles.file_input_div}>
+              <div>
+                <label>AUDIO UPLOAD</label>
+                <AudioUpload
+                  changeFile={setFormState}
+                  file={trackAudio}
+                  fieldname={'trackAudio'}
+                  url={s3AudioURL}
+                  urlField={'s3AudioURL'}
+                />
+                <p>Size Limit: {trackAudio ? trackAudio.get('size') : 0} / 21 MB</p>
+              </div>
             </div>
-            <div className={styles.top_input_div}>
-              <label>PRESS PHOTOS</label>
-              <p>Size Limit: 20 MB</p>
-              <PressUpload
-                changeFile={setFormState}
-                trackPress={trackPress}
-              />
+            <div className={styles.file_input_div}>
+              <div>
+                <label>PRESS PHOTOS</label>
+                <PressUpload
+                  changeFile={setFormState}
+                  trackPress={trackPress}
+                />
+              </div>
             </div>
             <div className={styles.input_div}>
               <div>

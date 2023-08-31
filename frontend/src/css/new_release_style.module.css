@@ -32,13 +32,25 @@ label {
   width: 100%;
 }
 
+.file_input_div {
+  display: grid;
+  row-gap: 1em;
+  border-bottom: 2px solid #dfdfdf;
+  margin-bottom: 1em;
+  width: 100%;
+  text-align: left;
+}
+
+
+
 #top_div {
   display: grid;
   justify-self: center;
   align-items: center;
   grid-template-columns: 20% 80%;
+  border-bottom: 2px solid #dfdfdf;
+  margin-bottom: 1em;
   width: 100%;
-  margin-bottom: 5%;
   text-align: left;
 }
 
@@ -65,12 +77,10 @@ label {
   max-height: 100%;
 }
 
-.edit_image {
-  position: absolute;
-  justify-self: right;
+/* .edit_image {
+  align-self: right;
   bottom: 0;
-  /* font-size: 2em; */
-}
+} */
 
 #remove_image {
   cursor: pointer;

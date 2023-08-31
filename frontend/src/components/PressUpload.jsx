@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from '../css/new_release_style.module.css'
 
@@ -16,7 +16,7 @@ const ImageFrame = ({ blob, id, removePress }) => {
 }
 
 function PressUpload({ changeFile, trackPress }) {
-  // const [pressList, setList] = useState([])
+  const [listSize, setListSize] = useState()
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -43,6 +43,22 @@ function PressUpload({ changeFile, trackPress }) {
     }
   })
 
+
+  useEffect(() => {
+    setListSize(() => {
+      let size = 0
+      if (trackPress.length > 0) {
+        trackPress.forEach((item) => {
+          size = size + item.size
+        })
+      }
+
+      let megBytes = Math.round((size / 1024 ** 2) * 100) / 100
+      megBytes = megBytes.toString()
+      return megBytes
+    })
+  }, [trackPress])
+
   const removePress = (e, id) => {
     e.preventDefault()
     // setList(files.filter((item, index) => index !== id))
@@ -54,21 +70,24 @@ function PressUpload({ changeFile, trackPress }) {
   }
 
   return (
-    <div id={styles.press_upload}>
-      {
-        trackPress.length > 0 ?
-        trackPress.map((item, index) => {
-          // return <p key={index}>{item.path}</p>
-          return <ImageFrame key={index} id={index} blob={item} removePress={removePress} />
-        })
-        :
-        []
-      }
-      <div id={styles.add_press} {...getRootProps()}>
-        <input {...getInputProps()} />
-        <div>Add Photo</div>
+    <>
+      <div id={styles.press_upload}>
+        {
+          trackPress.length > 0 ?
+            trackPress.map((item, index) => {
+              // return <p key={index}>{item.path}</p>
+              return <ImageFrame key={index} id={index} blob={item} removePress={removePress} />
+            })
+            :
+            []
+        }
+        <div id={styles.add_press} {...getRootProps()}>
+          <input {...getInputProps()} />
+          <div>Add Photo</div>
+        </div>
       </div>
-    </div>
+      <p>Size Limit: {listSize} / 20 MB</p>
+    </>
   )
 }
 

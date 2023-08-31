@@ -79,7 +79,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
                   volume={.2}
                 />
                 <p>{file instanceof FormData ? file.get('trackAudio').name : ''}</p>
-                <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p>
+                {/* <p>{file instanceof FormData ? 'Size: ' + file.get('size') : ''}</p> */}
               </>
             }
             {/* <p
