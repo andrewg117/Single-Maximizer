@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
 const ImageFrame = ({ blob, id, removePress }) => {
@@ -26,20 +27,20 @@ function PressUpload({ changeFile, trackPress }) {
       let formData = new FormData()
       formData.append('Press', acceptedFiles[0])
       let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString() + ' MB'
       formData.append('size', megBytes)
 
-      // setEdit(false)
+      if (listSize + megBytes < 20) {
 
-      // getBlob(URL.createObjectURL(formData.get('Image')))
-
-      changeFile((prevState) => ({
-        ...prevState,
-        trackPress: [
-          ...trackPress,
-          formData.get('Press')
-        ]
-      }))
+        changeFile((prevState) => ({
+          ...prevState,
+          trackPress: [
+            ...trackPress,
+            formData.get('Press')
+          ]
+        }))
+      } else {
+        toast.error("File size is too large")
+      }
     }
   })
 
@@ -54,7 +55,6 @@ function PressUpload({ changeFile, trackPress }) {
       }
 
       let megBytes = Math.round((size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString()
       return megBytes
     })
   }, [trackPress])

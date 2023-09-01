@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
 const ImageFrame = ({ blob, id, removePress }) => {
@@ -39,17 +40,20 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
       let formData = new FormData()
       formData.append('Press', acceptedFiles[0])
       let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString() + ' MB'
       formData.append('size', megBytes)
 
+      if (listSize + megBytes < 20) {
 
-      changeFile((prevState) => ({
-        ...prevState,
-        newPressList: [
-          ...newPressList,
-          formData.get('Press')
-        ]
-      }))
+        changeFile((prevState) => ({
+          ...prevState,
+          newPressList: [
+            ...newPressList,
+            formData.get('Press')
+          ]
+        }))
+      } else {
+        toast.error("File size is too large")
+      }
     }
   })
 
@@ -93,14 +97,12 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
       }
 
       let megBytes = Math.round((size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString()
       return megBytes
     })
   }, [trackPress, newPressList])
 
   return (
     <>
-      <p>Size Limit: {listSize + " / "}20 MB</p>
       <div id={styles.press_upload}>
         {
           trackPress.length > 0 ?
@@ -123,6 +125,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
           <div>Add Photo</div>
         </div>
       </div>
+      <p>Size Limit: {listSize} / 20 MB</p>
     </>
   )
 }

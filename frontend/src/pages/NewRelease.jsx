@@ -93,16 +93,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    // TODO: Create a file size check
-    let sizeCheck = true
-    if(trackCover.get('size') > .01) {
-      toast.error("File is too large")
-      sizeCheck = false
-    } else {
-      sizeCheck = true
-    }
-
-    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user && sizeCheck) {
+    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user) {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))

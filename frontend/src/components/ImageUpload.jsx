@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { FaEdit } from 'react-icons/fa'
+import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
 const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
@@ -21,21 +22,27 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
       'image/jpeg': ['.jpeg', '.png']
     },
     onDrop: async (acceptedFiles) => {
-      let formData = new FormData()
-      formData.append('Image', acceptedFiles[0])
-      let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
-      megBytes = megBytes.toString() + ' MB'
-      formData.append('size', megBytes)
+      if (acceptedFiles[0]) {
+        let formData = new FormData()
+        formData.append('Image', acceptedFiles[0])
+        // console.log(acceptedFiles[0].size)
+        let megBytes = Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100
+        megBytes = megBytes.toString()
+        formData.append('size', megBytes)
 
-      setEdit(false)
+        setEdit(false)
 
-      getBlob(URL.createObjectURL(formData.get('Image')))
+        getBlob(URL.createObjectURL(formData.get('Image')))
 
-      changeFile((prevState) => ({
-        ...prevState,
-        [fieldname]: formData
-      }))
-    }
+        changeFile((prevState) => ({
+          ...prevState,
+          [fieldname]: formData
+        }))
+      } else {
+        toast.error("File size is too large")
+      }
+    },
+    maxSize: 10000000,
   })
 
   useEffect(() => {

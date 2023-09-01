@@ -263,6 +263,7 @@ function SingleEdit() {
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
                 />
+                <p>{trackCover instanceof FormData ? `Size Limit: ${trackCover.get('size')} / 10 MB` : null}</p>
               </div>
               <div className={styles.top_input_div}>
                 <div>
@@ -300,6 +301,7 @@ function SingleEdit() {
                   file={trackAudio}
                   fieldname={'trackAudio'}
                 />
+                <p>{trackAudio instanceof FormData ? `Size Limit: ${trackAudio.get('size')} / 21 MB` : null}</p>
             </div>
             <div className={styles.file_input_div}>
                 <label>PRESS PHOTOS</label>

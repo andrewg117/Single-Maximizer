@@ -179,13 +179,14 @@ function ProfileEdit() {
 
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                {/* <label>PROFILE AVATAR</label> */}
+                <label>PROFILE AVATAR</label>
                 <ImageUpload
                   changeFile={setFormState}
                   file={profileImage}
                   fieldname={'profileImage'}
                   altText={'Upload Profile Image'}
                 />
+                <p>{profileImage instanceof FormData ? `Size Limit: ${profileImage.get('size')} / 10 MB` : null}</p>
               </div>
               <div></div>
             </div>
