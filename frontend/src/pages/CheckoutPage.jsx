@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { getUser } from '../features/auth/authSlice'
 import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice'
 import { toast } from 'react-toastify'
 import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
@@ -67,9 +68,14 @@ function CheckoutPage() {
 
   useEffect(() => {
 
-    if (user.trackAllowance > 0) {
-      navigate('/profile/newrelease')
-    }
+    dispatch(getUser()).unwrap()
+      .then((data) => {
+        if(data.trackAllowance > 0) {
+          navigate('/profile/newrelease')
+        }
+      })
+      .catch(err => console.error(err))
+
 
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search)

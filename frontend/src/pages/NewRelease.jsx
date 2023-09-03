@@ -68,7 +68,14 @@ function NewRelease() {
       toast.error(message)
     }
 
-    dispatch(getUser())
+    dispatch(getUser()).unwrap()
+      .then((data) => {
+        if(data.trackAllowance === 0) {
+          navigate('/profile/checkoutpage')
+        }
+      })
+      .catch(err => console.error(err))
+
 
     return () => {
       dispatch(resetTracks())
