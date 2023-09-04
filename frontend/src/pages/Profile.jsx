@@ -91,8 +91,9 @@ const Profile = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
+
     dispatch(resetUser())
     dispatch(resetImage())
 

@@ -34,8 +34,7 @@ function Singles() {
 
   const editTrack = (e, id) => {
     e.preventDefault()
-
-    // dispatch(deleteTrack(id))
+    
     navigate(`/profile/singleedit/${id}`)
   }
 

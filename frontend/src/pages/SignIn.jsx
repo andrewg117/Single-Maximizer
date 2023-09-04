@@ -19,23 +19,22 @@ function SignIn() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
+  const { user, isLoading, isError, message } = useSelector(
     (state) => state.auth
   )
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message, { id: message })
-    }
+
 
     if (user) {
       navigate('/profile')
     }
+
     return () => {
       dispatch(reset())
       toast.clearWaitingQueue()
     }
-  }, [user, isError, isSuccess, message, navigate, dispatch])
+  }, [user, isError, message, navigate, dispatch])
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -54,7 +53,8 @@ function SignIn() {
 
     dispatch(login(userData)).unwrap()
       .then(() => navigate('/profile'))
-      .catch((error) => console.error(error))
+      .catch((error) => toast.error(error = "Invalid Credentials"))
+
   }
 
   if (isLoading) {

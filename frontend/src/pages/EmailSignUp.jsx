@@ -23,10 +23,6 @@ function EmailSignUp() {
   )
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message, { id: message })
-      toast.clearWaitingQueue()
-    }
 
     return () => {
       dispatch(resetUser())
@@ -53,7 +49,7 @@ function EmailSignUp() {
         .then(() => {
           setEmailSent(true)
         })
-        .catch((error) => console.error(error))
+        .catch((error) => toast.error(error))
     }
   }
 

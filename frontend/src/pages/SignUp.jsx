@@ -30,10 +30,6 @@ function SignUp() {
   const { token } = useParams()
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message, { id: message })
-    }
-    
     dispatch(emailData(token)).unwrap()
       .then((data) => {
         setFormData((prevState) => ({
@@ -74,7 +70,7 @@ function SignUp() {
         .then(() => {
           navigate('/profile')
         })
-        .catch((error) => console.error(error))
+        .catch((error) => toast.error(error))
     }
   }
 
