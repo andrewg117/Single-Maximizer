@@ -90,8 +90,9 @@ const generalEmail = async (singleDoc, subjectType) => {
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: EMAILTO, // list of receivers
-    bcc: userDoc.email,
+    to: userDoc.email, // list of receivers
+    // to: EMAILTO, // list of receivers
+    // bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
     attachment: getAttachments
@@ -101,9 +102,9 @@ const generalEmail = async (singleDoc, subjectType) => {
     .then(async (msg) => {
       console.log(msg)
 
-      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-      //   new: true
-      // })
+      const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
+        new: true
+      })
     })
     .catch(err => console.log(err))
 }

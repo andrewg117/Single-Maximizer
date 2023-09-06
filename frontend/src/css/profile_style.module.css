@@ -2,6 +2,7 @@
   display: grid;
   width: 100%;
   overflow: auto;
+  justify-items: center;
   background-color: var(--main-wht-color);
   color: var(--main-cnt-color);
 }
@@ -18,7 +19,6 @@
 
 #profile_view_div {
   display: grid;
-  justify-self: center;
   margin-bottom: 5%;
   text-align: left;
   width: 90%;
@@ -49,7 +49,7 @@
   align-items: center;
   grid-template-columns: 20% 80%;
   width: 100%;
-  margin-bottom: 5%;
+  margin-bottom: 1em;
   text-align: left;
 }
 
@@ -57,9 +57,8 @@
   display: grid;
   /* position: relative; */
   text-align: left;
-  height: 90%;
+  height: auto;
   width: 90%;
-  margin-bottom: 1em;
   cursor: pointer;
 }
 
