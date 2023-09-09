@@ -1,6 +1,8 @@
 import axios from "axios"
 
-const API_URL = '/api/email/'
+const NODE_ENV = process.env.NODE_ENV
+const RENDER_API_URL = process.env.RENDER_API_URL + '/api/email/'
+const API_URL = NODE_ENV === 'production' ? RENDER_API_URL : '/api/email/'
 
 const sendEmail = async (emailData, token) => {
   const config = {

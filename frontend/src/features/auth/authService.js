@@ -1,7 +1,9 @@
 import axios from "axios"
 import jwt_decode from 'jwt-decode'
 
-const API_URL = '/api/users/'
+const NODE_ENV = process.env.NODE_ENV
+const RENDER_API_URL = process.env.RENDER_API_URL + '/api/users/'
+const API_URL = NODE_ENV === 'production' ? RENDER_API_URL : '/api/users/'
 
 const register = async (userData) => {
   const response = await axios.post(API_URL, userData)
