@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-var cors = require('cors')
+// const cors = require('cors')
 const colors = require('colors')
 const dotenv = require('dotenv').config()
 const schedule = require('node-schedule')
@@ -34,16 +34,13 @@ app.use('/api/purchase', require('./routes/purchaseRoutes'))
 
 if (process.env.NODE_ENV === 'production') {
   // app.use(express.static(path.join(__dirname, '../frontend/build')))
-
-  app.use(cors({
-    origin: process.env.RENDER_STATIC_URL, // frontend URI (ReactJS)
-  }))
+  app.use(express.static(path.join(process.env.RENDER_STATIC_URL, '/build')))
 
 
   app.get('*', (req, res) =>
     res.sendFile(
-      path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
-      // path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
+      // path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
+      path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
     )
   )
 } else {
