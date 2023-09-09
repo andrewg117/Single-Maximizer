@@ -2,9 +2,9 @@ const { S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand, Delete
 
 const dotenv = require('dotenv').config()
 const port = process.env.Port || 5000
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
-const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION
+const AWS_ACCESS_KEY_ID = process.env.ACCESS_KEY_ID
+const AWS_SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY
+const AWS_DEFAULT_REGION = process.env.DEFAULT_REGION
 
 
 
