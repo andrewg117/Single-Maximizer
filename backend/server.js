@@ -36,11 +36,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')))
   // app.use(express.static(process.env.RENDER_STATIC_URL))
 
-  app.use('/api', function(req, res, next){
-    res.json({connection: 'success'})
-    next()
-  })
-
   app.get('*', (req, res) =>
     res.sendFile(
       path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
