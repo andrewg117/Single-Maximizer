@@ -25,9 +25,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-app.use('/api', function(res, req){
-  res.json({'connection': 'success'})
-})
 app.use('/api/tracks', require('./routes/trackRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/email', require('./routes/emailRoutes'))
@@ -39,6 +36,9 @@ if (process.env.NODE_ENV === 'production') {
   // app.use(express.static(path.join(__dirname, '../frontend/build')))
   app.use(express.static(path.join(process.env.RENDER_STATIC_URL, '/build')))
 
+  app.get('/api', function(res, req){
+    res.json({connection: 'success'})
+  })
 
   app.get('*', (req, res) =>
     res.sendFile(
