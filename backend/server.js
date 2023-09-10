@@ -34,8 +34,8 @@ app.use('/api/purchase', require('./routes/purchaseRoutes'))
 
 if (process.env.NODE_ENV === 'production') {
   // app.use(express.static(path.join(__dirname, '../frontend/build')))
-  app.use(express.static('frontend/build'))
-  // app.use(express.static(process.env.RENDER_STATIC_URL))
+  // app.use(express.static('frontend/build'))
+  app.use(express.static(process.env.RENDER_STATIC_URL))
 
   app.get('*', (req, res) =>
     res.sendFile(
