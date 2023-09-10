@@ -8,6 +8,10 @@ const { generateToken } = require('../utils/generateToken.js')
 const EMAILUSER = process.env.EMAILUSER
 const MAILGUN_API = process.env.MAILGUN_API
 
+const NODE_ENV = process.env.NODE_ENV
+const RENDER_STATIC_URL = process.env.RENDER_STATIC_URL
+const API_URL = NODE_ENV === 'production' ? RENDER_STATIC_URL : 'http://localhost:3000'
+
 // Mailgun email setup
 const mailgun = new Mailgun(formData)
 const mg = mailgun.client({username: 'api', key: MAILGUN_API})
@@ -77,8 +81,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
 
   const token = makeToken(email, '2m')
 
-  // const link = "http://localhost:3000/home/signup?" + "email=" + email
-  const link = `http://localhost:3000/home/signup/${token}`
+  const link = `${API_URL}/home/signup/${token}`
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -156,8 +159,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   const token = makeToken(user.email, '10m')
 
-  // const link = "http://localhost:3000/home/resetpassword?" + "email=" + email
-  const link = `http://localhost:3000/home/resetpass/${token}`
+  const link = `${API_URL}/home/resetpass/${token}`
 
   // setup email data with unicode symbols
   const mailOptions = {

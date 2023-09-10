@@ -33,8 +33,8 @@ app.use('/api/audio', require('./routes/audioRoutes'))
 app.use('/api/purchase', require('./routes/purchaseRoutes'))
 
 if (process.env.NODE_ENV === 'production') {
-  // app.use(express.static(path.join(__dirname, '../frontend/build')))
-  app.use(express.static(path.join(process.env.RENDER_STATIC_URL, '/build')))
+  app.use(express.static(path.join(__dirname, '../frontend/build')))
+  // app.use(express.static(process.env.RENDER_STATIC_URL))
 
   app.use('/api', function(req, res, next){
     res.json({connection: 'success'})
@@ -43,8 +43,8 @@ if (process.env.NODE_ENV === 'production') {
 
   app.get('*', (req, res) =>
     res.sendFile(
-      // path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
-      path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
+      path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
+      // path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
     )
   )
 } else {
