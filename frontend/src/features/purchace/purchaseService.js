@@ -2,7 +2,7 @@ import axios from "axios"
 
 const NODE_ENV = process.env.NODE_ENV
 const RENDER_API_URL = process.env.RENDER_API_URL + '/api/purchase/'
-const API_URL = NODE_ENV === 'production' ? RENDER_API_URL : '/api/purchase/'
+const API_URL = '/api/purchase/'
 
 const makePurchase = async () => {
 
