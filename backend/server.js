@@ -36,8 +36,9 @@ if (process.env.NODE_ENV === 'production') {
   // app.use(express.static(path.join(__dirname, '../frontend/build')))
   app.use(express.static(path.join(process.env.RENDER_STATIC_URL, '/build')))
 
-  app.get('/api', function(res, req){
+  app.use('/api', function(req, res, next){
     res.json({connection: 'success'})
+    next()
   })
 
   app.get('*', (req, res) =>
