@@ -89,7 +89,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     to: email, // list of receivers
     subject: 'Register Account', // Subject line
     text: "Continue creating your account: " + link, // plain text body
-    html: `<p>Continue creating your account: ${link}</p>` // html body
+    html: `<p>Continue creating your account:</p><p>${link}</p>` // html body
   }
 
   
@@ -166,8 +166,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: email, // list of receivers
     subject: 'Forgot Password', // Subject line
-    text: "Hello " + user.username + ",\n Reset Password: " + link, // plain text body
-    html: `<p>Hello ${user.username},</p><p>Reset Password: ${link}</p>` // html body
+    text: "Hello " + user.username + ",\n Reset Password: \n" + link, // plain text body
+    html: `<p>Hello ${user.username},</p><p>Reset Password:</p><p>${link}</p>` // html body
   }
 
   mg.messages.create(mgDomain, mailOptions)
