@@ -15,7 +15,7 @@ connectDB()
 const app = express()
 
 // Daily function
-schedule.scheduleJob('0 12 * * *', function () {
+schedule.scheduleJob({minute: 0, hour: 13}, function () {
   sendScheduledEmail()
 })
 
