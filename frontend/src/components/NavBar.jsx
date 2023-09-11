@@ -52,7 +52,7 @@ function NavBar() {
       setActiveLink("/home")
     } else if (location.pathname.includes('/signup')) {
       setActiveLink("/home/emailsignup")
-    } else if (location.pathname.includes('/forgotpass')) {
+    } else if (location.pathname.includes('/forgotpass') || location.pathname.includes('/resetpass')) {
       setActiveLink("/home/signin")
     } 
   }, [location])
