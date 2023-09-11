@@ -44,7 +44,8 @@ function NavBarLeft() {
   }
 
   const onLogout = (e) => {
-    dispatch(logout())
+    dispatch(logout()).unwrap()
+      .then(() => dispatch(getUser))
     navigate('/home')
   }
 

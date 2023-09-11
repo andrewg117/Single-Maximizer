@@ -29,7 +29,7 @@ function NewRelease() {
     return returnDate
   }
   const today = new Date()
-  const graceDate = convertDate(today.setDate(today.getDate() + 7))
+  const graceDate = convertDate(today.setDate(today.getDate() + 1))
 
   const [formState, setFormState] = useState({
     trackTitle: '',
@@ -100,7 +100,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackPress !== [] && user) {
+    if (trackCover !== null && trackAudio !== null && trackPress.length && user) {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))

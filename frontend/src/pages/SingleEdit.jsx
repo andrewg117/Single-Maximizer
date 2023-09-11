@@ -68,7 +68,7 @@ function SingleEdit() {
   }
 
   const today = new Date()
-  const graceDate = convertDate(today.setDate(today.getDate() + 7))
+  const graceDate = convertDate(today.setDate(today.getDate() + 1))
 
   const [singleState, setSingleState] = useState()
   const [audioState, setAudioState] = useState()
