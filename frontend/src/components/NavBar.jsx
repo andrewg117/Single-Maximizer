@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
 import SMLogo from '../images/smLogo.png'
@@ -8,15 +9,14 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
   return (
     <div className={styles.navbar_left_links} id={styles.navbar_top_links}>
       {menuItems
-        .filter(menu => menu.name !== 'SETTINGS')
         .map(menu => (
           <Link
             key={menu.name}
             to={menu.path}
-            className={activeLink === menu.name ? styles.active : styles.inactive}
+            className={activeLink === menu.path ? styles.active : styles.inactive}
             onClick={() => {
               toggleTopNav()
-              setActiveLink(menu.name)
+              setActiveLink(menu.path)
             }}
           >
             {menu.name}
@@ -27,6 +27,8 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
 }
 
 function NavBar() {
+  const location = useLocation()
+
   const [activeLink, setActiveLink] = useState('HOME')
   const [showTopNav, setTopNav] = useState(false)
 
@@ -36,12 +38,24 @@ function NavBar() {
 
   const menuItems = [
     { name: 'HOME', path: "/home" },
-    { name: 'WHO WE ARE', path: "/home" },
-    { name: 'FAQ', path: "/home" },
-    { name: 'PRICING', path: "/home" },
+    // { name: 'WHO WE ARE', path: "/home" },
+    // { name: 'FAQ', path: "/home" },
+    // { name: 'PRICING', path: "/home" },
     { name: 'SIGN IN', path: "/home/signin" },
     { name: 'SIGN UP', path: "/home/emailsignup" },
   ]
+
+  useEffect(() => {
+    setActiveLink(location.pathname)
+
+    if (location.pathname === '/') {
+      setActiveLink("/home")
+    } else if (location.pathname.includes('/signup')) {
+      setActiveLink("/home/emailsignup")
+    } else if (location.pathname.includes('/forgotpass')) {
+      setActiveLink("/home/signin")
+    } 
+  }, [location])
 
   return (
     <>
@@ -63,8 +77,8 @@ function NavBar() {
             <Link
               key={menu.name}
               to={menu.path}
-              className={activeLink === menu.name ? styles.active : styles.inactive}
-              onClick={() => setActiveLink(menu.name)}
+              className={activeLink === menu.path ? styles.active : styles.inactive}
+              onClick={() => setActiveLink(menu.path)}
             >
               {menu.name}
             </Link>

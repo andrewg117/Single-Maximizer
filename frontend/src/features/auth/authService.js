@@ -35,9 +35,6 @@ const emailData = async (token) => {
 
 const login = async (userData) => {
   const response = await axios.post(API_URL + 'login', userData)
-  console.log(NODE_ENV)
-  console.log(RENDER_API_URL)
-  console.log(API_URL)
 
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data))

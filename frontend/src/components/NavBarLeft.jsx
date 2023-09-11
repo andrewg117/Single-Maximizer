@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser, logout } from '../features/auth/authSlice'
 import { FaBars } from 'react-icons/fa'
@@ -14,11 +14,11 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNa
           <Link
             key={menu.name}
             to={menu.path}
-            className={activeLink === menu.name ? styles.active : styles.inactive}
+            className={activeLink === menu.path ? styles.active : styles.inactive}
             onClick={() => {
               menu.name === 'LOGOUT' ? onLogout() :
               toggleTopNav()
-              setActiveLink(menu.name)
+              setActiveLink(menu.path)
             }}
           >
             {menu.name}
@@ -31,6 +31,7 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNa
 function NavBarLeft() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const { user } = useSelector((state) => state.auth)
 
@@ -62,8 +63,16 @@ function NavBarLeft() {
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ]
   useEffect(() => {
-    dispatch(getUser())
-  }, [dispatch])
+    // dispatch(getUser())
+
+    setActiveLink(location.pathname)
+    
+     if (location.pathname.includes('/editprofile')) {
+      setActiveLink("/profile")
+    } else if (location.pathname.includes('/singleedit')) {
+      setActiveLink("/profile/singles")
+    } 
+  }, [dispatch, location])
 
   return (
     <>
@@ -91,8 +100,8 @@ function NavBarLeft() {
                 <Link
                   key={menu.name}
                   to={menu.path}
-                  className={activeLink === menu.name ? styles.active : styles.inactive}
-                  onClick={() => setActiveLink(menu.name)}
+                  className={activeLink === menu.path ? styles.active : styles.inactive}
+                  onClick={() => setActiveLink(menu.path)}
                 >
                   {menu.name}
                 </Link>
@@ -107,8 +116,8 @@ function NavBarLeft() {
                 <Link
                   key={menu.name}
                   to={menu.path}
-                  className={activeLink === menu.name ? styles.active : styles.inactive}
-                  onClick={() => menu.name === 'LOGOUT' ? onLogout() : setActiveLink(menu.name)}
+                  className={activeLink === menu.path ? styles.active : styles.inactive}
+                  onClick={() => menu.name === 'LOGOUT' ? onLogout() : setActiveLink(menu.path)}
                 >
                   {menu.name}
                 </Link>
