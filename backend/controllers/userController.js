@@ -212,7 +212,12 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  res.json(req.user)
+  try {
+    res.json(req.user)
+  } catch (error) {
+    // res.status(401)
+    throw new Error('Login Expired')
+  }
 })
 
 // @desc    Update user data
@@ -250,7 +255,7 @@ const emailData = asyncHandler(async (req, res) => {
 
 
 // @desc    Get user data
-// @route   GET /api/users/me
+// @route   GET /api/users/token
 // @access  Private
 const checkUserToken = asyncHandler(async (req, res) => {
   let token = req.cookies.jwt
@@ -268,6 +273,18 @@ const checkUserToken = asyncHandler(async (req, res) => {
     res.status(401).json(401)
   }
   // res.json(req.user)
+})
+
+// @desc    Wake up demo server
+// @route   GET /api/users/wakeserver
+// @access  Private
+const wakeDemoServer = asyncHandler(async (req, res) => {
+  try {
+    res.json('Success')
+  } catch (error) {
+    res.status(400)
+    throw new Error(error)
+  }
 })
 
 // Generate JWT 
@@ -293,4 +310,5 @@ module.exports = {
   getMe,
   emailData,
   checkUserToken,
+  wakeDemoServer
 }

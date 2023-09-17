@@ -1,7 +1,5 @@
 import axios from "axios"
 
-const NODE_ENV = process.env.NODE_ENV
-const RENDER_API_URL = process.env.RENDER_API_URL + '/api/tracks/'
 const API_URL = '/api/tracks/'
 
 const createTrack = async (trackData) => {

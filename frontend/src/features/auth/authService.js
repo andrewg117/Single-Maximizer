@@ -1,8 +1,4 @@
 import axios from "axios"
-import jwt_decode from 'jwt-decode'
-
-const NODE_ENV = process.env.NODE_ENV
-const RENDER_API_URL = process.env.RENDER_API_URL + '/api/users/'
 const API_URL = '/api/users/'
 
 const register = async (userData) => {
@@ -52,10 +48,10 @@ const reset = async (userData) => {
 const getUser = async () => {
 
   let response
-
+  
   response = await axios.get(API_URL + 'me')
 
-  return response.data
+  return response.data 
 }
 
 const update = async (userData) => {
@@ -90,6 +86,15 @@ const logout = async () => {
   return response.data
 }
 
+const wakeServer = async () => {
+
+  let response
+  
+  response = await axios.get(API_URL + 'wakeserver')
+
+  return response.data 
+}
+
 const authService = {
   register,
   emailUser,
@@ -100,6 +105,7 @@ const authService = {
   update,
   checkToken,
   logout,
+  wakeServer
 }
 
 
