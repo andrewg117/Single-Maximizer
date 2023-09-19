@@ -48,6 +48,7 @@
   justify-self: center;
   align-items: center;
   grid-template-columns: 20% 80%;
+  column-gap: 2em;
   width: 100%;
   margin-bottom: 1em;
   text-align: left;
@@ -58,11 +59,9 @@
   /* position: relative; */
   text-align: left;
   height: auto;
-  width: 90%;
+  /* width: 90%; */
   cursor: pointer;
 }
-
-
 
 #edit_image_div {
   display: grid;
@@ -71,6 +70,16 @@
   width: 90%;
   margin-bottom: 1em;
   cursor: pointer;
+}
+
+#defaultAvatar {
+  justify-self: center;
+  width: 80%;
+  height: auto;
+  padding: 2em;
+  color: var(--main-wht-color);
+  background-color: var(--main-nv-color);
+  /* border: 2px dashed #dfdfdf; */
 }
 
 #image_div p {
@@ -165,9 +174,9 @@
     grid-template-rows: 1fr;
   }
 
-  /* #edit_image_div {
-    width: 100%;
-  } */
+  #image_div {
+    margin-bottom: 2em;
+  }
 
   #username_div {
     font-size: 8vw;

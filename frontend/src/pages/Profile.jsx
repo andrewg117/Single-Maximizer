@@ -5,6 +5,7 @@ import { getUser, reset as resetUser } from '../features/auth/authSlice'
 import { getImage, reset as resetImage } from '../features/image/imageSlice'
 import { Buffer } from 'buffer'
 import { toast } from 'react-toastify'
+import { FaUser } from 'react-icons/fa'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
 
@@ -119,7 +120,7 @@ const Profile = () => {
 
           <div id={styles.top_div}>
             <div id={styles.image_div}>
-              <img src={`data:image/*;base64,${profileImage}`} alt='Edit for Avatar' />
+              {profileImage ? <img src={`data:image/*;base64,${profileImage}`} alt='Edit for Avatar' /> : <FaUser id={styles.defaultAvatar} />}
             </div>
             <div id={styles.username_div}>{username}</div>
           </div>
