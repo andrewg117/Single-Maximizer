@@ -232,16 +232,6 @@ function ProfileEdit() {
               </div>
               <div>
                 <label htmlFor="email">EMAIL</label>
-                {/* <input
-                  required
-                  readOnly
-                  className={styles.profile_input}
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email address"
-                  defaultValue={email}
-                  onChange={onChange} /> */}
                 <p
                   className={styles.profile_input}
                   type="email"
@@ -257,7 +247,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="website">WEBSITE</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="website"
@@ -269,7 +258,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="scloud"
@@ -283,7 +271,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="twitter">TWITTER</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="twitter"
@@ -295,7 +282,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="igram">INSTAGRAM</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="igram"
@@ -309,7 +295,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="fbook">FACEBOOK</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="fbook"
@@ -321,7 +306,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="spotify">SPOTIFY</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="spotify"
@@ -335,7 +319,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="ytube">YOUTUBE</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="ytube"
@@ -347,7 +330,6 @@ function ProfileEdit() {
               <div>
                 <label htmlFor="tiktok">TIKTOK</label>
                 <input
-                  required
                   className={styles.profile_input}
                   type="url"
                   id="tiktok"
@@ -372,13 +354,6 @@ function ProfileEdit() {
             </div>
             <div id={styles.profile_submit_div}>
               <button type='submit' className={styles.profile_btn}>SAVE</button>
-              {/* {showPopup &&
-                (<ConfirmAlert
-                  message="Do you want to save these changes?"
-                  onConfirm={onSubmit}
-                  onCancel={closeConfirm}
-                />)
-              } */}
               <Link to={'/profile'} className={styles.profile_btn}>CANCEL</Link>
             </div>
           </div>

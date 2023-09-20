@@ -127,7 +127,7 @@ function SingleEdit() {
 
   const onSubmit = () => {
 
-    if (trackCover !== null && trackAudio !== null && user) {
+    if (trackCover !== null && trackAudio !== null && trackPress.length && genres.length && user) {
 
       dispatch(updateSingle({ trackID: id, trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
         .then(() => {
@@ -332,7 +332,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="spotify">SPOTIFY TRACK URI</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="spotify"
@@ -346,7 +345,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="features">FEATURES</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="features"
@@ -358,7 +356,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="apple"
@@ -384,7 +381,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="scloud"
@@ -398,7 +394,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="album">ALBUM</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="album"
@@ -410,7 +405,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="ytubelink">YOUTUBE LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="ytube"
@@ -424,7 +418,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="date"
                   id="albumDate"
@@ -435,7 +428,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="trackLabel"
@@ -470,7 +462,6 @@ function SingleEdit() {
               <div>
                 <label htmlFor="press">RECENT PRESS</label>
                 <textarea
-                  required
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"

@@ -100,7 +100,7 @@ function NewRelease() {
       toast.error(message)
     }
 
-    if (trackCover !== null && trackAudio !== null && trackPress.length && user) {
+    if (trackCover !== null && trackAudio !== null && trackPress.length && genres.length && user) {
 
       let audioData = new FormData()
       audioData.append("trackAudio", trackAudio.get('trackAudio'))
@@ -256,7 +256,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="spotify">SPOTIFY TRACK URI</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="spotify"
@@ -270,7 +269,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="features">FEATURES</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="features"
@@ -282,7 +280,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="apple"
@@ -308,7 +305,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="scloud"
@@ -322,7 +318,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="album">ALBUM</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="album"
@@ -334,7 +329,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="ytube">YOUTUBE LINK</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="ytube"
@@ -348,7 +342,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="albumDate">ALBUM RELEASE DATE</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="date"
                   id="albumDate"
@@ -359,7 +352,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
                 <input
-                  required
                   className={styles.new_input}
                   type="text"
                   id="trackLabel"
@@ -394,7 +386,6 @@ function NewRelease() {
               <div>
                 <label htmlFor="pressSum">RECENT PRESS</label>
                 <textarea
-                  required
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"
