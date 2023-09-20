@@ -59,7 +59,6 @@
   /* position: relative; */
   text-align: left;
   height: auto;
-  /* width: 90%; */
   cursor: pointer;
 }
 
@@ -105,12 +104,14 @@
 
 
 .profile_input_div {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   column-gap: 5em;
 }
 
 .profile_input_div div {
+  position: relative;
   display: grid;
   align-items: center;
   width: 100%;
@@ -132,6 +133,12 @@
   font-size: 20px;
 }
 
+#profile_textarea_div {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
 .profile_input_div textarea {
   margin: 1em 0;
   color: var(--main-cnt-color);
@@ -145,7 +152,8 @@
 }
 
 #profile_submit_div {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
@@ -192,7 +200,12 @@
   }
 
   #profile_submit_div {
-    flex-wrap: wrap;
-    row-gap: 1em;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-around;
+  }
+
+  .profile_btn {
+    margin-bottom: 1em;
   }
 }

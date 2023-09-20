@@ -369,13 +369,15 @@ function NewRelease() {
                   onChange={onChange} />
               </div>
             </div>
-            <div className={styles.input_div}>
+            <div className={styles.full_input_div}>
               <div>
                 <label htmlFor="genres">GENRES</label>
-                <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
+                <section id={styles.checkboxlist}>
+                  <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
+                </section>
               </div>
             </div>
-            <div className={styles.input_div}>
+            <div className={styles.full_input_div}>
               <div>
                 <label htmlFor="trackSum">TRACK SUMMARY</label>
                 <textarea
@@ -388,7 +390,7 @@ function NewRelease() {
                   onChange={onChange}></textarea>
               </div>
             </div>
-            <div className={styles.input_div}>
+            <div className={styles.full_input_div}>
               <div>
                 <label htmlFor="pressSum">RECENT PRESS</label>
                 <textarea

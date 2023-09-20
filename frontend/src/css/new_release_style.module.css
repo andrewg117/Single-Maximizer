@@ -19,15 +19,20 @@ label {
 }
 
 .input_div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   column-gap: 5em;
-  row-gap: 1em;
-  margin: 1em auto;
 }
 
-.input_div div {
+.full_input_div {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+
+.input_div, .full_input_div div {
   display: grid;
   align-items: center;
   width: 100%;
@@ -108,11 +113,13 @@ label {
   width: 100px;
   height: 100px;
   border: 1px solid #000;
+  overflow: hidden;
 }
 
 #press_frame img {
-  max-width: 100%;
-  max-height: 100%;
+  height: auto;
+  max-width: 60%;
+  max-height: 60%;
 }
 
 #add_press {
@@ -132,8 +139,9 @@ label {
   top: 0;
   right: 0;
   margin: 0;
-  color: #dfdfdf;
   cursor: pointer;
+  background-color: var(--main-wht-color);
+  color: var(--main-cnt-color);
 }
 
 #new_form_div {
@@ -154,16 +162,24 @@ label {
 }
 
 #checkboxlist {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  display: flex;
+  justify-content: space-evenly;
+  /* display: grid; */
+  /* grid-template-columns: repeat(auto-fit, minmax(1em, 1fr)); */
   align-items: center;
   text-align: start;
+  margin: 1em 0;
+  border: 1px solid #000;
 }
 
-/* #new_form_div label {
-  font-size: 80%;
-  font-weight: bold;
-} */
+#checkboxlist fieldset {
+  display: contents;
+}
+
+#checkboxlist div {
+  display: flex;
+  justify-content: center;
+}
 
 #new_form_div textarea {
   margin: 1em 0;
@@ -178,7 +194,9 @@ label {
 }
 
 #submit_div {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  overflow-wrap: normal;
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
@@ -211,9 +229,13 @@ label {
     width: 100%;
   }
 
-
   #submit_div {
-    flex-wrap: wrap;
-    row-gap: 1em;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-around;
+  }
+
+  .profile_btn {
+    margin-bottom: 1em;
   }
 }

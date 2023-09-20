@@ -1,8 +1,7 @@
-import styles from '../css/new_release_style.module.css'
-
 const CheckBox = (props) => {
   return (
-    <>
+    <div>
+      <p htmlFor={props.item}>{props.item}</p>
       <input
         name={props.item}
         type='checkbox'
@@ -10,8 +9,7 @@ const CheckBox = (props) => {
         checked={props.list.includes(props.item)}
         onChange={props.onChange}
       />
-      <p htmlFor={props.item}>{props.item}</p>
-    </>
+    </div>
   )
 }
 
@@ -28,7 +26,7 @@ function GenreCheckBox({ changeList, list }) {
           e.target.value
         ]
       }))
-    } 
+    }
     // Remove from list if unchecked
     if (!e.target.checked) {
       changeList((prevState) => ({
@@ -39,18 +37,20 @@ function GenreCheckBox({ changeList, list }) {
   }
 
   return (
-    <fieldset id={styles.checkboxlist}>
-      {genreList.map((item, i) => {
-        return (
+    <>
+      <fieldset>
+        {genreList.map((item, i) => {
+          return (
             <CheckBox
               key={i}
               item={item}
               list={list}
               onChange={onChange}
             />
-        )
-      })}
-    </fieldset>
+          )
+        })}
+      </fieldset>
+    </>
   )
 }
 

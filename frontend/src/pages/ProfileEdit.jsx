@@ -357,7 +357,7 @@ function ProfileEdit() {
                   onChange={onChange} />
               </div>
             </div>
-            <div className={styles.profile_input_div}>
+            <div className={styles.profile_input_div} id={styles.profile_textarea_div}>
               <div>
                 <label htmlFor="bio_text">BIO</label>
                 <textarea

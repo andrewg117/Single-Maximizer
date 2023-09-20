@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'react-toastify'
+import { FaRegWindowClose } from 'react-icons/fa'
 import styles from '../css/new_release_style.module.css'
 
 const ImageFrame = ({ blob, id, removePress }) => {
@@ -8,9 +9,7 @@ const ImageFrame = ({ blob, id, removePress }) => {
     <>
       <div id={styles.press_frame}>
         <img src={URL.createObjectURL(blob)} alt='N/A' onLoad={() => { URL.revokeObjectURL(blob) }} />
-        <p id={styles.remove_press} onClick={(e) => removePress(e, id)}>
-          X
-        </p>
+        <FaRegWindowClose id={styles.remove_press} onClick={(e) => removePress(e, id)}/>
       </div>
     </>
   )
