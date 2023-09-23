@@ -95,16 +95,31 @@ const Profile = () => {
 
   }, [isError, message])
 
+  
   useEffect(() => {
     // TODO: Add AbortController to cancel dispatch
-    // const controller = new AbortController()
+    const controller = new AbortController()
+    const signal = controller.signal
 
-    dispatch(getUser())
-
-    dispatch(getImage({ section: 'avatar' }))
+    dispatch(getUser(signal)).unwrap()
+      .catch((error) => {
+        controller.abort()
+        console.error(error)
+      })
 
     return (() => {
       dispatch(resetUser())
+    })
+
+  }, [dispatch])
+
+  useEffect(() => {
+
+
+    dispatch(getImage({ section: 'avatar' })).unwrap()
+    .catch((error) => console.error(error))
+
+    return (() => {
       dispatch(resetImage())
     })
 

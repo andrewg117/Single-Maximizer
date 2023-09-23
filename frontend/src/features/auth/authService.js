@@ -12,13 +12,13 @@ const register = async (userData) => {
 }
 
 const emailUser = async (userData) => {
-  if(userData.type === 'reset') {
+  if (userData.type === 'reset') {
     const response = await axios.post(API_URL + 'reset', userData)
-  
+
     return response.data
   } else if (userData.type === 'register') {
     const response = await axios.post(API_URL + 'email', userData)
-  
+
     return response.data
   }
 }
@@ -45,13 +45,16 @@ const reset = async (userData) => {
   return response.data
 }
 
-const getUser = async () => {
+const getUser = async (signal) => {
 
   let response
-  
-  response = await axios.get(API_URL + 'me')
 
-  return response.data 
+  response = await axios.get(API_URL + 'me', {
+    signal: signal
+  })
+
+
+  return response.data
 }
 
 const update = async (userData) => {
@@ -89,10 +92,10 @@ const logout = async () => {
 const wakeServer = async () => {
 
   let response
-  
+
   response = await axios.get(API_URL + 'wakeserver')
 
-  return response.data 
+  return response.data
 }
 
 const authService = {
