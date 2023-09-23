@@ -19,6 +19,11 @@ export const ProfileDiv = ({ labelID, text, userData }) => {
 }
 
 const Profile = () => {
+
+  const { user, isLoading, isError, message } = useSelector((state) => state.auth)
+
+
+
   const [formState, setFormState] = useState({
     fname: '',
     lname: '',
@@ -41,22 +46,15 @@ const Profile = () => {
   const dispatch = useDispatch()
   const store = useStore()
 
-  const { user, isLoading, isError, message } = useSelector((state) => state.auth)
-
-
   store.subscribe(() => {
-    if (user !== null) {
+    if (user) {
       const userState = store.getState().auth['user']
       const imageState = store.getState().image['image']
 
-      if (userState !== null) {
-        let buffer = null
+      if (userState) {
 
-        if (imageState !== null) {
-          const image = imageState ? imageState.file : null
+        let buffer = imageState ? Buffer.from(imageState.file.buffer, 'ascii') : null
 
-          buffer = Buffer.from(image.buffer, 'ascii')
-        }
 
         setFormState((prevState) => ({
           ...prevState,
@@ -95,19 +93,23 @@ const Profile = () => {
       toast.error(message, { id: message })
     }
 
+  }, [isError, message])
 
-    dispatch(getUser()).unwrap()
-      .catch((error) => console.error(error))
-    dispatch(getImage({ section: 'avatar' })).unwrap()
-      .catch((error) => console.error(error))
+  useEffect(() => {
+    // TODO: Add AbortController to cancel dispatch
+    // const controller = new AbortController()
 
-      
-    return(() => {
+    dispatch(getUser())
+
+    dispatch(getImage({ section: 'avatar' }))
+
+    return (() => {
       dispatch(resetUser())
       dispatch(resetImage())
     })
-      
-  }, [isError, message, dispatch])
+
+  }, [dispatch])
+
 
   if (isLoading) {
     return <Spinner />

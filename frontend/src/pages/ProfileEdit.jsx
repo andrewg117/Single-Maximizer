@@ -123,14 +123,7 @@ function ProfileEdit() {
             imageData.append("section", 'avatar')
             dispatch(updateImage(imageData))
               .catch((error) => console.error(error))
-          } else {
-            // console.log('Test')
-            // let imageData = new FormData()
-            // imageData.append("Image", profileImage)
-            // imageData.append("section", 'avatar')
-            // dispatch(updateImage(imageData))
-            //   .catch((error) => console.error(error))
-          }
+          } 
         })
         .catch((error) => console.error(error))
 
