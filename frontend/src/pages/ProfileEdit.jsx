@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useEffect, useState, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
 import { postImage, getImage, updateImage, reset as resetImage } from '../features/image/imageSlice'
@@ -11,95 +11,50 @@ import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
 
 function ProfileEdit() {
+  const { user, isLoading, isError, message } = useSelector((state) => state.auth)
+
+  const profileData = useRef({})
+
+  const { image, isLoading: imageLoading } = useSelector((state) => state.image)
+
   const [formState, setFormState] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    website: '',
-    scloud: '',
-    twitter: '',
-    igram: '',
-    fbook: '',
-    spotify: '',
-    ytube: '',
-    tiktok: '',
-    bio_text: '',
-    profileImage: null,
+    profileImage: image ? Buffer.from(image.file.buffer, 'ascii') : null,
   })
 
-  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage } = formState
+  const { profileImage } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  let store = useStore()
-
-  const { user, isLoading, isError, message } = useSelector(
-    (state) => state.auth
-  )
-
-  const { image } = useSelector(
-    (state) => state.image
-  )
 
   const [showPopup, setShowPopup] = useState(false)
-  const [imageState, setImageState] = useState(null)
-  const [userState, setUserState] = useState(null)
-
-  store.subscribe(() => {
-    setUserState(store.getState().auth['user'])
-    setImageState(store.getState().image['image'])
-
-    if (userState) {
-      let buffer
-      if (imageState) {
-        const imageFile = imageState.file
-
-        buffer = Buffer.from(imageFile.buffer, 'ascii')
-      }
-
-      setFormState((prevState) => ({
-        ...prevState,
-        fname: userState.fname,
-        lname: userState.lname,
-        username: userState.username,
-        email: userState.email,
-        website: userState.website,
-        scloud: userState.scloud,
-        twitter: userState.twitter,
-        igram: userState.igram,
-        fbook: userState.fbook,
-        spotify: userState.spotify,
-        ytube: userState.ytube,
-        tiktok: userState.tiktok,
-        bio_text: userState.bio_text,
-        profileImage: buffer,
-      }))
-
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-      }))
-    }
-
-  })
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
 
+    return (() => {
+      toast.dismiss(message)
+    })
+
+  }, [isError, message])
+
+
+  useEffect(() => {
 
     dispatch(getUser()).unwrap()
       .catch((error) => console.error(error))
-    dispatch(getImage({ 'section': 'avatar' })).unwrap()
+
+    dispatch(getImage({ section: 'avatar' })).unwrap()
       .catch((error) => console.error(error))
+
 
     return (() => {
       dispatch(resetUser())
       dispatch(resetImage())
     })
-  }, [navigate, isError, message, dispatch])
+
+  }, [dispatch])
 
 
   const onSubmit = () => {
@@ -109,7 +64,20 @@ function ProfileEdit() {
 
     if (profileImage !== null && user) {
 
-      dispatch(updateUser({ fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text })).unwrap()
+      dispatch(updateUser({
+        fname: profileData.current.fname.value,
+        lname: profileData.current.lname.value,
+        username: profileData.current.username.value,
+        website: profileData.current.website.value,
+        scloud: profileData.current.scloud.value,
+        twitter: profileData.current.twitter.value,
+        igram: profileData.current.igram.value,
+        fbook: profileData.current.fbook.value,
+        spotify: profileData.current.spotify.value,
+        ytube: profileData.current.ytube.value,
+        tiktok: profileData.current.tiktok.value,
+        bio_text: profileData.current.bio_text.value
+      })).unwrap()
         .then(() => {
           if (image === null) {
             let imageData = new FormData()
@@ -123,7 +91,7 @@ function ProfileEdit() {
             imageData.append("section", 'avatar')
             dispatch(updateImage(imageData))
               .catch((error) => console.error(error))
-          } 
+          }
         })
         .catch((error) => console.error(error))
 
@@ -141,14 +109,8 @@ function ProfileEdit() {
     setShowPopup(false)
   }
 
-  const onChange = (e) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
-  }
 
-  if (isLoading) {
+  if (isLoading || imageLoading) {
     return <Spinner />
   }
 
@@ -194,8 +156,8 @@ function ProfileEdit() {
                   id='fname'
                   name='fname'
                   placeholder="Enter your first name"
-                  defaultValue={fname}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.fname = ref}
+                  defaultValue={user?.fname} />
               </div>
               <div>
                 <label htmlFor="lname">LAST NAME</label>
@@ -206,8 +168,8 @@ function ProfileEdit() {
                   id='lname'
                   name='lname'
                   placeholder="Enter your last name"
-                  defaultValue={lname}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.lname = ref}
+                  defaultValue={user?.lname} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -220,8 +182,8 @@ function ProfileEdit() {
                   id='username'
                   name='username'
                   placeholder="Enter your username"
-                  defaultValue={username}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.username = ref}
+                  defaultValue={user?.username} />
               </div>
               <div>
                 <label htmlFor="email">EMAIL</label>
@@ -232,7 +194,7 @@ function ProfileEdit() {
                   name="email"
                   style={{ 'border': 'none' }}
                 >
-                  {email}
+                  {user?.email}
                 </p>
               </div>
             </div>
@@ -245,8 +207,8 @@ function ProfileEdit() {
                   id="website"
                   name="website"
                   placeholder="Enter your website starting with http://"
-                  defaultValue={website}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.website = ref}
+                  defaultValue={user?.website} />
               </div>
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD</label>
@@ -256,8 +218,8 @@ function ProfileEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter your soundcloud link"
-                  defaultValue={scloud}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.scloud = ref}
+                  defaultValue={user?.scloud} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -269,8 +231,8 @@ function ProfileEdit() {
                   id="twitter"
                   name="twitter"
                   placeholder="Enter your twitter handle"
-                  defaultValue={twitter}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.twitter = ref}
+                  defaultValue={user?.twitter} />
               </div>
               <div>
                 <label htmlFor="igram">INSTAGRAM</label>
@@ -280,8 +242,8 @@ function ProfileEdit() {
                   id="igram"
                   name="igram"
                   placeholder="Enter your instagram username"
-                  defaultValue={igram}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.igram = ref}
+                  defaultValue={user?.igram} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -293,8 +255,8 @@ function ProfileEdit() {
                   id="fbook"
                   name="fbook"
                   placeholder="Enter your facebook handle"
-                  defaultValue={fbook}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.fbook = ref}
+                  defaultValue={user?.fbook} />
               </div>
               <div>
                 <label htmlFor="spotify">SPOTIFY</label>
@@ -304,8 +266,8 @@ function ProfileEdit() {
                   id="spotify"
                   name="spotify"
                   placeholder="Enter your spotify URI"
-                  defaultValue={spotify}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.spotify = ref}
+                  defaultValue={user?.spotify} />
               </div>
             </div>
             <div className={styles.profile_input_div}>
@@ -317,8 +279,8 @@ function ProfileEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter your youtube profile link"
-                  defaultValue={ytube}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.ytube = ref}
+                  defaultValue={user?.ytube} />
               </div>
               <div>
                 <label htmlFor="tiktok">TIKTOK</label>
@@ -328,8 +290,8 @@ function ProfileEdit() {
                   id="tiktok"
                   name="tiktok"
                   placeholder="Enter your tiktok username"
-                  defaultValue={tiktok}
-                  onChange={onChange} />
+                  ref={ref => profileData.current.tiktok = ref}
+                  defaultValue={user?.tiktok} />
               </div>
             </div>
             <div className={styles.profile_input_div} id={styles.profile_textarea_div}>
@@ -341,8 +303,8 @@ function ProfileEdit() {
                   id="bio_text"
                   cols="30" rows="10"
                   placeholder="Enter your artist bio here"
-                  defaultValue={bio_text ? bio_text : ""}
-                  onChange={onChange}></textarea>
+                  ref={ref => profileData.current.bio_text = ref}
+                  defaultValue={user?.bio_text}></textarea>
               </div>
             </div>
             <div id={styles.profile_submit_div}>

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { getUser } from '../features/auth/authSlice'
-import { getTracks, reset } from '../features/tracks/trackSlice'
+import { getUser, reset as resetUser } from '../features/auth/authSlice'
+import { getTracks, reset as resetTracks } from '../features/tracks/trackSlice'
 import { toast } from 'react-toastify'
 import { FaEdit } from 'react-icons/fa'
 import Spinner from '../components/Spinner'
@@ -13,22 +13,29 @@ function Singles() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user } = useSelector((state) => state.auth)
-  const { tracks, isLoading } = useSelector((state) => state.tracks)
+  const { user, isLoading } = useSelector((state) => state.auth)
+  const { tracks,  isLoading: tracksLoading, isError, message } = useSelector((state) => state.tracks)
 
-  const [trackState, setTrackState] = useState(tracks)
+  useEffect(() => {
+    if (isError) {
+      toast.error(message, { id: message })
+    }
+
+    return (() => {
+      toast.dismiss(message)
+    })
+
+  }, [isError, message])
 
   useEffect(() => {
     dispatch(getUser())
 
     dispatch(getTracks()).unwrap()
-      .then((data) => {
-        setTrackState(data)
-      })
       .catch((error) => console.error(error))
 
     return () => {
-      dispatch(reset())
+      dispatch(resetUser())
+      dispatch(resetTracks())
     }
   }, [dispatch])
 
@@ -38,7 +45,7 @@ function Singles() {
     navigate(`/profile/singleedit/${id}`)
   }
 
-  if (isLoading) {
+  if (isLoading || tracksLoading) {
     return <Spinner />
   }
 
@@ -57,8 +64,8 @@ function Singles() {
               </tr>
             </thead>
             <tbody id={styles.singles_content}>
-              {trackState.length > 0 ? (
-                trackState.map((track) => (
+              {tracks.length ? (
+                tracks?.map((track) => (
                   <tr key={track._id}>
                     <td className={styles.tblhide}>{track.artist}</td>
                     <td>{track.trackTitle}</td>

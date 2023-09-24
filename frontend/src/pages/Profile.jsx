@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getUser, reset as resetUser } from '../features/auth/authSlice'
 import { getImage, reset as resetImage } from '../features/image/imageSlice'
@@ -9,7 +9,7 @@ import { FaUser } from 'react-icons/fa'
 import Spinner from '../components/Spinner'
 import styles from '../css/profile_style.module.css'
 
-export const ProfileDiv = ({ labelID, text, userData }) => {
+const ProfileDiv = ({ labelID, text, userData }) => {
   return (
     <div>
       <label htmlFor={labelID}>{text}</label>
@@ -21,112 +21,40 @@ export const ProfileDiv = ({ labelID, text, userData }) => {
 const Profile = () => {
 
   const { user, isLoading, isError, message } = useSelector((state) => state.auth)
+  const { image, isLoading: imageLoading } = useSelector((state) => state.image)
 
-
-
-  const [formState, setFormState] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    website: '',
-    scloud: '',
-    twitter: '',
-    igram: '',
-    fbook: '',
-    spotify: '',
-    ytube: '',
-    tiktok: '',
-    bio_text: '',
-    profileImage: null,
-  })
-
-  const { fname, lname, username, email, website, scloud, twitter, igram, fbook, spotify, ytube, tiktok, bio_text, profileImage } = formState
+  const profileImage = image ? Buffer.from(image.file.buffer, 'ascii') : null
 
   const dispatch = useDispatch()
-  const store = useStore()
-
-  store.subscribe(() => {
-    if (user) {
-      const userState = store.getState().auth['user']
-      const imageState = store.getState().image['image']
-
-      if (userState) {
-
-        let buffer = imageState ? Buffer.from(imageState.file.buffer, 'ascii') : null
-
-
-        setFormState((prevState) => ({
-          ...prevState,
-          fname: userState.fname,
-          lname: userState.lname,
-          username: userState.username,
-          email: userState.email,
-          website: userState.website,
-          scloud: userState.scloud,
-          twitter: userState.twitter,
-          igram: userState.igram,
-          fbook: userState.fbook,
-          spotify: userState.spotify,
-          ytube: userState.ytube,
-          tiktok: userState.tiktok,
-          bio_text: userState.bio_text,
-          profileImage: buffer,
-        }))
-
-      } else {
-        setFormState((prevState) => ({
-          ...prevState,
-        }))
-      }
-
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-      }))
-    }
-
-  })
 
   useEffect(() => {
     if (isError) {
       toast.error(message, { id: message })
     }
 
+    return (() => {
+      toast.dismiss(message)
+    })
+
   }, [isError, message])
 
-  
-  useEffect(() => {
-    // TODO: Add AbortController to cancel dispatch
-    const controller = new AbortController()
-    const signal = controller.signal
 
-    dispatch(getUser(signal)).unwrap()
-      .catch((error) => {
-        controller.abort()
-        console.error(error)
-      })
+  useEffect(() => {
+
+    dispatch(getUser()).unwrap()
+      .catch((error) => console.error(error))
+
+    dispatch(getImage({ section: 'avatar' })).unwrap()
+      .catch((error) => console.error(error))
 
     return (() => {
       dispatch(resetUser())
-    })
-
-  }, [dispatch])
-
-  useEffect(() => {
-
-
-    dispatch(getImage({ section: 'avatar' })).unwrap()
-    .catch((error) => console.error(error))
-
-    return (() => {
       dispatch(resetImage())
     })
 
   }, [dispatch])
 
-
-  if (isLoading) {
+  if (isLoading || imageLoading) {
     return <Spinner />
   }
 
@@ -139,86 +67,86 @@ const Profile = () => {
             <div id={styles.image_div}>
               {profileImage ? <img src={`data:image/*;base64,${profileImage}`} alt='Edit for Avatar' /> : <FaUser id={styles.defaultAvatar} />}
             </div>
-            <div id={styles.username_div}>{username}</div>
+            <div id={styles.username_div}>{user?.username}</div>
           </div>
           <div id={styles.profile_body_div}>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='fname'
                 text='FIRST NAME'
-                userData={fname}
+                userData={user?.fname}
               />
               <ProfileDiv
                 labelID='lname'
                 text='LAST NAME'
-                userData={lname}
+                userData={user?.lname}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='username'
                 text='USERNAME'
-                userData={username}
+                userData={user?.username}
               />
               <ProfileDiv
                 labelID='email'
                 text='EMAIL'
-                userData={email}
+                userData={user?.email}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='website'
                 text='WEBSITE'
-                userData={website}
+                userData={user?.website}
               />
               <ProfileDiv
                 labelID='scloud'
                 text='SOUNDCLOUD'
-                userData={scloud}
+                userData={user?.scloud}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='twitter'
                 text='TWITTER'
-                userData={twitter}
+                userData={user?.twitter}
               />
               <ProfileDiv
                 labelID='igram'
                 text='INSTAGRAM'
-                userData={igram}
+                userData={user?.igram}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='fbook'
                 text='FACEBOOK'
-                userData={fbook}
+                userData={user?.fbook}
               />
               <ProfileDiv
                 labelID='spotify'
                 text='SPOTIFY'
-                userData={spotify}
+                userData={user?.spotify}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='ytube'
                 text='YOUTUBE'
-                userData={ytube}
+                userData={user?.ytube}
               />
               <ProfileDiv
                 labelID='tiktok'
                 text='TIKTOK'
-                userData={tiktok}
+                userData={user?.tiktok}
               />
             </div>
             <div className={styles.profile_data_div}>
               <ProfileDiv
                 labelID='bio_text'
                 text='BIO'
-                userData={bio_text}
+                userData={user?.bio_text}
               />
             </div>
             <div id={styles.profile_submit_div}>

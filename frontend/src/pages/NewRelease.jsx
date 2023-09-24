@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-// import Notification from '../components/Notification'
 import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
-import { sendNewTrackEmail, reset as resetEmail } from '../features/email/emailSlice'
 import { createTrack, reset as resetTracks } from '../features/tracks/trackSlice'
 import { postImage, postPress, reset as resetImage } from '../features/image/imageSlice'
 import { postAudio, reset as resetAudio } from '../features/audio/audioSlice'
@@ -16,18 +14,19 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import styles from '../css/new_release_style.module.css'
 
+const convertDate = (date) => {
+  const d = new Date(date)
+
+  const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
+  const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
+  const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
+
+  let returnDate = year + '-' + month + '-' + day
+
+  return returnDate
+}
+
 function NewRelease() {
-  const convertDate = (date) => {
-    const d = new Date(date)
-
-    const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
-    const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
-    const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
-
-    let returnDate = year + '-' + month + '-' + day
-
-    return returnDate
-  }
   const today = new Date()
   const graceDate = convertDate(today.setDate(today.getDate() + 1))
 
@@ -63,10 +62,19 @@ function NewRelease() {
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
   const [showPopup, setShowPopup] = useState(false)
 
+  
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
+    
+    return (() => {
+      toast.dismiss(message)
+    })
+
+  }, [isError, message])
+
+  useEffect(() => {
 
     dispatch(getUser()).unwrap()
       .then((data) => {
@@ -78,26 +86,16 @@ function NewRelease() {
 
 
     return () => {
+      dispatch(resetUser())
       dispatch(resetTracks())
       dispatch(resetImage())
-      dispatch(resetEmail())
       dispatch(resetAudio())
     }
-  }, [isError, message, dispatch, navigate])
-
-
-  const trackEmail = useCallback((title, date, trackID) => {
-    const recipient = process.env.REACT_APP_RECEMAIL
-    const subject = `Track ${title} is scheduled.`
-    const emailMessage = `Track ${title} will be sent by ${new Date(date).toLocaleString('en-us')}.`
-
-    dispatch(sendNewTrackEmail({ recipient, subject, emailMessage, trackID }))
-
-  }, [dispatch])
+  }, [dispatch, navigate])
 
   const onSubmit = async () => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
 
     if (trackCover !== null && trackAudio !== null && trackPress.length && genres.length && user) {

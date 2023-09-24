@@ -63,9 +63,9 @@ export const resetPass = createAsyncThunk('auth/reset', async (userData, thunkAP
   }
 })
 
-export const getUser = createAsyncThunk('auth/getUser', async (signal, thunkAPI) => {
+export const getUser = createAsyncThunk('auth/getUser', async (_, thunkAPI) => {
   try {
-    return await authService.getUser(signal)
+    return await authService.getUser()
   } catch (error) {
     const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
 

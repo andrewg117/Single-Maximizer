@@ -45,14 +45,11 @@ const reset = async (userData) => {
   return response.data
 }
 
-const getUser = async (signal) => {
+const getUser = async () => {
 
   let response
 
-  response = await axios.get(API_URL + 'me', {
-    signal: signal
-  })
-
+  response = await axios.get(API_URL + 'me')
 
   return response.data
 }
