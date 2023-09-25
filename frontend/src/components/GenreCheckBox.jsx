@@ -27,6 +27,7 @@ function GenreCheckBox({ changeList, list }) {
         ]
       }))
     }
+    
     // Remove from list if unchecked
     if (!e.target.checked) {
       changeList((prevState) => ({

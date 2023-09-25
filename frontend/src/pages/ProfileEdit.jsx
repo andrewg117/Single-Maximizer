@@ -13,9 +13,11 @@ import styles from '../css/profile_style.module.css'
 function ProfileEdit() {
   const { user, isLoading, isError, message } = useSelector((state) => state.auth)
 
-  const profileData = useRef({})
-
+  const formRefData = useRef({})
+ 
   const { image, isLoading: imageLoading } = useSelector((state) => state.image)
+
+  // TODO: Rename avatar state
 
   const [formState, setFormState] = useState({
     profileImage: image ? Buffer.from(image.file.buffer, 'ascii') : null,
@@ -63,20 +65,21 @@ function ProfileEdit() {
     }
 
     if (profileImage !== null && user) {
+      // console.log(formRefData.current['fname'].value)
 
       dispatch(updateUser({
-        fname: profileData.current.fname.value,
-        lname: profileData.current.lname.value,
-        username: profileData.current.username.value,
-        website: profileData.current.website.value,
-        scloud: profileData.current.scloud.value,
-        twitter: profileData.current.twitter.value,
-        igram: profileData.current.igram.value,
-        fbook: profileData.current.fbook.value,
-        spotify: profileData.current.spotify.value,
-        ytube: profileData.current.ytube.value,
-        tiktok: profileData.current.tiktok.value,
-        bio_text: profileData.current.bio_text.value
+        fname: formRefData.current['fname'].value,
+        lname: formRefData.current['lname'].value,
+        username: formRefData.current['username'].value,
+        website: formRefData.current['website'].value,
+        scloud: formRefData.current['scloud'].value,
+        twitter: formRefData.current['twitter'].value,
+        igram: formRefData.current['igram'].value,
+        fbook: formRefData.current['fbook'].value,
+        spotify: formRefData.current['spotify'].value,
+        ytube: formRefData.current['ytube'].value,
+        tiktok: formRefData.current['tiktok'].value,
+        bio_text: formRefData.current['bio_text'].value
       })).unwrap()
         .then(() => {
           if (image === null) {
@@ -117,7 +120,7 @@ function ProfileEdit() {
   return (
     <>
       <div id={styles.edit_profile_content_right}>
-        <form id={styles.profile_form} onSubmit={(e) => {
+        <form ref={formRefData} id={styles.profile_form} onSubmit={(e) => {
           setShowPopup(() => {
             e.preventDefault()
             return true
@@ -156,7 +159,6 @@ function ProfileEdit() {
                   id='fname'
                   name='fname'
                   placeholder="Enter your first name"
-                  ref={ref => profileData.current.fname = ref}
                   defaultValue={user?.fname} />
               </div>
               <div>
@@ -168,7 +170,6 @@ function ProfileEdit() {
                   id='lname'
                   name='lname'
                   placeholder="Enter your last name"
-                  ref={ref => profileData.current.lname = ref}
                   defaultValue={user?.lname} />
               </div>
             </div>
@@ -182,7 +183,6 @@ function ProfileEdit() {
                   id='username'
                   name='username'
                   placeholder="Enter your username"
-                  ref={ref => profileData.current.username = ref}
                   defaultValue={user?.username} />
               </div>
               <div>
@@ -207,7 +207,6 @@ function ProfileEdit() {
                   id="website"
                   name="website"
                   placeholder="Enter your website starting with http://"
-                  ref={ref => profileData.current.website = ref}
                   defaultValue={user?.website} />
               </div>
               <div>
@@ -218,7 +217,6 @@ function ProfileEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter your soundcloud link"
-                  ref={ref => profileData.current.scloud = ref}
                   defaultValue={user?.scloud} />
               </div>
             </div>
@@ -231,7 +229,6 @@ function ProfileEdit() {
                   id="twitter"
                   name="twitter"
                   placeholder="Enter your twitter handle"
-                  ref={ref => profileData.current.twitter = ref}
                   defaultValue={user?.twitter} />
               </div>
               <div>
@@ -242,7 +239,6 @@ function ProfileEdit() {
                   id="igram"
                   name="igram"
                   placeholder="Enter your instagram username"
-                  ref={ref => profileData.current.igram = ref}
                   defaultValue={user?.igram} />
               </div>
             </div>
@@ -255,7 +251,6 @@ function ProfileEdit() {
                   id="fbook"
                   name="fbook"
                   placeholder="Enter your facebook handle"
-                  ref={ref => profileData.current.fbook = ref}
                   defaultValue={user?.fbook} />
               </div>
               <div>
@@ -266,7 +261,6 @@ function ProfileEdit() {
                   id="spotify"
                   name="spotify"
                   placeholder="Enter your spotify URI"
-                  ref={ref => profileData.current.spotify = ref}
                   defaultValue={user?.spotify} />
               </div>
             </div>
@@ -279,7 +273,6 @@ function ProfileEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter your youtube profile link"
-                  ref={ref => profileData.current.ytube = ref}
                   defaultValue={user?.ytube} />
               </div>
               <div>
@@ -290,7 +283,6 @@ function ProfileEdit() {
                   id="tiktok"
                   name="tiktok"
                   placeholder="Enter your tiktok username"
-                  ref={ref => profileData.current.tiktok = ref}
                   defaultValue={user?.tiktok} />
               </div>
             </div>
@@ -303,7 +295,6 @@ function ProfileEdit() {
                   id="bio_text"
                   cols="30" rows="10"
                   placeholder="Enter your artist bio here"
-                  ref={ref => profileData.current.bio_text = ref}
                   defaultValue={user?.bio_text}></textarea>
               </div>
             </div>

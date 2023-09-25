@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch, useStore } from 'react-redux'
+import { useEffect, useState, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
 import { postPress, getImage, getPress, updateImage, deleteImage, deletePress, reset as resetImage } from '../features/image/imageSlice'
@@ -17,22 +17,21 @@ import styles from '../css/new_release_style.module.css'
 // TODO: Fix issues with loading and updating data
 
 function SingleEdit() {
+
+  const { user } = useSelector((state) => state.auth)
+  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
+  const { image, isLoading: imageLoading, press, isPressSuccess } = useSelector((state) => state.image)
+  const { audio, isLoading: audioLoading } = useSelector((state) => state.audio)
+
+  const [showPopup, setShowPopup] = useState(false)
+  const [showDelPopup, setShowDelPopup] = useState(false)
+
+  const { id } = useParams()
+
+  const formRefData = useRef({})
+
   const [formState, setFormState] = useState({
-    trackTitle: '',
-    artist: '',
-    deliveryDate: '',
-    spotify: '',
-    features: '',
-    apple: '',
-    producer: '',
-    scloud: '',
-    album: '',
-    trackLabel: '',
-    ytube: '',
-    albumDate: '',
     genres: [],
-    trackSum: '',
-    pressSum: '',
     trackCover: null,
     trackAudio: null,
     trackPress: [],
@@ -40,21 +39,12 @@ function SingleEdit() {
     deletePressList: [],
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, newPressList, deletePressList } = formState
+  const { genres, trackCover, trackAudio, newPressList, deletePressList } = formState
 
-
-  const { isPressSuccess } = useSelector((state) => state.image)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const store = useStore()
 
-  const { user } = useSelector((state) => state.auth)
-  const { isLoading, isError, message } = useSelector((state) => state.tracks)
-  const [showPopup, setShowPopup] = useState(false)
-  const [showDelPopup, setShowDelPopup] = useState(false)
-
-  const { id } = useParams()
 
 
   const convertDate = (date) => {
@@ -72,66 +62,29 @@ function SingleEdit() {
   const today = new Date()
   const graceDate = convertDate(today.setDate(today.getDate() + 1))
 
-  const [singleState, setSingleState] = useState()
-  const [audioState, setAudioState] = useState()
-  const [imageState, setTrackState] = useState()
-  const [pressState, setPressState] = useState()
-
-  // COMPLETE: fix file.get error when page is loading
-
-  store.subscribe(() => {
-    setSingleState(store.getState().tracks['single'])
-    setAudioState(store.getState().audio['audio'])
-    setTrackState(store.getState().image['image'])
-    setPressState(store.getState().image['press'])
-
-    if (singleState) {
-      let trackBuffer
-      if (imageState) {
-        const image = imageState.file
-        trackBuffer = Buffer.from(image.buffer, 'ascii')
-      }
-      const audio = audioState ? audioState.file : null
-
-      const defaultDelDate = convertDate(singleState.deliveryDate)
-      const defaultAlbDate = convertDate(singleState.albumDate)
-
-      setFormState((prevState) => ({
-        ...prevState,
-        trackTitle: singleState.trackTitle,
-        artist: singleState.artist,
-        deliveryDate: defaultDelDate,
-        spotify: singleState.spotify,
-        features: singleState.features,
-        apple: singleState.apple,
-        producer: singleState.producer,
-        scloud: singleState.scloud,
-        album: singleState.album,
-        trackLabel: singleState.trackLabel,
-        ytube: singleState.ytube,
-        albumDate: defaultAlbDate,
-        genres: singleState.genres,
-        trackSum: singleState.trackSum,
-        pressSum: singleState.pressSum,
-        trackCover: trackBuffer,
-        trackAudio: audio,
-        trackPress: pressState ? pressState : []
-      }))
-
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-      }))
-    }
-
-  })
-
 
   const onSubmit = () => {
 
-    if (trackCover !== null && trackAudio !== null && trackPress.length && genres.length && user) {
+    if ( genres.length && user) {
 
-      dispatch(updateSingle({ trackID: id, trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
+      dispatch(updateSingle({
+        trackID: id,
+        trackTitle: formRefData.current['trackTitle'].value,
+        artist: formRefData.current['artist'].value,
+        deliveryDate: formRefData.current['deliveryDate'].value,
+        spotify: formRefData.current['spotify'].value,
+        features: formRefData.current['features'].value,
+        apple: formRefData.current['apple'].value,
+        producer: formRefData.current['producer'].value,
+        scloud: formRefData.current['scloud'].value,
+        album: formRefData.current['album'].value,
+        trackLabel: formRefData.current['trackLabel'].value,
+        ytube: formRefData.current['ytube'].value,
+        albumDate: formRefData.current['albumDate'].value,
+        genres,
+        trackSum: formRefData.current['trackSum'].value,
+        pressSum: formRefData.current['pressSum'].value
+      })).unwrap()
         .then(() => {
           if (trackCover instanceof FormData) {
             let imageData = new FormData()
@@ -199,29 +152,39 @@ function SingleEdit() {
     navigate('/profile/singles')
   }
 
-  const onChange = (e) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
-  }
-
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     }
 
+    return (() => {
+      toast.dismiss(message)
+    })
+
+  }, [isError, message])
+
+  useEffect(() => {
+
     dispatch(getSingle(id)).unwrap()
+      .then((data) => {
+        setFormState((prevState) => ({
+          ...prevState,
+          genres: data.genres
+        }))
+      })
       .catch((error) => console.error(error))
+
     dispatch(getImage({
       'trackID': id,
       'section': 'cover'
     })).unwrap()
       .catch((error) => console.error(error))
+
     dispatch(getPress({
       'trackID': id,
     })).unwrap()
       .catch((error) => console.error(error))
+
     dispatch(getAudio(id)).unwrap()
       .catch((error) => console.error(error))
 
@@ -232,16 +195,16 @@ function SingleEdit() {
       dispatch(resetAudio())
       setShowPopup(false)
     })
-  }, [isError, message, id, dispatch])
+  }, [id, dispatch])
 
-  if (isLoading) {
+  if (isLoading || imageLoading || audioLoading) {
     return <Spinner />
   }
 
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={(e) => {
+        <form ref={formRefData} id={styles.new_form} onSubmit={(e) => {
           setShowPopup(() => {
             e.preventDefault()
             return true
@@ -261,7 +224,7 @@ function SingleEdit() {
                 <label>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
-                  file={trackCover}
+                  file={image ? Buffer.from(image.file.buffer, 'ascii') : null}
                   fieldname={'trackCover'}
                   altText={'Upload Track Cover'}
                 />
@@ -277,8 +240,7 @@ function SingleEdit() {
                     id="artist"
                     name="artist"
                     placeholder="Enter your artist name"
-                    defaultValue={artist}
-                    onChange={onChange}
+                    defaultValue={single?.artist}
                   />
                 </div>
                 <div>
@@ -290,32 +252,31 @@ function SingleEdit() {
                     id="trackTitle"
                     name="trackTitle"
                     placeholder="Enter the name of your track"
-                    defaultValue={trackTitle}
-                    onChange={onChange}
+                    defaultValue={single?.trackTitle}
                   />
                 </div>
               </div>
             </div>
             <div className={styles.file_input_div}>
-                <label>AUDIO UPLOAD</label>
-                <AudioUpload
-                  changeFile={setFormState}
-                  file={trackAudio}
-                  fieldname={'trackAudio'}
-                />
-                <p>{trackAudio instanceof FormData ? `Size Limit: ${trackAudio.get('size')} / 21 MB` : null}</p>
+              <label>AUDIO UPLOAD</label>
+              <AudioUpload
+                changeFile={setFormState}
+                file={audio ? audio.file : null}
+                fieldname={'trackAudio'}
+              />
+              <p>{trackAudio instanceof FormData ? `Size Limit: ${trackAudio.get('size')} / 21 MB` : null}</p>
             </div>
             <div className={styles.file_input_div}>
-                <label>PRESS PHOTOS</label>
-                {isPressSuccess ?
-                  <PressEdit
-                    changeFile={setFormState}
-                    trackPress={trackPress}
-                    newPressList={newPressList}
-                    deletePressList={deletePressList}
-                  />
-                  :
-                  <></>}
+              <label>PRESS PHOTOS</label>
+              {isPressSuccess ?
+                <PressEdit
+                  changeFile={setFormState}
+                  trackPress={press ? press : []}
+                  newPressList={newPressList}
+                  deletePressList={deletePressList}
+                />
+                :
+                <></>}
             </div>
             <div className={styles.input_div}>
               <div>
@@ -328,8 +289,7 @@ function SingleEdit() {
                   id="deliveryDate"
                   name="deliveryDate"
                   min={graceDate}
-                  value={deliveryDate}
-                  onChange={onChange} />
+                  defaultValue={convertDate(single?.deliveryDate)} />
               </div>
               <div>
                 <label htmlFor="spotify">SPOTIFY TRACK URI</label>
@@ -339,8 +299,7 @@ function SingleEdit() {
                   id="spotify"
                   name="spotify"
                   placeholder="Enter the URI of your track on Spotify"
-                  defaultValue={spotify}
-                  onChange={onChange} />
+                  defaultValue={single?.spotify} />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -352,8 +311,7 @@ function SingleEdit() {
                   id="features"
                   name="features"
                   placeholder="Enter the names of features"
-                  defaultValue={features}
-                  onChange={onChange} />
+                  defaultValue={single?.features} />
               </div>
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
@@ -363,8 +321,7 @@ function SingleEdit() {
                   id="apple"
                   name="apple"
                   placeholder="Enter your Apple Music track link"
-                  defaultValue={apple}
-                  onChange={onChange} />
+                  defaultValue={single?.apple} />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -377,8 +334,7 @@ function SingleEdit() {
                   id="producer"
                   name="producer"
                   placeholder="Who produced the track?"
-                  defaultValue={producer}
-                  onChange={onChange} />
+                  defaultValue={single?.producer} />
               </div>
               <div>
                 <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
@@ -388,8 +344,7 @@ function SingleEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter the track's Soundcloud link"
-                  defaultValue={scloud}
-                  onChange={onChange} />
+                  defaultValue={single?.scloud} />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -401,8 +356,7 @@ function SingleEdit() {
                   id="album"
                   name="album"
                   placeholder="Is this song part of an album?"
-                  defaultValue={album}
-                  onChange={onChange} />
+                  defaultValue={single?.album} />
               </div>
               <div>
                 <label htmlFor="ytubelink">YOUTUBE LINK</label>
@@ -412,8 +366,7 @@ function SingleEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter the Youtube video link"
-                  defaultValue={ytube}
-                  onChange={onChange} />
+                  defaultValue={single?.ytube} />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -424,8 +377,7 @@ function SingleEdit() {
                   type="date"
                   id="albumDate"
                   name="albumDate"
-                  value={albumDate}
-                  onChange={onChange} />
+                  defaultValue={convertDate(single?.albumDate)} />
               </div>
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
@@ -435,15 +387,14 @@ function SingleEdit() {
                   id="trackLabel"
                   name="trackLabel"
                   placeholder="What is the Label for the track?"
-                  defaultValue={trackLabel}
-                  onChange={onChange} />
+                  defaultValue={single?.trackLabel} />
               </div>
             </div>
             <div className={styles.full_input_div}>
               <div>
                 <label htmlFor="genres">GENRES</label>
                 <section id={styles.checkboxlist}>
-                  <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
+                  <GenreCheckBox changeList={setFormState} list={genres} />
                 </section>
               </div>
             </div>
@@ -456,8 +407,7 @@ function SingleEdit() {
                   id="trackSum"
                   cols="30" rows="10"
                   placeholder="Enter your track details here"
-                  defaultValue={trackSum}
-                  onChange={onChange}></textarea>
+                  defaultValue={single?.trackSum}></textarea>
               </div>
             </div>
             <div className={styles.full_input_div}>
@@ -468,8 +418,7 @@ function SingleEdit() {
                   id="pressSum"
                   cols="30" rows="10"
                   placeholder="Enter recent accomplishments"
-                  defaultValue={pressSum}
-                  onChange={onChange}></textarea>
+                  defaultValue={single?.pressSum}></textarea>
               </div>
             </div>
             <div id={styles.submit_div}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getUser, updateUser, reset as resetUser } from '../features/auth/authSlice'
@@ -31,21 +31,7 @@ function NewRelease() {
   const graceDate = convertDate(today.setDate(today.getDate() + 1))
 
   const [formState, setFormState] = useState({
-    trackTitle: '',
-    artist: '',
-    deliveryDate: graceDate,
-    spotify: '',
-    features: '',
-    apple: '',
-    producer: '',
-    scloud: '',
-    album: '',
-    trackLabel: '',
-    ytube: '',
-    albumDate: '',
     genres: [],
-    trackSum: '',
-    pressSum: '',
     trackCover: null,
     trackAudio: null,
     trackPress: [],
@@ -53,7 +39,7 @@ function NewRelease() {
     s3AudioURL: '',
   })
 
-  const { trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
+  const {  genres, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -62,12 +48,14 @@ function NewRelease() {
   const { isLoading, isError, message } = useSelector((state) => state.tracks)
   const [showPopup, setShowPopup] = useState(false)
 
-  
+  const formRefData = useRef({})
+
+
   useEffect(() => {
     if (isError) {
       toast.error(message, { id: message })
     }
-    
+
     return (() => {
       toast.dismiss(message)
     })
@@ -78,7 +66,7 @@ function NewRelease() {
 
     dispatch(getUser()).unwrap()
       .then((data) => {
-        if(data.trackAllowance === 0) {
+        if (data.trackAllowance === 0) {
           navigate('/profile/checkoutpage')
         }
       })
@@ -113,7 +101,23 @@ function NewRelease() {
       })
       pressData.append("section", 'press')
 
-      dispatch(createTrack({ trackTitle, artist, deliveryDate, spotify, features, apple, producer, scloud, album, trackLabel, ytube, albumDate, genres, trackSum, pressSum })).unwrap()
+      dispatch(createTrack({
+        trackTitle: formRefData.current['trackTitle'].value,
+        artist: formRefData.current['artist'].value,
+        deliveryDate: formRefData.current['deliveryDate'].value,
+        spotify: formRefData.current['spotify'].value,
+        features: formRefData.current['features'].value,
+        apple: formRefData.current['apple'].value,
+        producer: formRefData.current['producer'].value,
+        scloud: formRefData.current['scloud'].value,
+        album: formRefData.current['album'].value,
+        trackLabel: formRefData.current['trackLabel'].value,
+        ytube: formRefData.current['ytube'].value,
+        albumDate: formRefData.current['albumDate'].value,
+        genres,
+        trackSum: formRefData.current['trackSum'].value,
+        pressSum: formRefData.current['pressSum'].value
+      })).unwrap()
         .then((data) => {
           const trackID = data._id
 
@@ -126,7 +130,6 @@ function NewRelease() {
           pressData.append("trackID", trackID)
           dispatch(postPress(pressData))
 
-          // trackEmail(data.trackTitle, data.deliveryDate, trackID)
           dispatch(updateUser({ trackAllowance: user.trackAllowance - 1 }))
         })
 
@@ -143,15 +146,9 @@ function NewRelease() {
     }
   }
 
+  // TODO: Fix popup not reopening after cancel
   const closeConfirm = () => {
     setShowPopup(false)
-  }
-
-  const onChange = (e) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
   }
 
   if (isLoading) {
@@ -161,7 +158,7 @@ function NewRelease() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form} onSubmit={(e) => {
+        <form ref={formRefData} id={styles.new_form} onSubmit={(e) => {
           setShowPopup(() => {
             e.preventDefault()
             return true
@@ -198,9 +195,7 @@ function NewRelease() {
                     type="text"
                     id="artist"
                     name="artist"
-                    placeholder="Enter your artist name"
-                    defaultValue={artist}
-                    onChange={onChange} />
+                    placeholder="Enter your artist name" />
                 </div>
                 <div>
                   <label htmlFor="trackTitle">TRACK NAME</label>
@@ -210,9 +205,7 @@ function NewRelease() {
                     type="text"
                     id="trackTitle"
                     name="trackTitle"
-                    placeholder="Enter the name of your track"
-                    value={trackTitle}
-                    onChange={onChange} />
+                    placeholder="Enter the name of your track" />
                 </div>
               </div>
             </div>
@@ -248,8 +241,7 @@ function NewRelease() {
                   id="deliveryDate"
                   name="deliveryDate"
                   min={graceDate}
-                  defaultValue={graceDate}
-                  onChange={onChange} />
+                  defaultValue={graceDate} />
               </div>
               <div>
                 <label htmlFor="spotify">SPOTIFY TRACK URI</label>
@@ -258,9 +250,7 @@ function NewRelease() {
                   type="text"
                   id="spotify"
                   name="spotify"
-                  placeholder="Enter the URI of your track on Spotify"
-                  value={spotify}
-                  onChange={onChange} />
+                  placeholder="Enter the URI of your track on Spotify" />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -271,9 +261,7 @@ function NewRelease() {
                   type="text"
                   id="features"
                   name="features"
-                  placeholder="Enter the names of features"
-                  value={features}
-                  onChange={onChange} />
+                  placeholder="Enter the names of features" />
               </div>
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
@@ -282,9 +270,7 @@ function NewRelease() {
                   type="text"
                   id="apple"
                   name="apple"
-                  placeholder="Enter your Apple Music track link"
-                  value={apple}
-                  onChange={onChange} />
+                  placeholder="Enter your Apple Music track link" />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -296,9 +282,7 @@ function NewRelease() {
                   type="text"
                   id="producer"
                   name="producer"
-                  placeholder="Who produced the track?"
-                  value={producer}
-                  onChange={onChange} />
+                  placeholder="Who produced the track?" />
               </div>
               <div>
                 <label htmlFor="scloud">SOUNDCLOUD LINK</label>
@@ -307,9 +291,7 @@ function NewRelease() {
                   type="text"
                   id="scloud"
                   name="scloud"
-                  placeholder="Enter the track's Soundcloud link"
-                  value={scloud}
-                  onChange={onChange} />
+                  placeholder="Enter the track's Soundcloud link" />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -320,9 +302,7 @@ function NewRelease() {
                   type="text"
                   id="album"
                   name="album"
-                  placeholder="Is this song part of an album?"
-                  value={album}
-                  onChange={onChange} />
+                  placeholder="Is this song part of an album?" />
               </div>
               <div>
                 <label htmlFor="ytube">YOUTUBE LINK</label>
@@ -331,9 +311,7 @@ function NewRelease() {
                   type="text"
                   id="ytube"
                   name="ytube"
-                  placeholder="Enter the Youtube video link"
-                  value={ytube}
-                  onChange={onChange} />
+                  placeholder="Enter the Youtube video link" />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -343,9 +321,7 @@ function NewRelease() {
                   className={styles.new_input}
                   type="date"
                   id="albumDate"
-                  name="albumDate"
-                  value={albumDate}
-                  onChange={onChange} />
+                  name="albumDate" />
               </div>
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
@@ -354,9 +330,7 @@ function NewRelease() {
                   type="text"
                   id="trackLabel"
                   name="trackLabel"
-                  placeholder="What is the Label for the track?"
-                  value={trackLabel}
-                  onChange={onChange} />
+                  placeholder="What is the Label for the track?" />
               </div>
             </div>
             <div className={styles.full_input_div}>
@@ -375,9 +349,7 @@ function NewRelease() {
                   name="trackSum"
                   id="trackSum"
                   cols="30" rows="10"
-                  placeholder="Enter your track details here"
-                  value={trackSum}
-                  onChange={onChange}></textarea>
+                  placeholder="Enter your track details here" />
               </div>
             </div>
             <div className={styles.full_input_div}>
@@ -387,9 +359,7 @@ function NewRelease() {
                   name="pressSum"
                   id="pressSum"
                   cols="30" rows="10"
-                  placeholder="Enter recent accomplishments"
-                  value={pressSum}
-                  onChange={onChange}></textarea>
+                  placeholder="Enter recent accomplishments"></textarea>
               </div>
             </div>
             <div id={styles.submit_div}>
