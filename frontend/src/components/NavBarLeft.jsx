@@ -9,15 +9,14 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNa
   return (
     <div className={styles.navbar_left_links} id={styles.navbar_top_links}>
       {menuItems
-        .filter(menu => menu.name !== 'SETTINGS')
         .map(menu => (
           <Link
             key={menu.name}
             to={menu.path}
             className={activeLink === menu.path ? styles.active : styles.inactive}
-            onClick={() => {
-              menu.name === 'LOGOUT' ? onLogout() :
-              toggleTopNav()
+            onClick={(e) => {
+              menu.name === 'LOGOUT' ? onLogout(e) :
+              toggleTopNav(e)
               setActiveLink(menu.path)
             }}
           >
@@ -40,12 +39,13 @@ function NavBarLeft() {
   const [showTopNav, setTopNav] = useState(false)
 
   const toggleTopNav = (e) => {
+    e.preventDefault()
     showTopNav === false ? setTopNav(true) : setTopNav(false)
   }
 
   const onLogout = (e) => {
-    dispatch(logout()).unwrap()
-      .then(() => dispatch(getUser))
+    e.preventDefault()
+    dispatch(logout())
     navigate('/home')
   }
 
@@ -64,7 +64,6 @@ function NavBarLeft() {
     { name: 'LOGOUT', path: "/", position: 'bot' },
   ]
   useEffect(() => {
-    // dispatch(getUser())
 
     setActiveLink(location.pathname)
     
@@ -73,7 +72,7 @@ function NavBarLeft() {
     } else if (location.pathname.includes('/singleedit')) {
       setActiveLink("/profile/singles")
     } 
-  }, [dispatch, location])
+  }, [location])
 
   return (
     <>
@@ -118,7 +117,7 @@ function NavBarLeft() {
                   key={menu.name}
                   to={menu.path}
                   className={activeLink === menu.path ? styles.active : styles.inactive}
-                  onClick={() => menu.name === 'LOGOUT' ? onLogout() : setActiveLink(menu.path)}
+                  onClick={(e) => menu.name === 'LOGOUT' ? onLogout(e) : setActiveLink(menu.path)}
                 >
                   {menu.name}
                 </Link>
