@@ -112,7 +112,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email })
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    generateToken(res, user._id, '2h')
+    generateToken(res, user._id, '30m')
 
     const userBody = {
       ...user['_doc'],

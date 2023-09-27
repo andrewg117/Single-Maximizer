@@ -1,11 +1,11 @@
+import SMLogo from '../images/single-Maximizer-tile.png.webp'
 import styles from '../css/style.module.css'
 
-// TODO: Change loading to Logo
 
 function Spinner() {
   return (
     <div className={styles.loadingSpinnerContainer}>
-      <div className={styles.loadingSpinner}></div>
+      <img src={SMLogo} alt="Home" id={styles.logo} />
     </div>
   )
 }
