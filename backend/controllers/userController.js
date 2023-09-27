@@ -47,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   if (user) {
-    generateToken(res, user._id, '2h')
+    generateToken(res, user._id, '10m')
 
     res.status(201).json({
       _id: user.id,
@@ -112,7 +112,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email })
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    generateToken(res, user._id, '30m')
+    generateToken(res, user._id, '10m')
 
     const userBody = {
       ...user['_doc'],
