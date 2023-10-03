@@ -40,8 +40,8 @@ const generalEmail = async (singleDoc, subjectType) => {
   emailContent += `<p>Soundcloud: ${singleDoc.scloud || ''}</p>`
   emailContent += `<p>YouTube: ${singleDoc.ytube || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Song Link: ${singleDoc.s3AudioURL.url || ''}</p>`
-  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL.url || ''}</p>`
+  emailContent += `<p>Song Link: ${singleDoc?.s3AudioURL?.url || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc?.s3ImageURL?.url || ''}</p>`
 
   emailContent += `<p>Press Photo Link(s): </p>`
 
@@ -74,8 +74,8 @@ const generalEmail = async (singleDoc, subjectType) => {
   }
 
 
-  const audioURL = await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' })
-  const imageURL = await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' })
+  const audioURL = singleDoc.s3AudioURL ? await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' }) : null
+  const imageURL = singleDoc.s3ImageURL ? await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' }) : null
 
   audioURL ? getAttachments.push({
     filename: singleDoc.s3AudioURL.name,
@@ -128,9 +128,9 @@ const altEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`
   emailContent += `<p>Spotify Link: ${userDoc.spotify || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Download Link: ${singleDoc.s3AudioURL.url || ''}</p>`
+  emailContent += `<p>Download Link: ${singleDoc?.s3AudioURL?.url || ''}</p>`
   emailContent += `<br>`
-  emailContent += `<p>Cover Link: ${singleDoc.s3ImageURL.url || ''}</p>`
+  emailContent += `<p>Cover Link: ${singleDoc?.s3ImageURL?.url || ''}</p>`
   emailContent += `<br>`
   emailContent += `<br>`
   emailContent += `<p>Press Photos: </p>`
@@ -161,8 +161,8 @@ const altEmail = async (singleDoc, subjectType) => {
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`
   }
 
-  const audioURL = await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' })
-  const imageURL = await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' })
+  const audioURL = singleDoc.s3AudioURL ? await axios.get(singleDoc.s3AudioURL.url, { responseType: 'stream' }) : null
+  const imageURL = singleDoc.s3ImageURL ? await axios.get(singleDoc.s3ImageURL.url, { responseType: 'stream' }) : null
 
   audioURL ? getAttachments.push({
     filename: singleDoc.s3AudioURL.name,
