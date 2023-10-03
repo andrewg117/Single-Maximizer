@@ -39,7 +39,7 @@ function NewRelease() {
     s3AudioURL: '',
   })
 
-  const {  genres, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
+  const { genres, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } = formState
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -142,11 +142,11 @@ function NewRelease() {
       setShowPopup(false)
 
     } else {
+      setShowPopup(false)
       toast.error("Update Fields")
     }
   }
 
-  // TODO: Fix popup not reopening after cancel
   const closeConfirm = () => {
     setShowPopup(false)
   }
@@ -175,7 +175,7 @@ function NewRelease() {
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                <label>COVER ART</label>
+                <label className={styles.required}>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
                   file={trackCover}
@@ -188,7 +188,7 @@ function NewRelease() {
               </div>
               <div className={styles.top_input_div}>
                 <div>
-                  <label htmlFor="artist">ARTIST NAME</label>
+                  <label className={styles.required} htmlFor="artist">ARTIST NAME</label>
                   <input
                     required
                     className={styles.new_input}
@@ -198,7 +198,7 @@ function NewRelease() {
                     placeholder="Enter your artist name" />
                 </div>
                 <div>
-                  <label htmlFor="trackTitle">TRACK NAME</label>
+                  <label className={styles.required} htmlFor="trackTitle">TRACK NAME</label>
                   <input
                     required
                     className={styles.new_input}
@@ -211,7 +211,7 @@ function NewRelease() {
             </div>
             <div className={styles.file_input_div}>
               <div>
-                <label>AUDIO UPLOAD</label>
+                <label className={styles.required}>AUDIO UPLOAD</label>
                 <AudioUpload
                   changeFile={setFormState}
                   file={trackAudio}
@@ -224,7 +224,7 @@ function NewRelease() {
             </div>
             <div className={styles.file_input_div}>
               <div>
-                <label>PRESS PHOTOS</label>
+                <label className={styles.required}>PRESS PHOTOS</label>
                 <PressUpload
                   changeFile={setFormState}
                   trackPress={trackPress}
@@ -233,7 +233,7 @@ function NewRelease() {
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="deliveryDate">DELIVERY DATE</label>
+                <label className={styles.required} htmlFor="deliveryDate">DELIVERY DATE</label>
                 <input
                   required
                   className={styles.new_input}
@@ -275,7 +275,7 @@ function NewRelease() {
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="producer">PRODUCER</label>
+                <label className={styles.required} htmlFor="producer">PRODUCER</label>
                 <input
                   required
                   className={styles.new_input}
@@ -335,7 +335,7 @@ function NewRelease() {
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label htmlFor="genres">GENRES</label>
+                <label className={styles.required} htmlFor="genres">GENRES</label>
                 <section id={styles.checkboxlist}>
                   <GenreCheckBox changeList={setFormState} list={genres ? genres : []} />
                 </section>
@@ -343,7 +343,7 @@ function NewRelease() {
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label htmlFor="trackSum">TRACK SUMMARY</label>
+                <label className={styles.required} htmlFor="trackSum">TRACK SUMMARY</label>
                 <textarea
                   required
                   name="trackSum"

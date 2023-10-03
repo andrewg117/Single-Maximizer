@@ -28,30 +28,28 @@ function MaximizerApp() {
   return (
     <>
       <Router>
-        <div className={styles.body}>
-          <section id={user === null ? styles.body_wrapper : styles.profile_body_wrapper}>
-            {user === null ? <NavBar /> : <NavBarLeft />}
-            <Routes>
-              {user === null ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
-              <Route path='/home' element={<Home />} />
-              <Route path='/home/aboutus' element={<AboutUs />} />
-              <Route path='/home/signup/:token' element={<SignUp />} />
-              <Route path='/home/emailsignup' element={<EmailSignUp />} />
-              <Route path='/home/signin' element={<SignIn />} />
-              <Route path='/home/forgotpass' element={<ForgotPassword />} />
-              <Route path='/home/resetpass/:token' element={<ResetPassword />} />
-              <Route element={<TokenCheck />}>
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/profile/editprofile' element={<ProfileEdit />} />
-                <Route path='/profile/newrelease' element={<NewRelease />} />
-                <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
-                <Route path='/profile/singles' element={<Singles />} />
-                <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
-                {/* <Route path='/admin' element={<Admin />} /> */}
-              </Route>
-            </Routes>
-          </section>
-        </div>
+        <section id={user === null ? styles.body_wrapper : styles.profile_body_wrapper}>
+          {user === null ? <NavBar /> : <NavBarLeft />}
+          <Routes>
+            {user === null ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
+            <Route path='/home' element={<Home />} />
+            <Route path='/home/aboutus' element={<AboutUs />} />
+            <Route path='/home/signup/:token' element={<SignUp />} />
+            <Route path='/home/emailsignup' element={<EmailSignUp />} />
+            <Route path='/home/signin' element={<SignIn />} />
+            <Route path='/home/forgotpass' element={<ForgotPassword />} />
+            <Route path='/home/resetpass/:token' element={<ResetPassword />} />
+            <Route element={<TokenCheck />}>
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/profile/editprofile' element={<ProfileEdit />} />
+              <Route path='/profile/newrelease' element={<NewRelease />} />
+              <Route path='/profile/checkoutpage' element={<CheckoutPage />} />
+              <Route path='/profile/singles' element={<Singles />} />
+              <Route path='/profile/singleedit/:id' element={<SingleEdit />} />
+              {/* <Route path='/admin' element={<Admin />} /> */}
+            </Route>
+          </Routes>
+        </section>
       </Router>
       <ToastContainer autoClose={3000} limit={1} />
     </>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser, logout } from '../features/auth/authSlice'
+import { logout } from '../features/auth/authSlice'
 import { FaBars } from 'react-icons/fa'
 import styles from '../css/profile_nav.module.css'
 
@@ -16,7 +16,7 @@ const NavBarTop = ({ menuItems, activeLink, setActiveLink, onLogout, toggleTopNa
             className={activeLink === menu.path ? styles.active : styles.inactive}
             onClick={(e) => {
               menu.name === 'LOGOUT' ? onLogout(e) :
-              toggleTopNav(e)
+              toggleTopNav()
               setActiveLink(menu.path)
             }}
           >
@@ -38,9 +38,8 @@ function NavBarLeft() {
 
   const [showTopNav, setTopNav] = useState(false)
 
-  const toggleTopNav = (e) => {
-    e.preventDefault()
-    showTopNav === false ? setTopNav(true) : setTopNav(false)
+  const toggleTopNav = () => {
+    showTopNav ? setTopNav(false) : setTopNav(true)
   }
 
   const onLogout = (e) => {

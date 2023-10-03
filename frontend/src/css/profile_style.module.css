@@ -121,6 +121,11 @@
   font-weight: bold;
 }
 
+.required:after {
+  content:" *";
+  color: red;
+}
+
 .profile_input {
   width: 100%;
   /* height: 30px; */

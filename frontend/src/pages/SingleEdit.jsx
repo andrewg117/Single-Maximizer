@@ -221,7 +221,7 @@ function SingleEdit() {
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
-                <label>COVER ART</label>
+                <label className={styles.required}>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
                   file={image ? Buffer.from(image.file.buffer, 'ascii') : null}
@@ -232,7 +232,7 @@ function SingleEdit() {
               </div>
               <div className={styles.top_input_div}>
                 <div>
-                  <label htmlFor="artist">ARTIST NAME</label>
+                  <label className={styles.required} htmlFor="artist">ARTIST NAME</label>
                   <input
                     required
                     className={styles.new_input}
@@ -244,7 +244,7 @@ function SingleEdit() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="trackTitle">TRACK NAME</label>
+                  <label className={styles.required} htmlFor="trackTitle">TRACK NAME</label>
                   <input
                     required
                     className={styles.new_input}
@@ -258,7 +258,7 @@ function SingleEdit() {
               </div>
             </div>
             <div className={styles.file_input_div}>
-              <label>AUDIO UPLOAD</label>
+              <label className={styles.required}>AUDIO UPLOAD</label>
               <AudioUpload
                 changeFile={setFormState}
                 file={audio ? audio.file : null}
@@ -267,7 +267,7 @@ function SingleEdit() {
               <p>{trackAudio instanceof FormData ? `Size Limit: ${trackAudio.get('size')} / 21 MB` : null}</p>
             </div>
             <div className={styles.file_input_div}>
-              <label>PRESS PHOTOS</label>
+              <label className={styles.required}>PRESS PHOTOS</label>
               {isPressSuccess ?
                 <PressEdit
                   changeFile={setFormState}
@@ -280,7 +280,7 @@ function SingleEdit() {
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="deliveryDate">DELIVERY DATE</label>
+                <label className={styles.required} htmlFor="deliveryDate">DELIVERY DATE</label>
 
                 <input
                   required
@@ -326,7 +326,7 @@ function SingleEdit() {
             </div>
             <div className={styles.input_div}>
               <div>
-                <label htmlFor="producer">PRODUCER</label>
+                <label className={styles.required} htmlFor="producer">PRODUCER</label>
                 <input
                   required
                   className={styles.new_input}
@@ -392,7 +392,7 @@ function SingleEdit() {
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label htmlFor="genres">GENRES</label>
+                <label className={styles.required} htmlFor="genres">GENRES</label>
                 <section id={styles.checkboxlist}>
                   <GenreCheckBox changeList={setFormState} list={genres} />
                 </section>
@@ -400,7 +400,7 @@ function SingleEdit() {
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label htmlFor="tracksum">TRACK SUMMARY</label>
+                <label className={styles.required} htmlFor="tracksum">TRACK SUMMARY</label>
                 <textarea
                   required
                   name="trackSum"

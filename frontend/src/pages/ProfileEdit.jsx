@@ -151,7 +151,7 @@ function ProfileEdit() {
 
             <div className={styles.profile_input_div}>
               <div>
-                <label htmlFor="fname">FIRST NAME</label>
+                <label className={styles.required} htmlFor="fname">FIRST NAME</label>
                 <input
                   required
                   type="text"
@@ -162,7 +162,7 @@ function ProfileEdit() {
                   defaultValue={user?.fname} />
               </div>
               <div>
-                <label htmlFor="lname">LAST NAME</label>
+                <label className={styles.required} htmlFor="lname">LAST NAME</label>
                 <input
                   required
                   type="text"
@@ -175,7 +175,7 @@ function ProfileEdit() {
             </div>
             <div className={styles.profile_input_div}>
               <div>
-                <label htmlFor="username">USERNAME</label>
+                <label className={styles.required} htmlFor="username">USERNAME</label>
                 <input
                   required
                   type="text"
@@ -288,7 +288,7 @@ function ProfileEdit() {
             </div>
             <div className={styles.profile_input_div} id={styles.profile_textarea_div}>
               <div>
-                <label htmlFor="bio_text">BIO</label>
+                <label className={styles.required} htmlFor="bio_text">BIO</label>
                 <textarea
                   required
                   name="bio_text"
