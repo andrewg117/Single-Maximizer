@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { emailUser, reset as resetUser } from '../features/auth/authSlice'
+import { emailUser } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
 import signinImage from '../images/signinImage.png'
@@ -22,18 +22,6 @@ function ForgotPassword() {
     (state) => state.auth
   )
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message, { id: message })
-      toast.clearWaitingQueue()
-    }
-
-    return () => {
-      dispatch(resetUser())
-      toast.dismiss()
-    }
-  }, [ isError, message, dispatch])
-
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -44,7 +32,7 @@ function ForgotPassword() {
   const onSubmit = (e) => {
     e.preventDefault()
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     } else if (email === '') {
       toast.error("Add Email")
     } else {
@@ -54,7 +42,7 @@ function ForgotPassword() {
         .then(() => {
           setEmailSent(true)
         })
-        .catch((error) => console.error(error))
+        .catch((error) => toast.error(error = 'Email not registered'))
     }
   }
 

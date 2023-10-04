@@ -171,12 +171,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   mg.messages.create(mgDomain, mailOptions)
-    .then(msg => console.log(msg)) 
-    .catch(err => console.error(err))
+    .then(msg => res.status(200).json(msg)) 
+    .catch(err => res.status(409).json(err))
 
   // console.log('Message sent: %s', info.messageId)
-
-  res.status(200).json(info)
+  
+  // res.status(200).json(info)
 })
 
 // @desc    Update user password
