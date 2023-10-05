@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { emailUser, reset as resetUser } from '../features/auth/authSlice'
+import { emailUser } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
 import signupImage from '../images/signupImage.png'
@@ -22,12 +22,6 @@ function EmailSignUp() {
     (state) => state.auth
   )
 
-  useEffect(() => {
-
-    return () => {
-      dispatch(resetUser())
-    }
-  }, [ isError, message, dispatch])
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -39,7 +33,7 @@ function EmailSignUp() {
   const onSubmit = (e) => {
     e.preventDefault()
     if (isError) {
-      toast.error(message)
+      toast.error(message, { id: message })
     } else if (email === '') {
       toast.error("Add Email")
     } else {
@@ -49,7 +43,7 @@ function EmailSignUp() {
         .then(() => {
           setEmailSent(true)
         })
-        .catch((error) => toast.error(error))
+        .catch((error) => toast.error(error = "User exists, use a different email or login"))
     }
   }
 
