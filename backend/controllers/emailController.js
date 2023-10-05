@@ -206,7 +206,7 @@ const sendScheduledEmail = async () => {
 
   // Updates tracks to be delivered
   const curDate = new Date()
-  curDate.setHours(23, 59, 59, 999)
+  curDate.setHours(23, 59)
 
   let tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
 
