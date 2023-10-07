@@ -17,8 +17,6 @@ function ProfileEdit() {
  
   const { image, isLoading: imageLoading } = useSelector((state) => state.image)
 
-  // TODO: Rename avatar state
-
   const [formState, setFormState] = useState({
     profileImage: image ? Buffer.from(image.file.buffer, 'ascii') : null,
   })

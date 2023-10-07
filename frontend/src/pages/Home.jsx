@@ -8,13 +8,13 @@ import styles from '../css/style.module.css'
 // TODO: Make API call to wake up demo server
 
 function Home() {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(wakeServer()).unwrap()
-      .catch((error) => console.error(error = 'No Server'))
+  // useEffect(() => {
+  //   dispatch(wakeServer()).unwrap()
+  //     .catch((error) => console.error(error = 'No Server'))
       
-  }, [dispatch])
+  // }, [dispatch])
 
   return (
     <>
