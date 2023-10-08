@@ -46,8 +46,6 @@ const setTrack = asyncHandler(async (req, res) => {
     throw new Error('Add track title')
   }
 
-  // console.log(req.files)
-  // console.log(req.body)
 
   const track = await Track.create({
     trackTitle: req.body.trackTitle,
@@ -61,7 +59,7 @@ const setTrack = asyncHandler(async (req, res) => {
     album: req.body.album,
     trackLabel: req.body.trackLabel,
     ytube: req.body.ytube,
-    albumDate: req.body.albumDate,
+    albumDate: req.body.albumDate || null,
     genres: req.body.genres,
     trackSum: req.body.trackSum,
     pressSum: req.body.pressSum,

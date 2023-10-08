@@ -28,7 +28,7 @@ const generalEmail = async (singleDoc, subjectType) => {
   emailContent += `<p>Song: ${singleDoc.trackTitle || ''}</p>`
   emailContent += `<p>Producer: ${singleDoc.producer || ''}</p>`
   emailContent += `<p>Album: ${singleDoc.album || ''}</p>`
-  emailContent += `<p>Album Release Date: ${singleDoc.albumDate.toLocaleString('default', { timeZone: 'UTC' }).split(',')[0] || ''}</p>`
+  emailContent += `<p>Album Release Date: ${singleDoc.albumDate?.toLocaleString('default', { timeZone: 'UTC' }).split(',')[0] || ''}</p>`
   emailContent += `<p>Label: ${singleDoc.trackLabel || ''}</p>`
   emailContent += `<br><br>`
   emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ''}</p>`
