@@ -205,8 +205,9 @@ const sendScheduledEmail = async () => {
   // updateTracks = Track.updateMany({ deliveryDate: { $lt: curDate }, isDelivered: false }, { $set: { isDelivered: true } })
 
   // Updates tracks to be delivered
+  // TODO: Fix delivery time
   const curDate = new Date()
-  curDate.setUTCHours(23, 59, 59, 999)
+  curDate.setUTCHours(0, 0)
 
   let tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
 
