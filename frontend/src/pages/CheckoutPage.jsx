@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getUser } from '../features/auth/authSlice'
 import { makePurchase, getPurchase, reset as resetPurchase } from '../features/purchace/purchaseSlice'
 import { toast } from 'react-toastify'
-import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
+import SMLogo from '../images/Single-Maximizer-Package-Mockup-1024x616.png.webp'
 import styles from '../css/checkout.module.css'
 
 const ProductDisplay = () => {
@@ -36,18 +36,20 @@ const ProductDisplay = () => {
 
   return (
     <section id={styles.profile_content_right}>
-      <div id={styles.product}>
+      <div className={styles.div_item}>
         <img src={SMLogo} alt="Single Maximizer" id={styles.logo} />
       </div>
-      <form onSubmit={onSubmit}>
-        <div id={styles.description}>
-          <h1>Purchase New Single</h1>
-          <h5>$50.00</h5>
-        </div>
-        <button type="submit" id={styles.submit}>
-          Purchase
-        </button>
-      </form>
+      <div className={styles.div_item}>
+        <form id={styles.checkout_form} onSubmit={onSubmit}>
+          <div id={styles.description}>
+            <h1>Purchase New Single</h1>
+            <h5>{"The Single Maximizer is $50. When you click ‘Submit Single Maximizer’ you will be taken to a checkout page to complete payment."}</h5>
+          </div>
+          <button type="submit" id={styles.submit}>
+            Purchase
+          </button>
+        </form>
+      </div>
     </section>
   )
 }
@@ -70,7 +72,7 @@ function CheckoutPage() {
 
     dispatch(getUser()).unwrap()
       .then((data) => {
-        if(data.trackAllowance > 0) {
+        if (data.trackAllowance > 0) {
           navigate('/profile/newrelease')
         }
       })

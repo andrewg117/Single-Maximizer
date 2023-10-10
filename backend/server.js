@@ -17,7 +17,7 @@ const app = express()
 
 // Daily function
 schedule.scheduleJob({ minute: 30 }, function () {
-  sendScheduledEmail()
+  // sendScheduledEmail()
 })
 
 app.use('/api/webhook', require('./routes/webhookRoutes'))

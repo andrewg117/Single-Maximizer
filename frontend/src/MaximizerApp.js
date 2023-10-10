@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Home from './pages/Home'
 import AboutUs from './pages/AboutUs'
+import FAQ from './pages/FAQ'
 import EmailSignUp from './pages/EmailSignUp'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
@@ -34,6 +35,7 @@ function MaximizerApp() {
             {user === null ? <Route path='*' element={<Home />} /> : <Route path='*' element={<Profile />} />}
             <Route path='/home' element={<Home />} />
             <Route path='/home/aboutus' element={<AboutUs />} />
+            <Route path='/home/faq' element={<FAQ />} />
             <Route path='/home/signup/:token' element={<SignUp />} />
             <Route path='/home/emailsignup' element={<EmailSignUp />} />
             <Route path='/home/signin' element={<SignIn />} />

@@ -11,6 +11,7 @@
   justify-self: left;
   width: auto;
   height: 100%;
+  cursor: pointer;
 }
 
 #nav_links {

@@ -39,7 +39,7 @@ function NavBar() {
   const menuItems = [
     { name: 'HOME', path: "/home" },
     { name: 'WHO WE ARE', path: "/home/aboutus" },
-    // { name: 'FAQ', path: "/home" },
+    // { name: 'FAQ', path: "/home/faq" },
     // { name: 'PRICING', path: "/home" },
     { name: 'SIGN IN', path: "/home/signin" },
     { name: 'SIGN UP', path: "/home/emailsignup" },
@@ -54,7 +54,7 @@ function NavBar() {
       setActiveLink("/home/emailsignup")
     } else if (location.pathname.includes('/forgotpass') || location.pathname.includes('/resetpass')) {
       setActiveLink("/home/signin")
-    } 
+    }
   }, [location])
 
   return (
@@ -71,7 +71,9 @@ function NavBar() {
           toggleTopNav={toggleTopNav}
         /> : null}
       <nav id={styles.navbar}>
-        <img src={SMLogo} alt="Home" id={styles.logo} />
+        <Link to={"/home"} onClick={() => setActiveLink("/home")}>
+          <img src={SMLogo} alt="Home" id={styles.logo} />
+        </Link>
         <div id={styles.nav_links}>
           {menuItems.map(menu => (
             <Link
