@@ -205,7 +205,9 @@ const sendScheduledEmail = async () => {
   // updateTracks = Track.updateMany({ deliveryDate: { $lt: curDate }, isDelivered: false }, { $set: { isDelivered: true } })
 
   // Updates tracks to be delivered
-  // TODO: Fix delivery time
+  // COMPLETE: Fix delivery time
+  // Server time changed from UTC to EST
+  
   const curDate = new Date()
   curDate.setUTCHours(0, 0)
 
