@@ -16,7 +16,7 @@ connectDB()
 const app = express()
 
 // Daily function
-schedule.scheduleJob({ minute: 0 }, function () {
+schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
   sendScheduledEmail()
 })
 
@@ -49,11 +49,6 @@ app.use('/api/purchase', require('./routes/purchaseRoutes'))
 //   app.get('/', (req, res) => res.send('Set env to production'))
 // }
 
-// List routes
-// app.use(errorHandler)
-// require('./routes/userRoutes').stack.forEach((item) => {
-//   console.log(item.route.stack[0].method + ': ' + item.route.path)
-// })
 
 app.get('/', (req, res) => {
   res.json({ Connection: 'Success' })

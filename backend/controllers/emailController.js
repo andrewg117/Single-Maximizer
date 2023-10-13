@@ -200,16 +200,12 @@ const altEmail = async (singleDoc, subjectType) => {
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
 
-  // Reset isDelivered 
-  // updateTracks = await Track.updateMany({}, {$set: {isDelivered: false}})
-  // updateTracks = Track.updateMany({ deliveryDate: { $lt: curDate }, isDelivered: false }, { $set: { isDelivered: true } })
-
   // Updates tracks to be delivered
   // COMPLETE: Fix delivery time
   // Server time changed from UTC to EST
   
   const curDate = new Date()
-  curDate.setUTCHours(0, 0)
+  curDate.setUTCHours(23, 59, 59, 999)
 
   let tracks = await Track.find({ deliveryDate: { $lt: curDate }, isDelivered: false })
 
