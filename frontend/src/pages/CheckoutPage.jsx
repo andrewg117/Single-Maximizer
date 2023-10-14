@@ -94,7 +94,7 @@ function CheckoutPage() {
       // toast.clearWaitingQueue()
       dispatch(resetPurchase())
     }
-  }, [dispatch, navigate, user.trackAllowance])
+  }, [dispatch, navigate, user?.trackAllowance])
 
   return message ? (
     <Message message={message} />
