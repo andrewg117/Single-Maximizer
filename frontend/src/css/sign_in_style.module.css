@@ -3,8 +3,8 @@
   flex-direction: column;
   text-align: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: 90dvh;
   background-color: var(--main-cnt-color);
 }
 

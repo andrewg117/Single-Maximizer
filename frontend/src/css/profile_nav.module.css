@@ -76,12 +76,15 @@
 }
 
 #top_nav_container {
+  top: 0;
+  position: sticky;
   display: grid;
   grid-template-columns: 10% 80% 10%;
+  justify-content: center;
   align-items: center;
-  padding-left: 5%;
   background-color: var(--main-nv-color);
   color: var(--main-wht-color);
+  z-index: 10;
 }
 
 #fabars {
@@ -90,6 +93,7 @@
   border-radius: 2em;
   padding: 0.5em;
   cursor: pointer;
+  margin-left: 2em;
 }
 
 @media (min-width: 700px) {

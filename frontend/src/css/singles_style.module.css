@@ -1,7 +1,7 @@
 #content_right {
   display: grid;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   background-color: var(--main-wht-color);
   color: var(--main-cnt-color);
   overflow: auto;
@@ -86,6 +86,10 @@
 }
 
 @media (max-width: 700px) {
+  #content_right {
+    height: 90dvh;
+  }
+
   th {
     font-size: 0.8em;
   }

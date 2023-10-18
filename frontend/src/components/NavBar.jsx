@@ -5,6 +5,8 @@ import { FaBars } from "react-icons/fa";
 import SMLogo from "../images/smLogo.png";
 import styles from "../css/navbar.module.css";
 
+// TODO: Fix css for window resizing
+
 const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
   return (
     <div

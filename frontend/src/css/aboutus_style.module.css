@@ -2,8 +2,8 @@
   display: grid;
   justify-items: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: 90dvh;
   background-color: var(--main-cnt-color);
   overflow: auto;
 }
@@ -31,7 +31,6 @@
 
 @media (max-width: 700px) {
   #main_block {
-    /* display: block; */
     width: 90%;
   }
 
@@ -40,5 +39,10 @@
   }
 }
 
-@media (max-height: 700px) {
+@media (max-height: 800px) {
+  #main_block {
+    grid-template-rows: auto;
+    justify-items: center;
+    height: 100dvh;
+  }
 }
