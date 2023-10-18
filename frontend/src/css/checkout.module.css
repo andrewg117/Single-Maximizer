@@ -34,14 +34,10 @@
   background-color: var(--main-btn-color);
   color: white;
   text-align: center;
-  /* position: absolute; */
-  /* right: 20%;
-  bottom: 0; */
   padding: 1em 3em;
   font-size: 1.2em;
   border: none;
 }
-
 
 @media (max-width: 700px) {
   #logo {

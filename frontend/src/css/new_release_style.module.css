@@ -11,7 +11,6 @@
 #new_form {
   display: flex;
   justify-content: center;
-  /* width: 100%; */
 }
 
 label {
@@ -31,8 +30,8 @@ label {
   grid-template-columns: 100%;
 }
 
-
-.input_div, .full_input_div div {
+.input_div,
+.full_input_div div {
   display: grid;
   align-items: center;
   width: 100%;
@@ -47,12 +46,9 @@ label {
   text-align: left;
 }
 
-
-
 #top_div {
   display: grid;
   justify-content: center;
-  /* align-items: center; */
   grid-template-columns: 20% 80%;
   border-bottom: 2px solid #dfdfdf;
   margin-bottom: 1em;
@@ -82,10 +78,6 @@ label {
   max-height: 100%;
 }
 
-/* .edit_image {
-  align-self: right;
-  bottom: 0;
-} */
 
 #remove_image {
   cursor: pointer;
@@ -98,7 +90,7 @@ label {
 #press_upload {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: .2em;
+  gap: 0.2em;
   height: 200px;
   border: 2px dashed #dfdfdf;
   margin: 1em 0;
@@ -130,7 +122,7 @@ label {
   width: 100px;
   height: 100px;
   border: 1px solid #000;
-  font-size: .9em;
+  font-size: 0.9em;
   cursor: pointer;
 }
 
@@ -162,15 +154,13 @@ label {
 }
 
 .required:after {
-  content:" *";
+  content: " *";
   color: red;
 }
 
 #checkboxlist {
   display: flex;
   justify-content: space-evenly;
-  /* display: grid; */
-  /* grid-template-columns: repeat(auto-fit, minmax(1em, 1fr)); */
   align-items: center;
   text-align: start;
   margin: 1em 0;
@@ -212,11 +202,10 @@ label {
   color: var(--main-wht-color);
   text-align: center;
   text-decoration: none;
-  padding: .5em 1.5em;
+  padding: 0.5em 1.5em;
   font-size: 1.5em;
   border: none;
 }
-
 
 @media (max-width: 700px) {
   #content_right {

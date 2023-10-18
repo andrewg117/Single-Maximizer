@@ -1,60 +1,53 @@
-import axios from "axios"
+import axios from "axios";
 
-const API_URL = '/api/tracks/'
+const API_URL = "/api/tracks/";
 
 const createTrack = async (trackData) => {
+  let response;
 
-  let response
+  response = await axios.post(API_URL, trackData);
 
-  response = await axios.post(API_URL, trackData)
-
-  return response.data
-}
+  return response.data;
+};
 
 const getTrack = async () => {
-  
-  let response
+  let response;
 
-  response = await axios.get(API_URL)
+  response = await axios.get(API_URL);
 
-  return response.data
-}
+  return response.data;
+};
 
 const getSingle = async (trackId) => {
+  let response;
 
-  let response
+  response = await axios.get(API_URL + trackId);
 
-  response = await axios.get(API_URL + trackId)
-
-  return response.data
-}
+  return response.data;
+};
 
 const updateSingle = async (trackID, trackData) => {
+  let response;
 
-  let response
+  response = await axios.put(API_URL + trackID, trackData);
 
-  response = await axios.put(API_URL + trackID, trackData)
-
-
-  return response.data
-}
+  return response.data;
+};
 
 const deleteTrack = async (trackId) => {
+  let response;
 
-  let response
+  response = await axios.delete(API_URL + trackId);
 
-  response = await axios.delete(API_URL + trackId)
-
-  return response.data
-}
+  return response.data;
+};
 
 const trackService = {
   createTrack,
   getTrack,
   getSingle,
   updateSingle,
-  deleteTrack
-}
+  deleteTrack,
+};
 
-
-export default trackService
+export default trackService;

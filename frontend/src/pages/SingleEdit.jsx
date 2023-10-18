@@ -1,34 +1,60 @@
-import { useEffect, useState, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { getSingle, updateSingle, deleteTrack, reset as resetSingle } from '../features/tracks/trackSlice'
-import { postPress, getImage, getPress, updateImage, deleteImage, deletePress, reset as resetImage } from '../features/image/imageSlice'
-import { getAudio, deleteAudio, reset as resetAudio, updateAudio } from '../features/audio/audioSlice'
-import ImageUpload from '../components/ImageUpload'
-import AudioUpload from '../components/AudioUpload'
-import PressEdit from '../components/PressEdit'
-import ConfirmAlert from '../components/ConfirmAlert'
-import GenreCheckBox from '../components/GenreCheckBox'
-import Spinner from '../components/Spinner'
-import { toast } from 'react-toastify'
-import { Buffer } from 'buffer'
-import styles from '../css/new_release_style.module.css'
+import { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getSingle,
+  updateSingle,
+  deleteTrack,
+  reset as resetSingle,
+} from "../features/tracks/trackSlice";
+import {
+  postPress,
+  getImage,
+  getPress,
+  updateImage,
+  deleteImage,
+  deletePress,
+  reset as resetImage,
+} from "../features/image/imageSlice";
+import {
+  getAudio,
+  deleteAudio,
+  reset as resetAudio,
+  updateAudio,
+} from "../features/audio/audioSlice";
+import ImageUpload from "../components/ImageUpload";
+import AudioUpload from "../components/AudioUpload";
+import PressEdit from "../components/PressEdit";
+import ConfirmAlert from "../components/ConfirmAlert";
+import GenreCheckBox from "../components/GenreCheckBox";
+import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
+import { Buffer } from "buffer";
+import styles from "../css/new_release_style.module.css";
 
-// TODO: Fix issues with loading and updating data
+// TODO: Creat view Single page for delivered
 
 function SingleEdit() {
+  const { user } = useSelector((state) => state.auth);
+  const { single, isLoading, isError, message } = useSelector(
+    (state) => state.tracks
+  );
+  const {
+    image,
+    isLoading: imageLoading,
+    press,
+    isPressSuccess,
+  } = useSelector((state) => state.image);
+  const { audio, isLoading: audioLoading } = useSelector(
+    (state) => state.audio
+  );
 
-  const { user } = useSelector((state) => state.auth)
-  const { single, isLoading, isError, message } = useSelector((state) => state.tracks)
-  const { image, isLoading: imageLoading, press, isPressSuccess } = useSelector((state) => state.image)
-  const { audio, isLoading: audioLoading } = useSelector((state) => state.audio)
+  const [showPopup, setShowPopup] = useState(false);
+  const [showDelPopup, setShowDelPopup] = useState(false);
 
-  const [showPopup, setShowPopup] = useState(false)
-  const [showDelPopup, setShowDelPopup] = useState(false)
+  const { id } = useParams();
 
-  const { id } = useParams()
-
-  const formRefData = useRef({})
+  const formRefData = useRef({});
 
   const [formState, setFormState] = useState({
     genres: [],
@@ -37,186 +63,204 @@ function SingleEdit() {
     trackPress: [],
     newPressList: [],
     deletePressList: [],
-  })
+  });
 
-  const { genres, trackCover, trackAudio, newPressList, deletePressList } = formState
+  const { genres, trackCover, trackAudio, newPressList, deletePressList } =
+    formState;
 
-
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const convertDate = (date) => {
-    const d = new Date(date)
+    const d = new Date(date);
 
-    const year = d.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })
-    const month = d.toLocaleString('default', { month: '2-digit', timeZone: 'UTC' })
-    const day = d.toLocaleString('default', { day: '2-digit', timeZone: 'UTC' })
+    const year = d.toLocaleString("default", {
+      year: "numeric",
+      timeZone: "UTC",
+    });
+    const month = d.toLocaleString("default", {
+      month: "2-digit",
+      timeZone: "UTC",
+    });
+    const day = d.toLocaleString("default", {
+      day: "2-digit",
+      timeZone: "UTC",
+    });
 
-    let returnDate = year + '-' + month + '-' + day
+    let returnDate = year + "-" + month + "-" + day;
 
-    return returnDate
-  }
+    return returnDate;
+  };
 
-  const today = new Date()
-  const graceDate = convertDate(today.setDate(today.getDate() + 1))
-
+  const today = new Date();
+  const graceDate = convertDate(today.setDate(today.getDate() + 1));
 
   const onSubmit = () => {
-
-    if ( genres.length && user) {
-
-      dispatch(updateSingle({
-        trackID: id,
-        trackTitle: formRefData.current['trackTitle'].value,
-        artist: formRefData.current['artist'].value,
-        deliveryDate: formRefData.current['deliveryDate'].value,
-        spotify: formRefData.current['spotify'].value,
-        features: formRefData.current['features'].value,
-        apple: formRefData.current['apple'].value,
-        producer: formRefData.current['producer'].value,
-        scloud: formRefData.current['scloud'].value,
-        album: formRefData.current['album'].value,
-        trackLabel: formRefData.current['trackLabel'].value,
-        ytube: formRefData.current['ytube'].value,
-        albumDate: formRefData.current['albumDate'].value,
-        genres,
-        trackSum: formRefData.current['trackSum'].value,
-        pressSum: formRefData.current['pressSum'].value
-      })).unwrap()
+    if (genres.length && user) {
+      dispatch(
+        updateSingle({
+          trackID: id,
+          trackTitle: formRefData.current["trackTitle"].value,
+          artist: formRefData.current["artist"].value,
+          deliveryDate: formRefData.current["deliveryDate"].value,
+          spotify: formRefData.current["spotify"].value,
+          features: formRefData.current["features"].value,
+          apple: formRefData.current["apple"].value,
+          producer: formRefData.current["producer"].value,
+          scloud: formRefData.current["scloud"].value,
+          album: formRefData.current["album"].value,
+          trackLabel: formRefData.current["trackLabel"].value,
+          ytube: formRefData.current["ytube"].value,
+          albumDate: formRefData.current["albumDate"].value,
+          genres,
+          trackSum: formRefData.current["trackSum"].value,
+          pressSum: formRefData.current["pressSum"].value,
+        })
+      )
+        .unwrap()
         .then(() => {
           if (trackCover instanceof FormData) {
-            let imageData = new FormData()
-            imageData.append("Image", trackCover.get('Image'))
-            imageData.append("trackID", id)
-            imageData.append("section", 'cover')
-            dispatch(updateImage(imageData))
+            let imageData = new FormData();
+            imageData.append("Image", trackCover.get("Image"));
+            imageData.append("trackID", id);
+            imageData.append("section", "cover");
+            dispatch(updateImage(imageData));
           }
 
           if (trackAudio instanceof FormData) {
-            let audioData = new FormData()
-            audioData.append("trackAudio", trackAudio.get('trackAudio'))
-            audioData.append("trackID", id)
-            dispatch(updateAudio(audioData))
+            let audioData = new FormData();
+            audioData.append("trackAudio", trackAudio.get("trackAudio"));
+            audioData.append("trackID", id);
+            dispatch(updateAudio(audioData));
           }
 
           if (newPressList.length > 0) {
-            let pressData = new FormData()
+            let pressData = new FormData();
             newPressList.forEach((item) => {
-              pressData.append("Press", item)
-            })
-            pressData.append("trackID", id)
-            pressData.append("section", 'press')
-            dispatch(postPress(pressData))
+              pressData.append("Press", item);
+            });
+            pressData.append("trackID", id);
+            pressData.append("section", "press");
+            dispatch(postPress(pressData));
           }
           if (deletePressList.length > 0) {
             deletePressList.forEach((item) => {
-              dispatch(deletePress(item._id))
-            })
+              dispatch(deletePress(item._id));
+            });
           }
 
-          toast.success("Update Successful")
-          navigate('/profile/singles')
-          setShowPopup(false)
-        })
-
+          toast.success("Update Successful");
+          navigate("/profile/singles");
+          setShowPopup(false);
+        });
     } else {
-      setShowPopup(false)
-      toast.error("Update Fields")
+      setShowPopup(false);
+      toast.error("Update Fields");
     }
-  }
+  };
 
   const closeConfirm = () => {
-    setShowPopup(false)
-    setShowDelPopup(false)
-  }
+    setShowPopup(false);
+    setShowDelPopup(false);
+  };
 
   const deleteSingle = () => {
-    dispatch(deleteAudio(id)).unwrap()
+    dispatch(deleteAudio(id))
+      .unwrap()
       .then(() => {
-        dispatch(deleteImage(id)).unwrap()
+        dispatch(deleteImage(id))
+          .unwrap()
           .then(() => {
-            dispatch(deleteTrack(id)).unwrap()
+            dispatch(deleteTrack(id))
+              .unwrap()
               .then(() => {
-                toast.success("Single Deleted")
-                navigate('/profile/singles')
-                setShowDelPopup(false)
-              })
-          })
-      })
-  }
+                toast.success("Single Deleted");
+                navigate("/profile/singles");
+                setShowDelPopup(false);
+              });
+          });
+      });
+  };
 
   const goBackToSingles = (e) => {
-    e.preventDefault()
-    navigate('/profile/singles')
-  }
+    e.preventDefault();
+    navigate("/profile/singles");
+  };
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message })
+      toast.error(message, { id: message });
     }
 
-    return (() => {
-      toast.dismiss(message)
-    })
-
-  }, [isError, message])
+    return () => {
+      toast.dismiss(message);
+    };
+  }, [isError, message]);
 
   useEffect(() => {
-
-    dispatch(getSingle(id)).unwrap()
+    dispatch(getSingle(id))
+      .unwrap()
       .then((data) => {
         setFormState((prevState) => ({
           ...prevState,
-          genres: data.genres
-        }))
+          genres: data.genres,
+        }));
       })
-      .catch((error) => console.error(error))
+      .catch((error) => console.error(error));
 
-    dispatch(getImage({
-      'trackID': id,
-      'section': 'cover'
-    })).unwrap()
-      .catch((error) => console.error(error))
+    dispatch(
+      getImage({
+        trackID: id,
+        section: "cover",
+      })
+    )
+      .unwrap()
+      .catch((error) => console.error(error));
 
-    dispatch(getPress({
-      'trackID': id,
-    })).unwrap()
-      .catch((error) => console.error(error))
+    dispatch(
+      getPress({
+        trackID: id,
+      })
+    )
+      .unwrap()
+      .catch((error) => console.error(error));
 
-    dispatch(getAudio(id)).unwrap()
-      .catch((error) => console.error(error))
+    dispatch(getAudio(id))
+      .unwrap()
+      .catch((error) => console.error(error));
 
-
-    return (() => {
-      dispatch(resetSingle())
-      dispatch(resetImage())
-      dispatch(resetAudio())
-      setShowPopup(false)
-    })
-  }, [id, dispatch])
+    return () => {
+      dispatch(resetSingle());
+      dispatch(resetImage());
+      dispatch(resetAudio());
+      setShowPopup(false);
+    };
+  }, [id, dispatch]);
 
   if (isLoading || imageLoading || audioLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
     <>
       <div id={styles.content_right}>
-        <form ref={formRefData} id={styles.new_form} onSubmit={(e) => {
-          setShowPopup(() => {
-            e.preventDefault()
-            return true
-          })
-        }}>
-          {showPopup &&
-            (<ConfirmAlert
+        <form
+          ref={formRefData}
+          id={styles.new_form}
+          onSubmit={(e) => {
+            setShowPopup(() => {
+              e.preventDefault();
+              return true;
+            });
+          }}
+        >
+          {showPopup && (
+            <ConfirmAlert
               message="Do you want to save these changes?"
               onConfirm={onSubmit}
               onCancel={closeConfirm}
-            />)
-          }
+            />
+          )}
 
           <div id={styles.new_form_div}>
             <div id={styles.top_div}>
@@ -224,15 +268,24 @@ function SingleEdit() {
                 <label className={styles.required}>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
-                  file={image ? Buffer.from(image.file.buffer, 'ascii') : null}
-                  fieldname={'trackCover'}
-                  altText={'Upload Track Cover'}
+                  file={image ? Buffer.from(image.file.buffer, "ascii") : null}
+                  fieldname={"trackCover"}
+                  altText={"Upload Track Cover"}
                 />
-                <p>{trackCover instanceof FormData ? `Size Limit: ${trackCover.get('size')} / 10 MB` : null}</p>
+                <p>
+                  {trackCover instanceof FormData
+                    ? `Size Limit: ${trackCover.get("size")} / 10 MB`
+                    : null}
+                </p>
               </div>
               <div className={styles.top_input_div}>
                 <div>
-                  <label className={styles.required} htmlFor="artist">ARTIST NAME</label>
+                  <label
+                    className={styles.required}
+                    htmlFor="artist"
+                  >
+                    ARTIST NAME
+                  </label>
                   <input
                     required
                     className={styles.new_input}
@@ -244,7 +297,12 @@ function SingleEdit() {
                   />
                 </div>
                 <div>
-                  <label className={styles.required} htmlFor="trackTitle">TRACK NAME</label>
+                  <label
+                    className={styles.required}
+                    htmlFor="trackTitle"
+                  >
+                    TRACK NAME
+                  </label>
                   <input
                     required
                     className={styles.new_input}
@@ -262,25 +320,35 @@ function SingleEdit() {
               <AudioUpload
                 changeFile={setFormState}
                 file={audio ? audio.file : null}
-                fieldname={'trackAudio'}
+                fieldname={"trackAudio"}
               />
-              <p>{trackAudio instanceof FormData ? `Size Limit: ${trackAudio.get('size')} / 21 MB` : null}</p>
+              <p>
+                {trackAudio instanceof FormData
+                  ? `Size Limit: ${trackAudio.get("size")} / 21 MB`
+                  : null}
+              </p>
             </div>
             <div className={styles.file_input_div}>
               <label className={styles.required}>PRESS PHOTOS</label>
-              {isPressSuccess ?
+              {isPressSuccess ? (
                 <PressEdit
                   changeFile={setFormState}
                   trackPress={press ? press : []}
                   newPressList={newPressList}
                   deletePressList={deletePressList}
                 />
-                :
-                <></>}
+              ) : (
+                <></>
+              )}
             </div>
             <div className={styles.input_div}>
               <div>
-                <label className={styles.required} htmlFor="deliveryDate">DELIVERY DATE</label>
+                <label
+                  className={styles.required}
+                  htmlFor="deliveryDate"
+                >
+                  DELIVERY DATE
+                </label>
 
                 <input
                   required
@@ -289,7 +357,8 @@ function SingleEdit() {
                   id="deliveryDate"
                   name="deliveryDate"
                   min={graceDate}
-                  defaultValue={convertDate(single?.deliveryDate)} />
+                  defaultValue={convertDate(single?.deliveryDate)}
+                />
               </div>
               <div>
                 <label htmlFor="spotify">SPOTIFY TRACK URI</label>
@@ -299,7 +368,8 @@ function SingleEdit() {
                   id="spotify"
                   name="spotify"
                   placeholder="Enter the URI of your track on Spotify"
-                  defaultValue={single?.spotify} />
+                  defaultValue={single?.spotify}
+                />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -311,7 +381,8 @@ function SingleEdit() {
                   id="features"
                   name="features"
                   placeholder="Enter the names of features"
-                  defaultValue={single?.features} />
+                  defaultValue={single?.features}
+                />
               </div>
               <div>
                 <label htmlFor="applelink">APPLE MUSIC TRACK LINK</label>
@@ -321,12 +392,18 @@ function SingleEdit() {
                   id="apple"
                   name="apple"
                   placeholder="Enter your Apple Music track link"
-                  defaultValue={single?.apple} />
+                  defaultValue={single?.apple}
+                />
               </div>
             </div>
             <div className={styles.input_div}>
               <div>
-                <label className={styles.required} htmlFor="producer">PRODUCER</label>
+                <label
+                  className={styles.required}
+                  htmlFor="producer"
+                >
+                  PRODUCER
+                </label>
                 <input
                   required
                   className={styles.new_input}
@@ -334,7 +411,8 @@ function SingleEdit() {
                   id="producer"
                   name="producer"
                   placeholder="Who produced the track?"
-                  defaultValue={single?.producer} />
+                  defaultValue={single?.producer}
+                />
               </div>
               <div>
                 <label htmlFor="scloudlink">SOUNDCLOUD LINK</label>
@@ -344,7 +422,8 @@ function SingleEdit() {
                   id="scloud"
                   name="scloud"
                   placeholder="Enter the track's Soundcloud link"
-                  defaultValue={single?.scloud} />
+                  defaultValue={single?.scloud}
+                />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -356,7 +435,8 @@ function SingleEdit() {
                   id="album"
                   name="album"
                   placeholder="Is this song part of an album?"
-                  defaultValue={single?.album} />
+                  defaultValue={single?.album}
+                />
               </div>
               <div>
                 <label htmlFor="ytubelink">YOUTUBE LINK</label>
@@ -366,7 +446,8 @@ function SingleEdit() {
                   id="ytube"
                   name="ytube"
                   placeholder="Enter the Youtube video link"
-                  defaultValue={single?.ytube} />
+                  defaultValue={single?.ytube}
+                />
               </div>
             </div>
             <div className={styles.input_div}>
@@ -377,7 +458,8 @@ function SingleEdit() {
                   type="date"
                   id="albumDate"
                   name="albumDate"
-                  defaultValue={convertDate(single?.albumDate)} />
+                  defaultValue={convertDate(single?.albumDate)}
+                />
               </div>
               <div>
                 <label htmlFor="trackLabel">LABEL</label>
@@ -387,27 +469,43 @@ function SingleEdit() {
                   id="trackLabel"
                   name="trackLabel"
                   placeholder="What is the Label for the track?"
-                  defaultValue={single?.trackLabel} />
+                  defaultValue={single?.trackLabel}
+                />
               </div>
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label className={styles.required} htmlFor="genres">GENRES</label>
+                <label
+                  className={styles.required}
+                  htmlFor="genres"
+                >
+                  GENRES
+                </label>
                 <section id={styles.checkboxlist}>
-                  <GenreCheckBox changeList={setFormState} list={genres} />
+                  <GenreCheckBox
+                    changeList={setFormState}
+                    list={genres}
+                  />
                 </section>
               </div>
             </div>
             <div className={styles.full_input_div}>
               <div>
-                <label className={styles.required} htmlFor="tracksum">TRACK SUMMARY</label>
+                <label
+                  className={styles.required}
+                  htmlFor="tracksum"
+                >
+                  TRACK SUMMARY
+                </label>
                 <textarea
                   required
                   name="trackSum"
                   id="trackSum"
-                  cols="30" rows="10"
+                  cols="30"
+                  rows="10"
                   placeholder="Enter your track details here"
-                  defaultValue={single?.trackSum}></textarea>
+                  defaultValue={single?.trackSum}
+                ></textarea>
               </div>
             </div>
             <div className={styles.full_input_div}>
@@ -416,35 +514,50 @@ function SingleEdit() {
                 <textarea
                   name="pressSum"
                   id="pressSum"
-                  cols="30" rows="10"
+                  cols="30"
+                  rows="10"
                   placeholder="Enter recent accomplishments"
-                  defaultValue={single?.pressSum}></textarea>
+                  defaultValue={single?.pressSum}
+                ></textarea>
               </div>
             </div>
             <div id={styles.submit_div}>
-              <button type='submit' className={styles.profile_btn}>SAVE</button>
-              <button className={styles.profile_btn} onClick={(e) => {
-                setShowDelPopup(() => {
-                  e.preventDefault()
-                  return true
-                })
-              }}>DELETE</button>
-              {showDelPopup &&
-                (<ConfirmAlert
+              <button
+                type="submit"
+                className={styles.profile_btn}
+              >
+                SAVE
+              </button>
+              <button
+                className={styles.profile_btn}
+                onClick={(e) => {
+                  setShowDelPopup(() => {
+                    e.preventDefault();
+                    return true;
+                  });
+                }}
+              >
+                DELETE
+              </button>
+              {showDelPopup && (
+                <ConfirmAlert
                   message="Do you want to delete this Single?"
                   onConfirm={deleteSingle}
                   onCancel={closeConfirm}
-                />)
-              }
-              <button className={styles.profile_btn} onClick={goBackToSingles}>CANCEL</button>
+                />
+              )}
+              <button
+                className={styles.profile_btn}
+                onClick={goBackToSingles}
+              >
+                CANCEL
+              </button>
             </div>
-
           </div>
-        </form >
-
+        </form>
       </div>
     </>
-  )
+  );
 }
 
-export default SingleEdit
+export default SingleEdit;

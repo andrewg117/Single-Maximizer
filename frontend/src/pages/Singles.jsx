@@ -1,52 +1,56 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { getUser, reset as resetUser } from '../features/auth/authSlice'
-import { getTracks, reset as resetTracks } from '../features/tracks/trackSlice'
-import { toast } from 'react-toastify'
-import { FaEdit } from 'react-icons/fa'
-import Spinner from '../components/Spinner'
-import styles from '../css/singles_style.module.css'
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { getUser, reset as resetUser } from "../features/auth/authSlice";
+import { getTracks, reset as resetTracks } from "../features/tracks/trackSlice";
+import { toast } from "react-toastify";
+import { FaEdit } from "react-icons/fa";
+import Spinner from "../components/Spinner";
+import styles from "../css/singles_style.module.css";
 
 function Singles() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-
-  const { user, isLoading } = useSelector((state) => state.auth)
-  const { tracks,  isLoading: tracksLoading, isError, message } = useSelector((state) => state.tracks)
+  const { user, isLoading } = useSelector((state) => state.auth);
+  const {
+    tracks,
+    isLoading: tracksLoading,
+    isError,
+    message,
+  } = useSelector((state) => state.tracks);
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message })
+      toast.error(message, { id: message });
     }
-
-    return (() => {
-      toast.dismiss(message)
-    })
-
-  }, [isError, message])
-
-  useEffect(() => {
-    dispatch(getUser())
-
-    dispatch(getTracks()).unwrap()
-      .catch((error) => console.error(error))
 
     return () => {
-      dispatch(resetUser())
-      dispatch(resetTracks())
-    }
-  }, [dispatch])
+      toast.dismiss(message);
+    };
+  }, [isError, message]);
+
+  useEffect(() => {
+    dispatch(getUser());
+
+    dispatch(getTracks())
+      .unwrap()
+      .catch((error) => console.error(error));
+
+    return () => {
+      dispatch(resetUser());
+      dispatch(resetTracks());
+    };
+  }, [dispatch]);
 
   const editTrack = (e, id) => {
-    e.preventDefault()
-    
-    navigate(`/profile/singleedit/${id}`)
-  }
+    e.preventDefault();
+
+    navigate(`/profile/singleedit/${id}`);
+  };
 
   if (isLoading || tracksLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
@@ -69,27 +73,60 @@ function Singles() {
                   <tr key={track._id}>
                     <td className={styles.tblhide}>{track.artist}</td>
                     <td>{track.trackTitle}</td>
-                    <td className={styles.tblhide}>{new Date(track.deliveryDate).toLocaleDateString('en-US', { timeZone: 'UTC' })}</td>
-                    <td>
-                      {track.deliveryDate ? <button className={track.isDelivered ? styles.delivered : styles.scheduled}>{track.isDelivered ? 'Delivered' : 'Scheduled'}</button> : <button className={styles.pending}>{"Pending"}</button>}
-
+                    <td className={styles.tblhide}>
+                      {new Date(track.deliveryDate).toLocaleDateString(
+                        "en-US",
+                        { timeZone: "UTC" }
+                      )}
                     </td>
                     <td>
-                      {!track.isDelivered ? <FaEdit onClick={(e) => editTrack(e, track._id)} className={styles.edit_track} /> : <></>}
+                      {track.deliveryDate ? (
+                        <button
+                          className={
+                            track.isDelivered
+                              ? styles.delivered
+                              : styles.scheduled
+                          }
+                        >
+                          {track.isDelivered ? "Delivered" : "Scheduled"}
+                        </button>
+                      ) : (
+                        <button className={styles.pending}>{"Pending"}</button>
+                      )}
+                    </td>
+                    <td>
+                      {!track.isDelivered ? (
+                        <FaEdit
+                          onClick={(e) => editTrack(e, track._id)}
+                          className={styles.edit_track}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
-                <tr><td>No Tracks</td></tr>
+                <tr>
+                  <td>No Tracks</td>
+                </tr>
               )}
             </tbody>
           </table>
-          {user && user.trackAllowance >= 1 ? <Link id={styles.new_single} to={"/profile/newrelease"}>Create New Single</Link> : <></>}
+          {user && user.trackAllowance >= 1 ? (
+            <Link
+              id={styles.new_single}
+              to={"/profile/newrelease"}
+            >
+              Create New Single
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
-
       </div>
     </>
-  )
+  );
 }
 
-export default Singles
+export default Singles;

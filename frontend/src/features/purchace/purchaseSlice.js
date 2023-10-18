@@ -1,69 +1,85 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import purchaseService from "./purchaseService"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import purchaseService from "./purchaseService";
 
 const initialState = {
   purchase: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: '',
-}
+  message: "",
+};
 
-export const makePurchase = createAsyncThunk('purchase/post', async (_, thunkAPI) => {
-  try {
-    return await purchaseService.makePurchase()
-  } catch (error) {
-    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+export const makePurchase = createAsyncThunk(
+  "purchase/post",
+  async (_, thunkAPI) => {
+    try {
+      return await purchaseService.makePurchase();
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
 
-    return thunkAPI.rejectWithValue(message)
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-})
+);
 
-export const getPurchase = createAsyncThunk('purchase/get', async (_, thunkAPI) => {
-  try {
-    return await purchaseService.getPurchase()
-  } catch (error) {
-    const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+export const getPurchase = createAsyncThunk(
+  "purchase/get",
+  async (_, thunkAPI) => {
+    try {
+      return await purchaseService.getPurchase();
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
 
-    return thunkAPI.rejectWithValue(message)
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-})
+);
 
 export const purchaseSlice = createSlice({
-  name: 'purchase',
+  name: "purchase",
   initialState,
   reducers: {
-    reset: (state) => initialState
+    reset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(makePurchase.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
       .addCase(makePurchase.fulfilled, (state) => {
-        state.isLoading = false
-        state.isSuccess = true
+        state.isLoading = false;
+        state.isSuccess = true;
       })
       .addCase(makePurchase.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       })
       .addCase(getPurchase.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
       .addCase(getPurchase.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
-        state.purchase = action.payload
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.purchase = action.payload;
       })
       .addCase(getPurchase.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
-      })
-  }
-})
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
+  },
+});
 
-export const { reset } = purchaseSlice.actions
-export default purchaseSlice.reducer
+export const { reset } = purchaseSlice.actions;
+export default purchaseSlice.reducer;

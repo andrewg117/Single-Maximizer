@@ -1,94 +1,105 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { emailData, register, reset } from '../features/auth/authSlice'
-import Spinner from '../components/Spinner'
-import SMLogo from '../images/single-maximizer-logo-white-text-1024x717.png.webp'
-import signupImage from '../images/signupImage.png'
-import styles from '../css/sign_in_style.module.css'
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { emailData, register, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
+import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
+import signupImage from "../images/signupImage.png";
+import styles from "../css/sign_in_style.module.css";
 
 function SignUp() {
   const [formData, setFormData] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    password: '',
-    password2: '',
-  })
+    fname: "",
+    lname: "",
+    username: "",
+    email: "",
+    password: "",
+    password2: "",
+  });
 
-  const { fname, lname, username, email, password, password2 } = formData
+  const { fname, lname, username, email, password, password2 } = formData;
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isLoading, isError, message } = useSelector(
-    (state) => state.auth
-  )
+  const { isLoading, isError, message } = useSelector((state) => state.auth);
 
-  const { token } = useParams()
+  const { token } = useParams();
 
   useEffect(() => {
-    dispatch(emailData(token)).unwrap()
+    dispatch(emailData(token))
+      .unwrap()
       .then((data) => {
         setFormData((prevState) => ({
           ...prevState,
-          email: data.id
-        }))
+          email: data.id,
+        }));
       })
       .catch((error) => {
-        toast.error('Login Expired', { id: error })
-        toast.clearWaitingQueue()
-        navigate('/home/emailsignup')
-      })
-
+        toast.error("Login Expired", { id: error });
+        toast.clearWaitingQueue();
+        navigate("/home/emailsignup");
+      });
 
     return () => {
-      dispatch(reset())
-    }
-  }, [isError, message, token, dispatch, navigate])
+      dispatch(reset());
+    };
+  }, [isError, message, token, dispatch, navigate]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (password !== password2) {
-      toast.error('Passwords do not match')
+      toast.error("Passwords do not match");
     } else {
       const userData = {
-        fname, lname, username, email, password
-      }
+        fname,
+        lname,
+        username,
+        email,
+        password,
+      };
 
-      dispatch(register(userData)).unwrap()
+      dispatch(register(userData))
+        .unwrap()
         .then(() => {
-          navigate('/profile')
+          navigate("/profile");
         })
-        .catch((error) => toast.error(error))
+        .catch((error) => toast.error(error));
     }
-  }
+  };
 
   if (isLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div id={styles.block_left} style={{ backgroundImage: `url(${signupImage})` }}>
-          </div>
+          <div
+            id={styles.block_left}
+            style={{ backgroundImage: `url(${signupImage})` }}
+          ></div>
 
           <div id={styles.block_right}>
-            <img src={SMLogo} alt="Home" id={styles.logo} />
-            {/* <h1>Sign In</h1> */}
-            <form id={styles.signin_form} onSubmit={onSubmit}>
+            <img
+              src={SMLogo}
+              alt="Home"
+              id={styles.logo}
+            />
+            <form
+              id={styles.signin_form}
+              onSubmit={onSubmit}
+            >
               <div className={styles.signin_form_div}>
                 <div id={styles.f_lname_div}>
                   <div>
@@ -99,7 +110,8 @@ function SignUp() {
                       id="fname"
                       name="fname"
                       value={fname}
-                      onChange={onChange} />
+                      onChange={onChange}
+                    />
                   </div>
                   <div>
                     <label htmlFor="lname">LAST NAME</label>
@@ -109,43 +121,52 @@ function SignUp() {
                       id="lname"
                       name="lname"
                       value={lname}
-                      onChange={onChange} />
+                      onChange={onChange}
+                    />
                   </div>
                 </div>
                 <label htmlFor="username">USERNAME</label>
                 <input
                   type="text"
                   className={styles.signin_input}
-                  id='username'
-                  name='username'
+                  id="username"
+                  name="username"
                   value={username}
-                  onChange={onChange} />
+                  onChange={onChange}
+                />
                 <label htmlFor="email">EMAIL</label>
                 <input
                   type="email"
                   className={styles.signin_input}
-                  id='email'
-                  name='email'
+                  id="email"
+                  name="email"
                   defaultValue={email}
-                  onChange={onChange} />
+                  onChange={onChange}
+                />
                 <label htmlFor="password">PASSWORD</label>
                 <input
                   type="password"
                   className={styles.signin_input}
-                  id='password'
-                  name='password'
+                  id="password"
+                  name="password"
                   value={password}
-                  onChange={onChange} />
+                  onChange={onChange}
+                />
                 <label htmlFor="password2">CONFIRM PASSWORD</label>
                 <input
                   type="password"
                   className={styles.signin_input}
-                  id='password2'
-                  name='password2'
+                  id="password2"
+                  name="password2"
                   value={password2}
-                  onChange={onChange} />
+                  onChange={onChange}
+                />
                 <div className={styles.submit_div}>
-                  <input type="submit" id={styles.signin_submit} value="SUBMIT" />
+                  <input
+                    type="submit"
+                    id={styles.signin_submit}
+                    value="SUBMIT"
+                  />
                 </div>
               </div>
             </form>
@@ -153,7 +174,7 @@ function SignUp() {
         </section>
       </section>
     </>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;

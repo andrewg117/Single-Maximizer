@@ -1,28 +1,26 @@
-import { useEffect } from 'react'
-import { useNavigate, Outlet } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { logout, getTokenResult } from '../features/auth/authSlice'
-import { toast } from 'react-toastify'
+import { useEffect } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, getTokenResult } from "../features/auth/authSlice";
+import { toast } from "react-toastify";
 
 const TokenCheck = ({ children }) => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { user } = useSelector(
-    (state) => state.auth
-  )
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getTokenResult())
+    dispatch(getTokenResult());
     if (!user) {
-      dispatch(logout())
-      toast.error("Login Expired")
-      navigate('/home/signin')
+      dispatch(logout());
+      toast.error("Login Expired");
+      navigate("/home/signin");
     }
     // toast.clearWaitingQueue()
-  }, [user, navigate, dispatch])
+  }, [user, navigate, dispatch]);
 
   return children ?? <Outlet />;
-}
+};
 
-export default TokenCheck
+export default TokenCheck;

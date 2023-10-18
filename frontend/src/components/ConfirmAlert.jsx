@@ -1,22 +1,22 @@
-import { useState } from 'react'
-import styles from '../css/confirm_popup.module.css'
+import { useState } from "react";
+import styles from "../css/confirm_popup.module.css";
 
 const ConfirmAlert = ({ message, onConfirm, onCancel }) => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleConfirm = () => {
-    setIsOpen(false)
+    setIsOpen(false);
     if (onConfirm) {
-      onConfirm()
+      onConfirm();
     }
-  }
+  };
 
   const handleCancel = () => {
-    setIsOpen(false)
+    setIsOpen(false);
     if (onCancel) {
-      onCancel()
+      onCancel();
     }
-  }
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ const ConfirmAlert = ({ message, onConfirm, onCancel }) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default ConfirmAlert
+export default ConfirmAlert;

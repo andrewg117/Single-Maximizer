@@ -1,42 +1,42 @@
-import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { sendEmail } from '../features/email/emailSlice';
-import Spinner from '../components/Spinner'
-import { toast } from 'react-toastify'
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { sendEmail } from "../features/email/emailSlice";
+import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
 
 function Email() {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth)
-  const { isLoading, isError, message } = useSelector((state) => state.email)
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, isError, message } = useSelector((state) => state.email);
 
-  const [recipient, setRecipient] = useState('')
-  const [subject, setSubject] = useState('')
-  const [ emailMessage, setMessage] = useState('')
+  const [recipient, setRecipient] = useState("");
+  const [subject, setSubject] = useState("");
+  const [emailMessage, setMessage] = useState("");
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message);
     }
 
     if (!user) {
-      navigate('/home')
+      navigate("/home");
     }
-  }, [user, navigate, isError, message])
+  }, [user, navigate, isError, message]);
 
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    dispatch(sendEmail({ recipient, subject, emailMessage }))
-    setRecipient('')
-    setSubject('')
-    setMessage('')
-  }
+    dispatch(sendEmail({ recipient, subject, emailMessage }));
+    setRecipient("");
+    setSubject("");
+    setMessage("");
+  };
 
   if (isLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
@@ -48,7 +48,8 @@ function Email() {
             name="recipient"
             type="email"
             value={recipient}
-            onChange={(e) => setRecipient(e.target.value)} />
+            onChange={(e) => setRecipient(e.target.value)}
+          />
         </label>
         <label>
           Subject:
@@ -56,19 +57,21 @@ function Email() {
             name="subject"
             type="text"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)} />
+            onChange={(e) => setSubject(e.target.value)}
+          />
         </label>
         <label>
           Message:
           <textarea
             name="emailMessage"
             value={emailMessage}
-            onChange={(e) => setMessage(e.target.value)} />
+            onChange={(e) => setMessage(e.target.value)}
+          />
         </label>
         <button type="submit">Send</button>
       </form>
     </>
-  )
+  );
 }
 
-export default Email
+export default Email;

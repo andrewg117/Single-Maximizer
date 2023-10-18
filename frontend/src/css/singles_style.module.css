@@ -4,7 +4,7 @@
   height: 100vh;
   background-color: var(--main-wht-color);
   color: var(--main-cnt-color);
-  overflow:auto;
+  overflow: auto;
 }
 
 #table_div {
@@ -15,7 +15,6 @@
 }
 
 #singles_table {
-  /* height: 100%; */
   width: 100%;
 }
 
@@ -49,7 +48,7 @@
   border: none;
   border-radius: 15px;
   width: 150px;
-  padding: .3em 2em;
+  padding: 0.3em 2em;
   font-size: 1em;
 }
 
@@ -59,7 +58,7 @@
   border: none;
   border-radius: 15px;
   width: 150px;
-  padding: .3em 2em;
+  padding: 0.3em 2em;
   font-size: 1em;
 }
 
@@ -69,7 +68,7 @@
   border: none;
   border-radius: 15px;
   width: 150px;
-  padding: .3em 2em;
+  padding: 0.3em 2em;
   font-size: 1em;
 }
 
@@ -82,17 +81,16 @@
   background-color: var(--main-btn-color);
   color: var(--main-wht-color);
   text-align: center;
-  padding: .5em 1.5em;
-  /* font-size: 1.5vw; */
+  padding: 0.5em 1.5em;
   border: none;
 }
 
 @media (max-width: 700px) {
   th {
-    font-size: .8em;
+    font-size: 0.8em;
   }
   td {
-    font-size: .8em;
+    font-size: 0.8em;
   }
 
   .tblhide {
