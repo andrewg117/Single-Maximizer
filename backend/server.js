@@ -1,38 +1,36 @@
-const path = require('path')
-const express = require('express')
-// const cors = require('cors')
-const colors = require('colors')
-const dotenv = require('dotenv').config()
-const schedule = require('node-schedule')
-const cookieParser = require('cookie-parser')
-const { sendScheduledEmail } = require('./controllers/emailController')
-const { errorHandler } = require('./middleware/errorMiddleware')
-const connectDB = require('./config/db')
-const { route } = require('./routes/webhookRoutes')
-const port = process.env.Port || 5000
+const path = require("path");
+const express = require("express");
+const colors = require("colors");
+const dotenv = require("dotenv").config();
+const schedule = require("node-schedule");
+const cookieParser = require("cookie-parser");
+const { sendScheduledEmail } = require("./controllers/emailController");
+const { errorHandler } = require("./middleware/errorMiddleware");
+const connectDB = require("./config/db");
+const { route } = require("./routes/webhookRoutes");
+const port = process.env.Port || 5000;
 
-connectDB()
+connectDB();
 
-const app = express()
+const app = express();
 
 // Daily function
 schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
-  sendScheduledEmail()
-})
+  sendScheduledEmail();
+});
 
-app.use('/api/webhook', require('./routes/webhookRoutes'))
+app.use("/api/webhook", require("./routes/webhookRoutes"));
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(cookieParser())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-
-app.use('/api/tracks', require('./routes/trackRoutes'))
-app.use('/api/users', require('./routes/userRoutes'))
-app.use('/api/email', require('./routes/emailRoutes'))
-app.use('/api/image', require('./routes/imageRoutes'))
-app.use('/api/audio', require('./routes/audioRoutes'))
-app.use('/api/purchase', require('./routes/purchaseRoutes'))
+app.use("/api/tracks", require("./routes/trackRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/email", require("./routes/emailRoutes"));
+app.use("/api/image", require("./routes/imageRoutes"));
+app.use("/api/audio", require("./routes/audioRoutes"));
+app.use("/api/purchase", require("./routes/purchaseRoutes"));
 
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static(path.join(__dirname, '../frontend/build')))
@@ -49,9 +47,8 @@ app.use('/api/purchase', require('./routes/purchaseRoutes'))
 //   app.get('/', (req, res) => res.send('Set env to production'))
 // }
 
+app.get("/", (req, res) => {
+  res.json({ Connection: "Success" });
+});
 
-app.get('/', (req, res) => {
-  res.json({ Connection: 'Success' })
-})
-
-app.listen(port, () => console.log(`Server started on port ${port}`))
+app.listen(port, () => console.log(`Server started on port ${port}`));

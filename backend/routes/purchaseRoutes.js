@@ -1,8 +1,11 @@
-const express = require('express')
-const router = express.Router()
-const { postPayment, postDemoPayment } = require('../controllers/purchaseController')
-const { protect } = require('../middleware/authMiddleware')
+const express = require("express");
+const router = express.Router();
+const {
+  postPayment,
+  postDemoPayment,
+} = require("../controllers/purchaseController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.route('/').post(protect, postDemoPayment)
+router.route("/").post(protect, postDemoPayment);
 
-module.exports = router
+module.exports = router;

@@ -1,32 +1,31 @@
-const jwt = require('jsonwebtoken')
-const asyncHandler = require('express-async-handler')
-const { generateToken } = require('../utils/generateToken.js')
-const User = require('../models/userModel')
+const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
+const { generateToken } = require("../utils/generateToken.js");
+const User = require("../models/userModel");
 
 const protect = asyncHandler(async (req, res, next) => {
-  let token
+  let token;
 
-  token = req.cookies.jwt
+  token = req.cookies.jwt;
 
   if (token) {
     try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      req.user = await User.findById(decoded.userId).select("-password");
+      generateToken(res, req.user._id, "10m");
 
-      req.user = await User.findById(decoded.userId).select('-password')
-      generateToken(res, req.user._id, '10m')
-
-      next()
+      next();
     } catch (error) {
-      res.status(401)
-      throw new Error('Not authorized')
+      res.status(401);
+      throw new Error("Not authorized");
     }
   } else {
-    res.status(401)
-    throw new Error('Not authorized, no token')
+    res.status(401);
+    throw new Error("Not authorized, no token");
   }
-})
+});
 
 module.exports = {
-  protect
-}
+  protect,
+};
