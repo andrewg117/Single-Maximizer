@@ -145,3 +145,13 @@
     justify-items: normal;
   }
 }
+
+@media (min-width: 700px) and (min-height: 700px) {
+  #top_nav_container {
+    display: none;
+  }
+
+  #navbar_top_links {
+    display: none;
+  }
+}
