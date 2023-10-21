@@ -32,8 +32,6 @@ import { toast } from "react-toastify";
 import { Buffer } from "buffer";
 import styles from "../css/new_release_style.module.css";
 
-// TODO: Creat view Single page for delivered
-
 function SingleEdit() {
   const { user } = useSelector((state) => state.auth);
   const { single, isLoading, isError, message } = useSelector(

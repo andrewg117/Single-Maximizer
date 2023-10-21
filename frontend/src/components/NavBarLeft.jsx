@@ -77,7 +77,7 @@ function NavBarLeft() {
 
     if (location.pathname.includes("/editprofile")) {
       setActiveLink("/profile");
-    } else if (location.pathname.includes("/singleedit")) {
+    } else if (location.pathname.includes("/singleedit") || location.pathname.includes("/singleview")) {
       setActiveLink("/profile/singles");
     }
   }, [location]);

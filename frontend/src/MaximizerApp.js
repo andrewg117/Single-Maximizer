@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import Singles from "./pages/Singles";
 import SingleEdit from "./pages/SingleEdit";
+import SingleView from "./pages/SingleView";
 import NewRelease from "./pages/NewRelease";
 import CheckoutPage from "./pages/CheckoutPage";
 import NavBarLeft from "./components/NavBarLeft";
@@ -99,7 +100,10 @@ function MaximizerApp() {
                 path="/profile/singleedit/:id"
                 element={<SingleEdit />}
               />
-              {/* <Route path='/admin' element={<Admin />} /> */}
+              <Route
+                path="/profile/singleview/:id"
+                element={<SingleView />}
+              />
             </Route>
           </Routes>
         </section>

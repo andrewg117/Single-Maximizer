@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUser, reset as resetUser } from "../features/auth/authSlice";
 import { getTracks, reset as resetTracks } from "../features/tracks/trackSlice";
 import { toast } from "react-toastify";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaEye } from "react-icons/fa";
 import Spinner from "../components/Spinner";
 import styles from "../css/singles_style.module.css";
 
@@ -48,6 +48,12 @@ function Singles() {
 
     navigate(`/profile/singleedit/${id}`);
   };
+  
+  const viewTrack = (e, id) => {
+    e.preventDefault();
+
+    navigate(`/profile/singleview/${id}`);
+  };
 
   if (isLoading || tracksLoading) {
     return <Spinner />;
@@ -64,7 +70,7 @@ function Singles() {
                 <th>TITLE</th>
                 <th className={styles.tblhide}>DELIVERY DATE</th>
                 <th>STATUS</th>
-                <th>EDIT</th>
+                <th>EDIT/VIEW</th>
               </tr>
             </thead>
             <tbody id={styles.singles_content}>
@@ -101,7 +107,10 @@ function Singles() {
                           className={styles.edit_track}
                         />
                       ) : (
-                        <></>
+                        <FaEye
+                          onClick={(e) => viewTrack(e, track._id)}
+                          className={styles.edit_track}
+                        />
                       )}
                     </td>
                   </tr>
