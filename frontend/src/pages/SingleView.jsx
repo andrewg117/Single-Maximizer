@@ -10,10 +10,11 @@ import {
 import { getAudio, reset as resetAudio } from "../features/audio/audioSlice";
 // import PressEdit from "../components/PressEdit";
 import AudioPlayer from "react-h5-audio-player";
+import PressView from "../components/PressView";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { Buffer } from "buffer";
-import styles from "../css/new_release_style.module.css";
+import styles from "../css/singleview_style.module.css";
 import "react-h5-audio-player/lib/styles.css";
 
 const SingleDiv = ({ labelID, text, data }) => {
@@ -50,6 +51,15 @@ function SingleView() {
   );
 
   const { id } = useParams();
+
+  const checkDate = (date) => {
+    const check = new Date(date).getUTCFullYear();
+    if (check === 1970) {
+      return null;
+    }
+
+    return new Date(date).toLocaleDateString("en-US", { timeZone: "UTC" });
+  };
 
   useEffect(() => {
     if (isError) {
@@ -106,8 +116,8 @@ function SingleView() {
   return (
     <>
       <div id={styles.content_right}>
-        <form id={styles.new_form}>
-          <div id={styles.new_form_div}>
+        <form id={styles.view_form}>
+          <div id={styles.view_form_div}>
             <div id={styles.top_div}>
               <div id={styles.image_div}>
                 <label>COVER ART</label>
@@ -128,17 +138,15 @@ function SingleView() {
                 autoPlayAfterSrcChange={false}
                 volume={0.2}
               />
+              <br />
             </div>
             <div className={styles.file_input_div}>
               <label>PRESS PHOTOS</label>
-              {/* TODO: create PressView component  
               {isPressSuccess ? (
-                <PressView
-                  trackPress={press ? press : []}
-                />
+                <PressView trackPress={press ? press : []} />
               ) : (
                 <></>
-              )} */}
+              )}
             </div>
             <div className={styles.input_div}>
               <SingleDiv
@@ -157,7 +165,7 @@ function SingleView() {
               <SingleDiv
                 labelID="deliveryDate"
                 text="DELIVERY DATE"
-                data={single?.deliveryDate}
+                data={checkDate(single?.deliveryDate)}
               />
               <SingleDiv
                 labelID="spotify"
@@ -205,7 +213,7 @@ function SingleView() {
               <SingleDiv
                 labelID="albumDate"
                 text="ALBUM RELEASE DATE"
-                data={single?.albumDate}
+                data={checkDate(single?.albumDate)}
               />
               <SingleDiv
                 labelID="trackLabel"
@@ -213,7 +221,7 @@ function SingleView() {
                 data={single?.trackLabel}
               />
             </div>
-            <div className={styles.full_input_div}>
+            <div className={styles.input_div}>
               <SingleDiv
                 labelID="genres"
                 text="GENRES"
