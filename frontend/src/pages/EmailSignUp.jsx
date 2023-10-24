@@ -92,11 +92,12 @@ function EmailSignUp() {
                     onChange={onChange}
                   />
                   <div className={styles.submit_div}>
-                    <input
+                    <button
                       type="submit"
                       id={styles.signin_submit}
-                      value="SUBMIT"
-                    />
+                    >
+                      SUBMIT
+                    </button>
                   </div>
                 </div>
               </form>
@@ -109,11 +110,12 @@ function EmailSignUp() {
                   <h1>Check your email to register your account</h1>
                   <h3>{email}</h3>
                   <div className={styles.submit_div}>
-                    <input
+                    <button
                       type="submit"
                       id={styles.signin_submit}
-                      value="RESEND EMAIL"
-                    />
+                    >
+                      SUBMIT
+                    </button>
                   </div>
                 </div>
               </form>

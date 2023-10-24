@@ -141,11 +141,12 @@ function ResetPassword() {
                     onChange={onChange}
                   />
                   <div className={styles.submit_div}>
-                    <input
+                    <button
                       type="submit"
                       id={styles.signin_submit}
-                      value="SUBMIT"
-                    />
+                    >
+                      SUBMIT
+                    </button>
                   </div>
                 </div>
               </form>

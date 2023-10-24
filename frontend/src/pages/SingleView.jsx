@@ -247,7 +247,7 @@ function SingleView() {
                 className={styles.profile_btn}
                 onClick={goBackToSingles}
               >
-                Singles
+                SINGLES
               </button>
             </div>
           </div>

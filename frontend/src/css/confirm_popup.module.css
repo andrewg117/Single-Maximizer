@@ -23,12 +23,12 @@
   margin-left: 10px;
   padding: 8px 16px;
   border-radius: 4px;
-  background-color: #337ab7;
+  background-color: var(--main-btn-color);
   color: #fff;
   border: none;
   cursor: pointer;
 }
 
 .confirmation_popup button:hover {
-  background-color: #23527c;
+  background-color: var(--main-nv-color);
 }

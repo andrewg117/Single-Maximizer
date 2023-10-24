@@ -24,8 +24,8 @@ const ConfirmAlert = ({ message, onConfirm, onCancel }) => {
         <div className={styles.confirmation_popup}>
           <div className={styles.message}>{message}</div>
           <div className={styles.buttons}>
-            <button onClick={handleConfirm}>Confirm</button>
-            <button onClick={handleCancel}>Cancel</button>
+            <button onClick={handleConfirm}>CONFIRM</button>
+            <button onClick={handleCancel}>CANCEL</button>
           </div>
         </div>
       )}

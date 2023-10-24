@@ -10,7 +10,7 @@ function Home() {
         style={{ backgroundImage: `url(${homeImage})` }}
       >
         <div id={styles.intro_text}>
-          <p>GET YOUR MUSIC OUT TO THE WORLD</p>
+          <h1>GET YOUR MUSIC OUT TO THE WORLD</h1>
         </div>
         <div id={styles.intro_btn}>
           <Link to="/home/emailsignup">GET STARTED</Link>

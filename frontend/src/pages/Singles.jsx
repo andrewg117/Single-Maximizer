@@ -127,7 +127,7 @@ function Singles() {
               id={styles.new_single}
               to={"/profile/newrelease"}
             >
-              Create New Single
+              CREATE NEW SINGLE
             </Link>
           ) : (
             <></>
