@@ -41,7 +41,7 @@ function NavBar() {
   const menuItems = [
     { name: "HOME", path: "/home" },
     { name: "WHO WE ARE", path: "/home/aboutus" },
-    // { name: 'FAQ', path: "/home/faq" },
+    { name: 'FAQ', path: "/home/faq" },
     // { name: 'PRICING', path: "/home" },
     { name: "SIGN IN", path: "/home/signin" },
     { name: "SIGN UP", path: "/home/emailsignup" },
