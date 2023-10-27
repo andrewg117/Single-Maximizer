@@ -2,6 +2,10 @@ import React from "react";
 import InspireImage from "../images/INSPIRE-WITH-YOUR-TALENT-150x150.png.webp";
 import EliminateImage from "../images/ELIMINATE-THE-HUSSLE-150x150.png.webp";
 import ItOnlyImage from "../images/IT-ONLY-TAKES-ONE-150x150.png.webp";
+import HipDXImage from "../images/Hip-Hop-DX.jpeg.webp";
+import PitchImage from "../images/Pitchfork-e1647388052851.jpeg";
+import DudeImage from "../images/dude-fm-e1647388248275.jpeg";
+import RapzImage from "../images/Rapzilla.com_.jpeg.webp";
 import styles from "../css/faq_style.module.css";
 
 const FaqBlock = ({ src, alt, title, info }) => {
@@ -17,10 +21,35 @@ const FaqBlock = ({ src, alt, title, info }) => {
   );
 };
 
+const outletList = [
+  ["All Hip Hop", "XKSC Radio", "CHH Insider", "New H2O", "MTMV"],
+  [
+    "Christlike Radio",
+    "Power 77 Radio",
+    "Prayz",
+    "Keep it Real Talk Radio",
+    "DJ WadeO",
+  ],
+  [
+    "Art Soul Radio",
+    "Transformation Radio",
+    "Coalition Kingdom DJs",
+    "DJ Will",
+    "All of our Radio Partners",
+  ],
+  [
+    "Pigeons and Planes",
+    "Solomon's Porch",
+    "Five Twenty Collective",
+    "CHH Leaks",
+    "And Many More...",
+  ],
+];
+
 function FAQ() {
   return (
     <section id={styles.faq_wrapper}>
-      <section id={styles.main_block}>
+      <section className={styles.content_block}>
         <section id={styles.head_grid}>
           <h1>WHAT IS THE SINGLE MAXIMIZER?</h1>
           <h2>HOW DOES IT HELP ME?</h2>
@@ -50,6 +79,60 @@ function FAQ() {
               "You fill out a one-time form, we handle everything else. We will send individual submissions to each outlet in the exact format they request it in. No spam, No mass email blasts. Even better, your music still stays protected!"
             }
           />
+        </section>
+      </section>
+      <section className={styles.content_block}>
+        <section id={styles.head_grid}>
+          <h3>
+            {`We can save you time by submitting your music to hundreds of music
+            blogs, Spotify playlists curators, magazines, radio stations, and
+            outlets including:`.toUpperCase()}
+          </h3>
+        </section>
+        <section id={styles.save_grid}>
+          <FaqBlock
+            src={HipDXImage}
+            alt={"Hip Hop DX"}
+            title={"Hip Hop DX"}
+            info={
+              "For new music, news & all things Rap & Hip Hop. HipHopDX has the latest videos, interviews and more."
+            }
+          />
+          <FaqBlock
+            src={PitchImage}
+            alt={"Pitchfork"}
+            title={"Pitchfork"}
+            info={
+              "His Hop Nation’s goal is to provide quality Radio, Podcasts, Music, Sermons and more to the world."
+            }
+          />
+          <FaqBlock
+            src={DudeImage}
+            alt={"Dude FM"}
+            title={"Dude FM"}
+            info={
+              "Yup, we dig Featuring Independent Artists, Bands,Conscious Hip Hop, DJ’s, EDM, MC’s& Musicians, via MUSIC VIDEOS & SOUNDCLOUD. Give us an ay-yup, a hola,a holla, a wassup, or a shout, eh. we are listening."
+            }
+          />
+          <FaqBlock
+            src={RapzImage}
+            alt={"Rapzilla"}
+            title={"Rapzilla"}
+            info={
+              "Christian Rap & Urban Christian Culture’s most visited destination has been Rapzilla.com, since 2003."
+            }
+          />
+        </section>
+        <section id={styles.outlet_grid}>
+          {outletList.map((item, index) => {
+            return (
+              <ul key={index}>
+                {item.map((value, i) => {
+                  return <li key={i}>{value}</li>;
+                })}
+              </ul>
+            );
+          })}
         </section>
       </section>
     </section>

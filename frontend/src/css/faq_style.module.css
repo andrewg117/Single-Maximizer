@@ -8,26 +8,33 @@
   overflow: auto;
 }
 
-#main_block {
+.content_block {
   display: grid;
   justify-items: center;
   align-items: center;
-  width: 90%;
-  height: 90%;
+  width: 80%;
+  height: 90dvh;
   background-color: var(--main-cnt-color);
   color: #ffff;
 }
 
-#main_block h1 {
+.content_block h1 {
   font-size: 39px;
   font-weight: 600;
   margin: 0;
+  margin-top: 1em;
 }
 
-#main_block h2 {
+.content_block h2 {
   font-size: 26px;
   font-weight: 600;
   color: var(--main-btn-color);
+}
+
+.content_block h3 {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 1em 0;
 }
 
 #head_grid {
@@ -36,7 +43,7 @@
 
 #faq_grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 5em;
   justify-items: center;
   align-items: center;
@@ -55,19 +62,65 @@
   font-size: 18px;
 }
 
+.faq_block img {
+  height: 150px;
+  width: auto;
+}
+
+#save_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 4em;
+  font-size: 0.8rem;
+  justify-items: center;
+  align-items: center;
+}
+
+#outlet_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 5em;
+  justify-items: center;
+  align-items: center;
+  text-align: left;
+}
+
+ul {
+  list-style: none;
+  counter-reset: li;
+}
+
+ul li::before {
+  content: "\2022";
+  color: var(--main-btn-color);
+  font-size: 2em;
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+}
+
 #logo {
   width: 50%;
   min-width: 300px;
   height: auto;
 }
 
-@media (max-width: 700px) {
-  #main_block {
-    width: 90%;
+@media (max-width: 1500px) {
+  .content_block {
+    /* width: 90%; */
+    height: 100%;
   }
 
   #faq_grid {
     grid-template-columns: 1fr;
+  }
+
+  #save_grid {
+    grid-template-columns: 1fr;
+  }
+
+  #outlet_grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .faq_block p {
@@ -75,10 +128,41 @@
   }
 }
 
-@media (max-height: 800px) {
-  #main_block {
+@media (max-height: 900px) {
+  .content_block {
     grid-template-rows: auto;
     justify-items: center;
-    height: 100dvh;
+    width: 90%;
+    height: auto;
+    overflow: visible;
+  }
+
+  #save_grid {
+    grid-template-columns: 1fr;
+  }
+
+  #outlet_grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  #faq_block {
+    height: fit-content;
+    row-gap: 5em;
+  }
+
+  #faq_block p {
+    height: fit-content;
+  }
+
+  #save_grid {
+    grid-template-columns: 1fr;
+    row-gap: 5em;
+  }
+
+  #outlet_grid {
+    grid-template-columns: 1fr;
+    justify-items: left;
   }
 }
