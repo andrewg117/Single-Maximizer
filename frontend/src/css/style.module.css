@@ -3,6 +3,7 @@
   --main-btn-color: #ff4646;
   --main-cnt-color: #121212;
   --main-wht-color: #ffffff;
+  
   font-family: Roboto, sans-serif;
   letter-spacing: 0.15em;
 }
@@ -12,7 +13,7 @@ body {
   font-family: Roboto, sans-serif;
   letter-spacing: 0.15em;
   margin: 0;
-  height: 100dvh;
+  height: 100vh;
   background-color: var(--main-cnt-color);
 }
 
@@ -54,7 +55,7 @@ textarea {
   display: grid;
   align-items: center;
   justify-content: center;
-  height: 90dvh;
+  height: 90vh;
   background-color: darkgray;
   background-repeat: no-repeat;
   background-size: cover;
@@ -128,7 +129,7 @@ textarea {
   #home_block {
     grid-template-rows: auto;
     justify-items: center;
-    height: 100dvh;
+    height: 100vh;
   }
 
   #intro_text {

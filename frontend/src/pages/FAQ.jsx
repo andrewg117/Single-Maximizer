@@ -128,7 +128,7 @@ function FAQ() {
             return (
               <ul key={index}>
                 {item.map((value, i) => {
-                  return <li key={i}>{value}</li>;
+                  return <li key={i}><span>{value}</span></li>;
                 })}
               </ul>
             );

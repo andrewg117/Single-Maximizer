@@ -3,17 +3,16 @@
   justify-items: center;
   align-items: center;
   width: auto;
-  height: 90dvh;
+  height: 90vh;
   background-color: var(--main-cnt-color);
-  overflow: auto;
 }
 
 .content_block {
   display: grid;
   justify-items: center;
   align-items: center;
-  width: 80%;
-  height: 90dvh;
+  width: 90%;
+  height: 90vh;
   background-color: var(--main-cnt-color);
   color: #ffff;
 }
@@ -44,7 +43,7 @@
 #faq_grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 5em;
+  column-gap: 3em;
   justify-items: center;
   align-items: center;
 }
@@ -85,18 +84,13 @@
   text-align: left;
 }
 
-ul {
-  list-style: none;
-  counter-reset: li;
-}
-
-ul li::before {
-  content: "\2022";
+li {
   color: var(--main-btn-color);
-  font-size: 2em;
-  display: inline-block; 
-  width: 1em;
-  margin-left: -1em;
+  font-size: 24px;
+}
+li span {
+  color: var(--main-wht-color);
+  font-size: 16px;
 }
 
 #logo {
@@ -133,7 +127,7 @@ ul li::before {
     grid-template-rows: auto;
     justify-items: center;
     width: 90%;
-    height: auto;
+    /* height: auto; */
     overflow: visible;
   }
 
