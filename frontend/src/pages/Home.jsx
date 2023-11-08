@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import homeImage from "../images/homeImage.png";
 import styles from "../css/style.module.css";
 
-// TODO: Update Chrome css
-
 function Home() {
   return (
     <>
