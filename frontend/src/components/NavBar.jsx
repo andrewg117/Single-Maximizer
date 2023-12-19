@@ -5,6 +5,7 @@ import { FaBars } from "react-icons/fa";
 import SMLogo from "../images/smLogo.png";
 import styles from "../css/navbar.module.css";
 
+// TODO: Change to popup bar
 const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
   return (
     <div
@@ -35,6 +36,7 @@ function NavBar() {
   const [showTopNav, setTopNav] = useState(false);
 
   const toggleTopNav = (e) => {
+    window.scrollTo(0, 0)
     showTopNav === false ? setTopNav(true) : setTopNav(false);
   };
 
@@ -82,7 +84,10 @@ function NavBar() {
       <nav id={styles.navbar}>
         <Link
           to={"/home"}
-          onClick={() => setActiveLink("/home")}
+          onClick={() => {
+            setActiveLink("/home")
+            window.scrollTo(0, 0)
+          }}
         >
           <img
             src={SMLogo}
