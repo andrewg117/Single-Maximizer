@@ -25,7 +25,7 @@ function Home() {
           </section>
         </section>
 
-        <section
+        {/* <section
           className={styles.home_block}
           // style={{ backgroundImage: `url(${singlemax})` }}
         >
@@ -34,7 +34,7 @@ function Home() {
             id={styles.singleMax_image}
             alt="singleMax"
           />
-        </section>
+        </section> */}
 
         <section className={styles.home_block}>
           <FAQSave styles={faq_style} />

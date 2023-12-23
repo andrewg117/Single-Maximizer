@@ -6,7 +6,7 @@
 .home_block {
   display: grid;
   align-items: center;
-  height: 90svh;
+  height: 90vh;
   background-color: var(--main-cnt-color);
   background-repeat: no-repeat;
   background-size: cover;
@@ -100,7 +100,7 @@
   .home_block {
     grid-template-rows: auto;
     justify-items: center;
-    height: 100svh;
+    height: 100vh;
   }
 
   .intro_container {
