@@ -12,7 +12,7 @@
   justify-content: center;
   align-items: center;
   width: 90%;
-  height: 90svh;
+  height: 90vh;
   /* background-color: var(--main-wht-color); */
   color: var(--main-cnt-color);
   overflow: auto;
@@ -102,8 +102,12 @@ li span {
 }
 
 @media (max-width: 1200px) {
+
+  #faq_wrapper {
+    overflow: auto;
+  }
+
   .content_block {
-    /* width: 90%; */
     overflow: auto;
   }
 

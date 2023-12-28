@@ -156,6 +156,12 @@
     /* width: 90%; */
     height: 100%;
   }
+  
+  .intro_container_alt {
+    justify-self: center;
+    align-self: center;
+    margin-right: 0;
+  }
 }
 
 @media (max-height: 800px) and (min-width: 1000px) {
