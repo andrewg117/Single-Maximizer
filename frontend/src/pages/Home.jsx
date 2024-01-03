@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import homeImage from "../images/homeImage.png";
 import homeImage2 from "../images/homeImage2.png";
 import homeImage3 from "../images/homeImage3.png";
-import singlemax from "../images/singlemax.png";
+import SMLogo from "../images/smLogo.png";
+import { FaTwitter, FaFacebookF } from "react-icons/fa";
 import styles from "../css/home.module.css";
 import faq_style from "../css/faq_style.module.css";
 import { FAQDistro, FAQSave } from "./FAQ";
 
 function Home() {
+
   return (
     <>
       <section id={styles.home_body}>
@@ -73,7 +75,10 @@ function Home() {
           </section>
         </section>
 
-        <section id={styles.hassle_block} className={styles.home_block}>
+        <section
+          id={styles.hassle_block}
+          className={styles.home_block}
+        >
           <section className={styles.intro_container}>
             <div id={styles.hassle_text}>
               <p>INSPIRE YOUR WORLD WITH YOUR CRAFT</p>
@@ -84,8 +89,35 @@ function Home() {
           </section>
         </section>
 
-        <footer>
-          
+        <footer id={styles.home_footer}>
+          <section id={styles.footer_left}>
+            <Link
+              to={"/home"}
+              onClick={() => {
+                window.scrollTo(0, 0);
+              }}
+            >
+              <img
+                src={SMLogo}
+                alt="Home"
+                id={styles.logo}
+              />
+            </Link>
+          </section>
+
+          <section id={styles.footer_mid}>
+            <Link to={"/home/emailsignup"}>SIGN UP</Link>
+            <Link to={"/home/signin"}>SIGN IN</Link>
+          </section>
+
+          <section id={styles.footer_right}>
+            <a href="https://twitter.com/trackstarz" target="_blank" rel="noopener noreferrer">
+              <FaTwitter className={styles.soical_links} />
+            </a>
+            <a href="https://www.facebook.com/trackstarz" target="_blank" rel="noopener noreferrer">
+              <FaFacebookF className={styles.soical_links} />
+            </a>
+          </section>
         </footer>
       </section>
     </>
