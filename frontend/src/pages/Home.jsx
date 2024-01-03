@@ -72,6 +72,21 @@ function Home() {
             </div>
           </section>
         </section>
+
+        <section id={styles.hassle_block} className={styles.home_block}>
+          <section className={styles.intro_container}>
+            <div id={styles.hassle_text}>
+              <p>INSPIRE YOUR WORLD WITH YOUR CRAFT</p>
+              <p>MAKE YOUR GIFT HEARD</p>
+              <h1>WITHOUT THE TIME OR HASSLE</h1>
+              <p>SHARE IT WITH US & WE'LL MAKE IT HAPPEN</p>
+            </div>
+          </section>
+        </section>
+
+        <footer>
+          
+        </footer>
       </section>
     </>
   );

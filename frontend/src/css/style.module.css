@@ -5,13 +5,13 @@
   --main-wht-color: #ffffff;
   
   font-family: Roboto, sans-serif;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
 }
 
 body {
   text-align: center;
   font-family: Roboto, sans-serif;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   margin: 0;
   height: 100vh;
   background-color: var(--main-cnt-color);
@@ -20,7 +20,7 @@ body {
 a,
 button {
   font-family: Arial, Helvetica, sans-serif;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   font-weight: bold;
 }
 
