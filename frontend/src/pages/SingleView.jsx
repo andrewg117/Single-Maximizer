@@ -50,6 +50,14 @@ function SingleView() {
     (state) => state.audio
   );
 
+  const ConvertAudio = (audioFile) => {
+    const audioBuffer = Buffer.from(audioFile.buffer, "base64");
+    const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
+    const href = URL.createObjectURL(blob);
+
+    return href;
+  };
+
   const { id } = useParams();
 
   const checkDate = (date) => {
@@ -132,7 +140,7 @@ function SingleView() {
             <div className={styles.file_input_div}>
               <label>AUDIO UPLOAD</label>
               <AudioPlayer
-                src={audio?.s3AudioURL}
+                src={audio ? ConvertAudio(audio.file) : null}
                 controls
                 layout="horizontal"
                 autoPlayAfterSrcChange={false}
