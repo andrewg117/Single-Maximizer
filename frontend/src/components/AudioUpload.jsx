@@ -48,7 +48,7 @@ function AudioUpload({ changeFile, file, fieldname }) {
         toast.error("File size is too large");
       }
     },
-    maxSize: 21000000,
+    maxSize: 15000000,
   });
 
   useEffect(() => {

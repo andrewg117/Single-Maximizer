@@ -64,7 +64,7 @@ function SignUp() {
         fname,
         lname,
         username,
-        email,
+        token,
         password,
       };
 
@@ -141,7 +141,7 @@ function SignUp() {
                   id="email"
                   name="email"
                   defaultValue={email}
-                  onChange={onChange}
+                  readOnly
                 />
                 <label htmlFor="password">PASSWORD</label>
                 <input

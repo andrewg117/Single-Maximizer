@@ -1,5 +1,6 @@
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode >= 400 ? res.statusCode : 500;
+  let statusCode = res.statusCode >= 400 ? res.statusCode : 500;
+  if (err.code === "LIMIT_FILE_SIZE") statusCode = 413;
 
   res.status(statusCode);
   res.json({

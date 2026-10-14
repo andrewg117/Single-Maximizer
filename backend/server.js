@@ -1,4 +1,3 @@
-const path = require("path");
 const express = require("express");
 const colors = require("colors");
 const dotenv = require("dotenv").config();
@@ -7,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const { sendScheduledEmail } = require("./controllers/emailController");
 const { errorHandler } = require("./middleware/errorMiddleware");
 const connectDB = require("./config/db");
-const { route } = require("./routes/webhookRoutes");
 const port = process.env.Port || 5000;
 
 connectDB();
@@ -31,21 +29,6 @@ app.use("/api/email", require("./routes/emailRoutes"));
 app.use("/api/image", require("./routes/imageRoutes"));
 app.use("/api/audio", require("./routes/audioRoutes"));
 app.use("/api/purchase", require("./routes/purchaseRoutes"));
-
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, '../frontend/build')))
-//   // app.use(express.static('frontend/build'))
-//   // app.use(express.static(process.env.RENDER_STATIC_URL))
-
-//   app.get('*', (req, res) =>
-//     res.sendFile(
-//       path.resolve(__dirname, 'frontend', 'build', 'index.html')
-//       // path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
-//     )
-//   )
-// } else {
-//   app.get('/', (req, res) => res.send('Set env to production'))
-// }
 
 app.get("/", (req, res) => {
   res.json({ Connection: "Success" });

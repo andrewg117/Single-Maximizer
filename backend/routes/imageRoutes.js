@@ -13,7 +13,11 @@ const { protect } = require("../middleware/authMiddleware");
 const multer = require("multer");
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// MongoDB caps documents at 16 MB, and files are stored inside them
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 15 * 1024 * 1024 },
+});
 
 router
   .route("/")

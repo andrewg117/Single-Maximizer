@@ -4,22 +4,17 @@ const User = require("../models/userModel");
 const Audio = require("../models/audioModel");
 const Image = require("../models/imageModel");
 const asyncHandler = require("express-async-handler");
-const formData = require("form-data");
-const Mailgun = require("mailgun.js");
+const { sendMail } = require("../utils/mailer");
 // TODO: Get email list for EMAILTO
 const EMAILTO = process.env.EMAILTO;
 const EMAILUSER = process.env.EMAILUSER;
-const MAILGUN_API = process.env.MAILGUN_API;
-
-// Mailgun email setup
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: "api", key: MAILGUN_API });
-const mgDomain = "mail.trackstarz.com";
 
 // Attach the track's audio, cover, and press files stored in MongoDB
-const getAttachments = async (trackID) => {
-  const audio = await Audio.findOne({ trackID });
-  const images = await Image.find({ trackID }).sort({ section: 1 });
+const getAttachments = async (singleDoc) => {
+  // Filter by owner too, so only the artist's own files are ever attached
+  const query = { trackID: singleDoc._id, user: singleDoc.user };
+  const audio = await Audio.findOne(query);
+  const images = await Image.find(query).sort({ section: 1 });
 
   return [audio, ...images]
     .filter((doc) => doc?.file?.buffer)
@@ -82,11 +77,10 @@ const generalEmail = async (singleDoc, subjectType) => {
     // bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
-    attachment: await getAttachments(singleDoc._id),
+    attachment: await getAttachments(singleDoc),
   };
 
-  mg.messages
-    .create(mgDomain, mailOptions)
+  sendMail(mailOptions)
     .then(async (msg) => {
       console.log(msg);
 
@@ -138,11 +132,10 @@ const altEmail = async (singleDoc, subjectType) => {
     bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
-    attachment: await getAttachments(singleDoc._id),
+    attachment: await getAttachments(singleDoc),
   };
 
-  mg.messages
-    .create(mgDomain, mailOptions)
+  sendMail(mailOptions)
     .then(async (msg) => {
       console.log(msg);
 
@@ -219,8 +212,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     html: `<p>${req.body.emailMessage}</p>`, // html body
   };
 
-  mg.messages
-    .create(mgDomain, mailOptions)
+  sendMail(mailOptions)
     .then((msg) => console.log(msg))
     .catch((err) => console.log(err));
 

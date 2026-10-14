@@ -14,6 +14,16 @@ const uploadAudio = asyncHandler(async (req, res) => {
   // console.log('Body: ' + JSON.stringify(req.body))
   // console.log('File: ' + JSON.stringify(req.file))
 
+  const track = await Track.exists({
+    _id: req.body.trackID,
+    user: req.user.id,
+  });
+
+  if (!track) {
+    res.status(404);
+    throw new Error("Track not found");
+  }
+
   const audio = await Audio.create({
     user: req.user.id,
     trackID: req.body.trackID,
@@ -82,6 +92,11 @@ const getAudio = asyncHandler(async (req, res) => {
 // @route   PUT /api/audio/:file
 // @access  Private
 const updateAudio = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error("No file uploaded");
+  }
+
   const audio = await Audio.findOne({ trackID: req.body.trackID });
 
   if (!audio) {
@@ -104,8 +119,8 @@ const updateAudio = asyncHandler(async (req, res) => {
   // console.log('File: ' + JSON.stringify(req.files))
   // console.log('Body: ' + JSON.stringify(req.body))
 
+  // Only the file changes; owner and track stay as they were
   const newBody = {
-    ...req.body,
     file: req.file,
   };
 
@@ -136,26 +151,15 @@ const updateAudio = asyncHandler(async (req, res) => {
 // @route   DELETE /api/audio/:id
 // @access  Private
 const deleteAudio = asyncHandler(async (req, res) => {
-  const audio = await Audio.findOne({ trackID: req.params.id });
-
-  if (!audio) {
-    res.status(400);
-    throw new Error("Audio not found");
-  }
-
   if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (audio.user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+  // Succeeds even with no audio, so deleting the track can continue
+  await Audio.deleteMany({ trackID: req.params.id, user: req.user.id });
 
-  const deleteAudio = await Audio.findByIdAndDelete(audio._id);
-
-  res.json(deleteAudio.id);
+  res.json(req.params.id);
 });
 
 module.exports = {

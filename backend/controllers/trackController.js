@@ -2,6 +2,25 @@ const asyncHandler = require("express-async-handler");
 const Track = require("../models/trackModel");
 const User = require("../models/userModel");
 
+// Track metadata a user may set; owner, delivery, and file fields stay server-side
+const TRACK_FIELDS = [
+  "trackTitle",
+  "artist",
+  "deliveryDate",
+  "spotify",
+  "features",
+  "apple",
+  "producer",
+  "scloud",
+  "album",
+  "trackLabel",
+  "ytube",
+  "albumDate",
+  "genres",
+  "trackSum",
+  "pressSum",
+];
+
 // @desc    Get tracks
 // @route   GET /api/track
 // @access  Private
@@ -46,26 +65,43 @@ const setTrack = asyncHandler(async (req, res) => {
     throw new Error("Add track title");
   }
 
-  const track = await Track.create({
-    trackTitle: req.body.trackTitle,
-    artist: req.body.artist,
-    deliveryDate: req.body.deliveryDate,
-    spotify: req.body.spotify,
-    features: req.body.features,
-    apple: req.body.apple,
-    producer: req.body.producer,
-    scloud: req.body.scloud,
-    album: req.body.album,
-    trackLabel: req.body.trackLabel,
-    ytube: req.body.ytube,
-    albumDate: req.body.albumDate || null,
-    genres: req.body.genres,
-    trackSum: req.body.trackSum,
-    pressSum: req.body.pressSum,
-    isDelivered: false,
-    s3PressURL: [],
-    user: req.user.id,
-  });
+  // Spend one track credit atomically; refunded below if the track can't be saved
+  const user = await User.findOneAndUpdate(
+    { _id: req.user.id, trackAllowance: { $gte: 1 } },
+    { $inc: { trackAllowance: -1 } }
+  );
+
+  if (!user) {
+    res.status(403);
+    throw new Error("No track allowance left");
+  }
+
+  let track;
+  try {
+    track = await Track.create({
+      trackTitle: req.body.trackTitle,
+      artist: req.body.artist,
+      deliveryDate: req.body.deliveryDate,
+      spotify: req.body.spotify,
+      features: req.body.features,
+      apple: req.body.apple,
+      producer: req.body.producer,
+      scloud: req.body.scloud,
+      album: req.body.album,
+      trackLabel: req.body.trackLabel,
+      ytube: req.body.ytube,
+      albumDate: req.body.albumDate || null,
+      genres: req.body.genres,
+      trackSum: req.body.trackSum,
+      pressSum: req.body.pressSum,
+      isDelivered: false,
+      s3PressURL: [],
+      user: req.user.id,
+    });
+  } catch (err) {
+    await User.findByIdAndUpdate(req.user.id, { $inc: { trackAllowance: 1 } });
+    throw err;
+  }
 
   res.json(track);
 });
@@ -95,7 +131,12 @@ const updateTrack = asyncHandler(async (req, res) => {
   // console.log('Params: ' + JSON.stringify(req.params))
   // console.log('File: ' + JSON.stringify(req.files))
 
-  const updatedTrack = await Track.findByIdAndUpdate(req.params.id, req.body, {
+  const updates = {};
+  for (const field of TRACK_FIELDS) {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  }
+
+  const updatedTrack = await Track.findByIdAndUpdate(req.params.id, updates, {
     new: true,
   });
 
@@ -127,15 +168,18 @@ const deleteTrack = asyncHandler(async (req, res) => {
 
   const deleteTrack = await Track.findByIdAndDelete(req.params.id);
 
-  const updateUser = await User.findByIdAndUpdate(
-    req.user.id,
-    {
-      $inc: { trackAllowance: 1 },
-    },
-    {
-      new: true,
-    }
-  );
+  // A delivered track has used its credit, so only undelivered tracks are refunded
+  if (!track.isDelivered) {
+    const updateUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $inc: { trackAllowance: 1 },
+      },
+      {
+        new: true,
+      }
+    );
+  }
 
   res.json(deleteTrack.id);
 });

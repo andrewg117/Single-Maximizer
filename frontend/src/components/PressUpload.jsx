@@ -38,7 +38,7 @@ function PressUpload({ changeFile, trackPress }) {
         Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100;
       formData.append("size", megBytes);
 
-      if (listSize + megBytes < 20) {
+      if (megBytes < 15 && listSize + megBytes < 20) {
         changeFile((prevState) => ({
           ...prevState,
           trackPress: [...trackPress, formData.get("Press")],

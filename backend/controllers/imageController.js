@@ -23,12 +23,25 @@ const uploadImage = asyncHandler(async (req, res) => {
       file: req.file,
     });
   } else if (req.body.section === "cover") {
+    const track = await Track.exists({
+      _id: req.body.trackID,
+      user: req.user.id,
+    });
+
+    if (!track) {
+      res.status(404);
+      throw new Error("Track not found");
+    }
+
     image = await Image.create({
       user: req.user.id,
       trackID: req.body.trackID,
       section: req.body.section,
       file: req.file,
     });
+  } else {
+    res.status(400);
+    throw new Error("Invalid image section");
   }
 
   const uploadedImage = await Image.findByIdAndUpdate(
@@ -76,7 +89,18 @@ const uploadPress = asyncHandler(async (req, res) => {
 
   // console.log('Body: ' + JSON.stringify(req.body))
 
-  req.files.forEach(async (file) => {
+  const track = await Track.exists({
+    _id: req.body.trackID,
+    user: req.user.id,
+  });
+
+  if (!track) {
+    res.status(404);
+    throw new Error("Track not found");
+  }
+
+  // Await each save so a failure reaches the error handler instead of crashing
+  for (const file of req.files) {
     let image;
     // console.log(file.originalname)
     image = await Image.create({
@@ -113,7 +137,7 @@ const uploadPress = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-  });
+  }
 
   res.json("Files saved");
 });
@@ -155,24 +179,17 @@ const getImage = asyncHandler(async (req, res) => {
 // @route   GET /api/image/press
 // @access  Private
 const getPress = asyncHandler(async (req, res) => {
-  let image;
-
-  image = await Image.find({ trackID: req.query.trackID, section: "press" });
-
-  if (!image) {
-    res.status(400);
-    throw new Error("Image not found");
-  }
-
   if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+  // A track may have no press photos, so an empty list is a valid result
+  const image = await Image.find({
+    trackID: req.query.trackID,
+    section: "press",
+    user: req.user.id,
+  });
 
   res.json(image);
 });
@@ -181,11 +198,19 @@ const getPress = asyncHandler(async (req, res) => {
 // @route   PUT /api/image/:file
 // @access  Private
 const updateImage = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error("No file uploaded");
+  }
+
   let image = null;
   if (req.body.section === "avatar") {
-    image = await Image.findOne({ user: req.user.id });
+    image = await Image.findOne({ user: req.user.id, section: "avatar" });
   } else if (req.body.section === "cover") {
-    image = await Image.findOne({ trackID: req.body.trackID });
+    image = await Image.findOne({
+      trackID: req.body.trackID,
+      section: "cover",
+    });
   }
 
   if (image === null) {
@@ -208,8 +233,8 @@ const updateImage = asyncHandler(async (req, res) => {
   // console.log('File: ' + JSON.stringify(req.file))
   // console.log('Body: ' + JSON.stringify(req.body))
 
+  // Only the file changes; owner, track, and section stay as they were
   const newBody = {
-    ...req.body,
     file: req.file,
     s3ImageURL:
       "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
@@ -219,21 +244,24 @@ const updateImage = asyncHandler(async (req, res) => {
     new: true,
   });
 
-  const updateTrack = await Track.findByIdAndUpdate(
-    image.trackID,
-    {
-      $set: {
-        s3ImageURL: {
-          name: req.file.originalname,
-          url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
+  if (image.section === "cover") {
+    const updateTrack = await Track.findByIdAndUpdate(
+      image.trackID,
+      {
+        $set: {
+          s3ImageURL: {
+            name: req.file.originalname,
+            url:
+              "https://singlemax-bucket.s3.amazonaws.com/" +
+              image._id.toString(),
+          },
         },
       },
-    },
-    {
-      new: true,
-    }
-  );
+      {
+        new: true,
+      }
+    );
+  }
 
   res.json(updatedImage);
 });
@@ -242,28 +270,13 @@ const updateImage = asyncHandler(async (req, res) => {
 // @route   DELETE /api/image/
 // @access  Private
 const deleteImage = asyncHandler(async (req, res) => {
-  let image;
-  image = await Image.find({ trackID: req.params.id });
-
-  if (!image) {
-    res.status(400);
-    throw new Error("Image not found");
-  }
-
   if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
-
-  image.forEach(async (item) => {
-    // console.log(item._id)
-    const deleteImage = await Image.findByIdAndDelete(item._id);
-  });
+  // Succeeds even with no images, so deleting the track can continue
+  await Image.deleteMany({ trackID: req.params.id, user: req.user.id });
 
   res.json(req.params.id);
 });

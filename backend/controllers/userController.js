@@ -2,31 +2,49 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const formData = require("form-data");
-const Mailgun = require("mailgun.js");
 const { generateToken } = require("../utils/generateToken.js");
+const { sendMail } = require("../utils/mailer");
 const EMAILUSER = process.env.EMAILUSER;
-const MAILGUN_API = process.env.MAILGUN_API;
 
 const NODE_ENV = process.env.NODE_ENV;
 const RENDER_STATIC_URL = process.env.RENDER_STATIC_URL;
 const API_URL =
   NODE_ENV === "production" ? RENDER_STATIC_URL : "http://localhost:3000";
 
-// Mailgun email setup
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: "api", key: MAILGUN_API });
-const mgDomain = "mail.trackstarz.com";
+// Fields a user may change on their own profile
+const PROFILE_FIELDS = [
+  "fname",
+  "lname",
+  "username",
+  "website",
+  "scloud",
+  "twitter",
+  "igram",
+  "fbook",
+  "spotify",
+  "ytube",
+  "tiktok",
+  "bio_text",
+];
 
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { fname, lname, username, email, password } = req.body;
+  const { fname, lname, username, token, password } = req.body;
 
-  if (!fname || !lname || !username || !email || !password) {
+  if (!fname || !lname || !username || !token || !password) {
     res.status(400);
     throw new Error("Add all fields");
+  }
+
+  // The email comes from the signup link's token, so it's always verified
+  let email;
+  try {
+    email = decodeToken(token).id;
+  } catch (error) {
+    res.status(401);
+    throw new Error("Signup link expired, request a new one");
   }
 
   const userExists = await User.findOne({ email });
@@ -78,7 +96,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     throw new Error("User exists, use a different email or login");
   }
 
-  const token = makeToken(email, "2m");
+  const token = makeToken(email, "30m");
 
   const link = `${API_URL}/home/signup/${token}`;
 
@@ -91,8 +109,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     html: `<p>Continue creating your account:</p><p>${link}</p>`, // html body
   };
 
-  mg.messages
-    .create(mgDomain, mailOptions)
+  sendMail(mailOptions)
     .then((msg) => console.log(msg))
     .catch((err) => console.error(err));
 
@@ -165,8 +182,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     html: `<p>Hello ${user.username},</p><p>Reset Password:</p><p>${link}</p>`, // html body
   };
 
-  mg.messages
-    .create(mgDomain, mailOptions)
+  sendMail(mailOptions)
     .then((msg) => res.status(200).json(msg))
     .catch((err) => res.status(409).json(err));
 
@@ -193,20 +209,18 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  let updatedUser;
+  await User.findByIdAndUpdate(user._id, { password: hashedPassword });
 
-  updatedUser = await User.findByIdAndUpdate(
-    user._id,
-    { password: hashedPassword },
-    {
-      new: true,
-    }
-  );
-
-  res.json(updatedUser);
+  res.json({ message: "Password updated" });
 });
 
 // @desc    Get user data
@@ -230,11 +244,17 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  // Only profile fields; allowance, admin, email, and password stay server-controlled
+  const updates = {};
+  for (const field of PROFILE_FIELDS) {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  }
+
   let updatedUser;
 
-  updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+  updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
     new: true,
-  });
+  }).select("-password");
 
   res.json(updatedUser);
 });

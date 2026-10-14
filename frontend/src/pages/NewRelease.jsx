@@ -3,19 +3,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getUser,
-  updateUser,
   reset as resetUser,
 } from "../features/auth/authSlice";
 import {
   createTrack,
+  deleteTrack,
   reset as resetTracks,
 } from "../features/tracks/trackSlice";
 import {
   postImage,
   postPress,
+  deleteImage,
   reset as resetImage,
 } from "../features/image/imageSlice";
-import { postAudio, reset as resetAudio } from "../features/audio/audioSlice";
+import {
+  postAudio,
+  deleteAudio,
+  reset as resetAudio,
+} from "../features/audio/audioSlice";
 import ImageUpload from "../components/ImageUpload";
 import AudioUpload from "../components/AudioUpload";
 import PressUpload from "../components/PressUpload";
@@ -65,6 +70,7 @@ function NewRelease() {
   const { user } = useSelector((state) => state.auth);
   const { isLoading, isError, message } = useSelector((state) => state.tracks);
   const [showPopup, setShowPopup] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const formRefData = useRef({});
 
@@ -121,48 +127,76 @@ function NewRelease() {
       });
       pressData.append("section", "press");
 
-      dispatch(
-        createTrack({
-          trackTitle: formRefData.current["trackTitle"].value,
-          artist: formRefData.current["artist"].value,
-          deliveryDate: formRefData.current["deliveryDate"].value,
-          spotify: formRefData.current["spotify"].value,
-          features: formRefData.current["features"].value,
-          apple: formRefData.current["apple"].value,
-          producer: formRefData.current["producer"].value,
-          scloud: formRefData.current["scloud"].value,
-          album: formRefData.current["album"].value,
-          trackLabel: formRefData.current["trackLabel"].value,
-          ytube: formRefData.current["ytube"].value,
-          albumDate: formRefData.current["albumDate"].value,
-          genres,
-          trackSum: formRefData.current["trackSum"].value,
-          pressSum: formRefData.current["pressSum"].value,
-        })
-      )
-        .unwrap()
-        .then((data) => {
-          const trackID = data._id;
+      const trackData = {
+        trackTitle: formRefData.current["trackTitle"].value,
+        artist: formRefData.current["artist"].value,
+        deliveryDate: formRefData.current["deliveryDate"].value,
+        spotify: formRefData.current["spotify"].value,
+        features: formRefData.current["features"].value,
+        apple: formRefData.current["apple"].value,
+        producer: formRefData.current["producer"].value,
+        scloud: formRefData.current["scloud"].value,
+        album: formRefData.current["album"].value,
+        trackLabel: formRefData.current["trackLabel"].value,
+        ytube: formRefData.current["ytube"].value,
+        albumDate: formRefData.current["albumDate"].value,
+        genres,
+        trackSum: formRefData.current["trackSum"].value,
+        pressSum: formRefData.current["pressSum"].value,
+      };
 
-          audioData.append("trackID", trackID);
-          dispatch(postAudio(audioData));
+      setShowPopup(false);
+      setIsSaving(true);
 
-          imageData.append("trackID", trackID);
-          dispatch(postImage(imageData));
+      let trackID;
+      try {
+        const data = await dispatch(createTrack(trackData)).unwrap();
+        trackID = data._id;
+      } catch (error) {
+        // The isError effect above shows the message (e.g. no allowance left)
+        setIsSaving(false);
+        return;
+      }
 
-          pressData.append("trackID", trackID);
-          dispatch(postPress(pressData));
+      audioData.append("trackID", trackID);
+      imageData.append("trackID", trackID);
+      pressData.append("trackID", trackID);
 
-          dispatch(updateUser({ trackAllowance: user.trackAllowance - 1 }));
-        });
+      // Let every upload settle so none is still running during a rollback
+      const results = await Promise.allSettled([
+        dispatch(postAudio(audioData)).unwrap(),
+        dispatch(postImage(imageData)).unwrap(),
+        dispatch(postPress(pressData)).unwrap(),
+      ]);
+      const failed = results.find((result) => result.status === "rejected");
+
+      if (failed) {
+        // Remove the half-saved single; deleting the track refunds its credit
+        try {
+          await dispatch(deleteAudio(trackID)).unwrap();
+          await dispatch(deleteImage(trackID)).unwrap();
+          await dispatch(deleteTrack(trackID)).unwrap();
+        } catch (error) {
+          console.error(error);
+        }
+
+        dispatch(getUser());
+        setIsSaving(false);
+        toast.error(
+          `Upload failed: ${failed.reason}. The single was not saved.`
+        );
+        return;
+      }
+
+      // The server deducted the track credit; refresh to pick it up
+      dispatch(getUser());
 
       setFormState((prevState) => ({
         ...prevState,
         trackAudio: null,
       }));
-      toast.success("Email Sent");
+      toast.success("Single scheduled");
       navigate("/profile/singles");
-      setShowPopup(false);
     } else {
       setShowPopup(false);
       toast.error("Update Fields");
@@ -173,13 +207,16 @@ function NewRelease() {
     setShowPopup(false);
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // Hide the form rather than unmounting it, so a failed save keeps what was entered
+  const isBusy = isLoading || isSaving;
 
   return (
     <>
-      <div id={styles.content_right}>
+      {isBusy && <Spinner />}
+      <div
+        id={styles.content_right}
+        style={isBusy ? { display: "none" } : undefined}
+      >
         <form
           ref={formRefData}
           id={styles.new_form}
