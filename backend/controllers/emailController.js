@@ -1,10 +1,11 @@
 const Email = require("../models/emailModel");
 const Track = require("../models/trackModel");
 const User = require("../models/userModel");
+const Audio = require("../models/audioModel");
+const Image = require("../models/imageModel");
 const asyncHandler = require("express-async-handler");
 const formData = require("form-data");
 const Mailgun = require("mailgun.js");
-const axios = require("axios");
 // TODO: Get email list for EMAILTO
 const EMAILTO = process.env.EMAILTO;
 const EMAILUSER = process.env.EMAILUSER;
@@ -14,6 +15,22 @@ const MAILGUN_API = process.env.MAILGUN_API;
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
+
+// Attach the track's audio, cover, and press files stored in MongoDB
+const getAttachments = async (trackID) => {
+  const audio = await Audio.findOne({ trackID });
+  const images = await Image.find({ trackID }).sort({ section: 1 });
+
+  return [audio, ...images]
+    .filter((doc) => doc?.file?.buffer)
+    .map((doc) => ({
+      filename: doc.file.originalname,
+      // Mixed fields come back as BSON Binary, not Buffer
+      data: Buffer.isBuffer(doc.file.buffer)
+        ? doc.file.buffer
+        : doc.file.buffer.value(true),
+    }));
+};
 
 // General email
 const generalEmail = async (singleDoc, subjectType) => {
@@ -41,24 +58,6 @@ const generalEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`;
   emailContent += `<p>Soundcloud: ${singleDoc.scloud || ""}</p>`;
   emailContent += `<p>YouTube: ${singleDoc.ytube || ""}</p>`;
-  emailContent += `<br>`;
-  emailContent += `<p>Song Link: ${singleDoc?.s3AudioURL?.url || ""}</p>`;
-  emailContent += `<p>Cover Link: ${singleDoc?.s3ImageURL?.url || ""}</p>`;
-
-  emailContent += `<p>Press Photo Link(s): </p>`;
-
-  let getAttachments = [];
-
-  singleDoc.s3PressURL.forEach(async (press) => {
-    emailContent += `<p>${press.url || ""}</p>`;
-
-    const image = await axios.get(press.url, { responseType: "stream" });
-
-    getAttachments.push({
-      filename: press.name,
-      data: image.data,
-    });
-  });
 
   let subjectLine;
   switch (subjectType) {
@@ -75,27 +74,6 @@ const generalEmail = async (singleDoc, subjectType) => {
       subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
   }
 
-  const audioURL = singleDoc.s3AudioURL
-    ? await axios.get(singleDoc.s3AudioURL.url, { responseType: "stream" })
-    : null;
-  const imageURL = singleDoc.s3ImageURL
-    ? await axios.get(singleDoc.s3ImageURL.url, { responseType: "stream" })
-    : null;
-
-  audioURL
-    ? getAttachments.push({
-        filename: singleDoc.s3AudioURL.name,
-        data: audioURL.data,
-      })
-    : null;
-
-  imageURL
-    ? getAttachments.push({
-        filename: singleDoc.s3ImageURL.name,
-        data: imageURL.data,
-      })
-    : null;
-
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
@@ -104,7 +82,7 @@ const generalEmail = async (singleDoc, subjectType) => {
     // bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
-    attachment: getAttachments,
+    attachment: await getAttachments(singleDoc._id),
   };
 
   mg.messages
@@ -141,27 +119,6 @@ const altEmail = async (singleDoc, subjectType) => {
   emailContent += `<br>`;
   emailContent += `<p>Spotify Link: ${userDoc.spotify || ""}</p>`;
   emailContent += `<br>`;
-  emailContent += `<p>Download Link: ${singleDoc?.s3AudioURL?.url || ""}</p>`;
-  emailContent += `<br>`;
-  emailContent += `<p>Cover Link: ${singleDoc?.s3ImageURL?.url || ""}</p>`;
-  emailContent += `<br>`;
-  emailContent += `<br>`;
-  emailContent += `<p>Press Photos: </p>`;
-
-  let getAttachments = [];
-
-  singleDoc.s3PressURL.forEach(async (press) => {
-    emailContent += `<p>${press.url || ""}</p>`;
-
-    const image = await axios.get(press.url, { responseType: "stream" });
-
-    getAttachments.push({
-      filename: press.name,
-      data: image.data,
-    });
-  });
-
-  emailContent += `<br>`;
   emailContent += `<br>`;
   emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ""}</p>`;
 
@@ -174,27 +131,6 @@ const altEmail = async (singleDoc, subjectType) => {
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`;
   }
 
-  const audioURL = singleDoc.s3AudioURL
-    ? await axios.get(singleDoc.s3AudioURL.url, { responseType: "stream" })
-    : null;
-  const imageURL = singleDoc.s3ImageURL
-    ? await axios.get(singleDoc.s3ImageURL.url, { responseType: "stream" })
-    : null;
-
-  audioURL
-    ? getAttachments.push({
-        filename: singleDoc.s3AudioURL.name,
-        data: audioURL.data,
-      })
-    : null;
-
-  imageURL
-    ? getAttachments.push({
-        filename: singleDoc.s3ImageURL.name,
-        data: imageURL.data,
-      })
-    : null;
-
   // setup email data with unicode symbols
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
@@ -202,7 +138,7 @@ const altEmail = async (singleDoc, subjectType) => {
     bcc: userDoc.email,
     subject: subjectLine, // Subject line
     html: emailContent, // html body
-    attachment: getAttachments,
+    attachment: await getAttachments(singleDoc._id),
   };
 
   mg.messages
@@ -226,15 +162,22 @@ const sendScheduledEmail = async () => {
   const curDate = new Date();
   curDate.setUTCHours(23, 59, 59, 999);
 
-  let tracks = await Track.find({
-    deliveryDate: { $lt: curDate },
-    isDelivered: false,
-  });
+  let tracks;
+  try {
+    tracks = await Track.find({
+      deliveryDate: { $lt: curDate },
+      isDelivered: false,
+    });
+  } catch (err) {
+    console.error(err);
+    return;
+  }
 
   for (const track in tracks) {
     const singleDoc = tracks[track];
 
-    generalEmail(singleDoc, "default");
+    // Catch here so one failed delivery can't crash the server
+    generalEmail(singleDoc, "default").catch((err) => console.error(err));
     // generalEmail(singleDoc, 'Mizfitz')
     // generalEmail(singleDoc, 'Hop Nation')
     // generalEmail(singleDoc, 'Brooklyn Radio')
@@ -281,10 +224,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     .then((msg) => console.log(msg))
     .catch((err) => console.log(err));
 
-  console.log("Message sent: %s", info.messageId);
-
-  res.json(email);
-  res.status(200);
+  res.status(200).json(email);
 });
 
 module.exports = {

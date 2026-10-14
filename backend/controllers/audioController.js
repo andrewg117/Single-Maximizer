@@ -1,6 +1,5 @@
 const Audio = require("../models/audioModel");
 const Track = require("../models/trackModel");
-const { s3, uploadS3Object, deleteS3Object } = require("../config/s3helper");
 const asyncHandler = require("express-async-handler");
 
 // @desc    Post audio
@@ -49,14 +48,6 @@ const uploadAudio = asyncHandler(async (req, res) => {
       new: true,
     }
   );
-
-  // const response = await s3.send(
-  //   uploadS3Object(
-  //     updatedAudio._id.toString(),
-  //     req.file.buffer,
-  //     req.file.mimetype
-  //   )
-  // );
 
   if (audio) {
     res.json(audio);
@@ -138,13 +129,6 @@ const updateAudio = asyncHandler(async (req, res) => {
     }
   );
 
-  // const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
-  // // console.log(delResponse)
-
-  // const putResponse = await s3.send(
-  //   uploadS3Object(audio._id.toString(), req.file.buffer, req.file.mimetype)
-  // );
-
   res.json(updatedAudio);
 });
 
@@ -170,8 +154,6 @@ const deleteAudio = asyncHandler(async (req, res) => {
   }
 
   const deleteAudio = await Audio.findByIdAndDelete(audio._id);
-
-  // const response = await s3.send(deleteS3Object(audio._id.toString()));
 
   res.json(deleteAudio.id);
 });
