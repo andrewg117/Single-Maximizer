@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { emailUser } from "../features/auth/authSlice";
+import { emailUser, reset } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signupImage from "../images/signupImage.png";
@@ -18,7 +18,12 @@ function EmailSignUp() {
 
   const dispatch = useDispatch();
 
-  const { isLoading, isError, message } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.auth);
+
+  // Clear errors left in the shared auth state by other pages (e.g. sign in)
+  useEffect(() => {
+    dispatch(reset());
+  }, [dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -29,9 +34,7 @@ function EmailSignUp() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (isError) {
-      toast.error(message, { id: message });
-    } else if (email === "") {
+    if (email === "") {
       toast.error("Add Email");
     } else {
       dispatch(emailUser({ email, type: "register" }))
@@ -39,9 +42,7 @@ function EmailSignUp() {
         .then(() => {
           setEmailSent(true);
         })
-        .catch((error) =>
-          toast.error((error = "User exists, use a different email or login"))
-        );
+        .catch((error) => toast.error(error));
     }
   };
 
