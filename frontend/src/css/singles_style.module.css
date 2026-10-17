@@ -76,6 +76,10 @@
   font-size: 1.5em;
 }
 
+#track_count {
+  margin: 1em 0;
+}
+
 #new_single {
   text-decoration: none;
   background-color: var(--main-btn-color);

@@ -1,6 +1,7 @@
 const Image = require("../models/imageModel");
 const Track = require("../models/trackModel");
 const asyncHandler = require("express-async-handler");
+const { MAX_PRESS } = require("../config/limits");
 
 // @desc    Post image
 // @route   POST /api/image
@@ -99,6 +100,17 @@ const uploadPress = asyncHandler(async (req, res) => {
     throw new Error("Track not found");
   }
 
+  // The route caps each request; this also covers adding to existing photos
+  const pressCount = await Image.countDocuments({
+    trackID: req.body.trackID,
+    section: "press",
+  });
+
+  if (pressCount + req.files.length > MAX_PRESS) {
+    res.status(400);
+    throw new Error(`A single can have at most ${MAX_PRESS} press photos`);
+  }
+
   // Await each save so a failure reaches the error handler instead of crashing
   for (const file of req.files) {
     let image;
@@ -106,7 +118,8 @@ const uploadPress = asyncHandler(async (req, res) => {
     image = await Image.create({
       user: req.user.id,
       trackID: req.body.trackID,
-      section: req.body.section,
+      // Always "press", so the count above can't be dodged with another section
+      section: "press",
       file: file,
     });
 

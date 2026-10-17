@@ -6,6 +6,7 @@ import { getTracks, reset as resetTracks } from "../features/tracks/trackSlice";
 import { toast } from "react-toastify";
 import { FaEdit, FaEye } from "react-icons/fa";
 import Spinner from "../components/Spinner";
+import { MAX_TRACKS } from "../config/limits";
 import styles from "../css/singles_style.module.css";
 
 function Singles() {
@@ -122,6 +123,9 @@ function Singles() {
               )}
             </tbody>
           </table>
+          <p id={styles.track_count}>
+            {tracks.length} of {MAX_TRACKS} singles
+          </p>
           {user && user.trackAllowance >= 1 ? (
             <Link
               id={styles.new_single}

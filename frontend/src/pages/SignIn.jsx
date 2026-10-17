@@ -52,7 +52,8 @@ function SignIn() {
     dispatch(login(userData))
       .unwrap()
       .then(() => navigate("/profile"))
-      .catch((error) => toast.error((error = "Invalid Credentials")));
+      // The server's message, e.g. invalid credentials or too many attempts
+      .catch((error) => toast.error(error));
   };
 
   if (isLoading) {

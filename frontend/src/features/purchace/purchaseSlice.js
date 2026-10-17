@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import purchaseService from "./purchaseService";
 
 const initialState = {
-  purchase: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -14,24 +13,6 @@ export const makePurchase = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await purchaseService.makePurchase();
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-export const getPurchase = createAsyncThunk(
-  "purchase/get",
-  async (_, thunkAPI) => {
-    try {
-      return await purchaseService.getPurchase();
     } catch (error) {
       const message =
         (error.response &&
@@ -61,19 +42,6 @@ export const purchaseSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(makePurchase.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-      .addCase(getPurchase.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getPurchase.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.purchase = action.payload;
-      })
-      .addCase(getPurchase.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

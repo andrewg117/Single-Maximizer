@@ -14,13 +14,17 @@ const {
   wakeDemoServer,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
+const {
+  loginLimiter,
+  emailLimiter,
+} = require("../middleware/rateLimitMiddleware");
 
 router.post("/", registerUser);
-router.post("/login", loginUser);
+router.post("/login", loginLimiter, loginUser);
 router.post("/logout", logoutUser);
-router.route("/email").post(checkRegisterEmail);
+router.route("/email").post(emailLimiter, checkRegisterEmail);
 router.route("/email/:token").get(emailData);
-router.route("/reset").post(forgotPassword).put(resetPassword);
+router.route("/reset").post(emailLimiter, forgotPassword).put(resetPassword);
 router.route("/me").get(protect, getMe).put(protect, updateUser);
 router.route("/token").get(checkUserToken);
 router.route("/wakeserver").get(wakeDemoServer);

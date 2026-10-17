@@ -1,31 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../features/auth/authSlice";
 import {
   makePurchase,
-  getPurchase,
   reset as resetPurchase,
 } from "../features/purchace/purchaseSlice";
 import { toast } from "react-toastify";
+import { MAX_TRACKS } from "../config/limits";
 import SMLogo from "../images/Single-Maximizer-Package-Mockup-1024x616.png.webp";
 import styles from "../css/checkout.module.css";
 
-const ProductDisplay = () => {
+const ProductDisplay = ({ atLimit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // TODO: remove stripe link for demo
-  // const onSubmit = (e) => {
-  //   e.preventDefault()
-  //   dispatch(makePurchase())
-  //     .unwrap()
-  //     .then((data) => {
-  //       window.location.href = data
-  //     })
-  // }
-
-  // Demo Submit
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(makePurchase())
@@ -34,7 +23,8 @@ const ProductDisplay = () => {
         toast.success("Purchase Successful");
         navigate("/profile/newrelease");
       })
-      .catch((err) => console.error(err));
+      // The server's message, e.g. the track limit
+      .catch((err) => toast.error(err));
   };
 
   return (
@@ -55,35 +45,34 @@ const ProductDisplay = () => {
             <h1>Purchase New Single</h1>
             <h5>
               {
-                "The Single Maximizer is $50. When you click ‘Submit Single Maximizer’ you will be taken to a checkout page to complete payment."
+                "The Single Maximizer is $50. This is a demo, so no payment is taken: clicking ‘Purchase’ adds a single credit to your account right away."
               }
             </h5>
           </div>
-          <button
-            type="submit"
-            id={styles.submit}
-          >
-            Purchase
-          </button>
+          {atLimit ? (
+            <p>
+              You've reached the {MAX_TRACKS}-single limit for the demo. Delete
+              a single to make room.
+            </p>
+          ) : (
+            <button
+              type="submit"
+              id={styles.submit}
+            >
+              Purchase
+            </button>
+          )}
         </form>
       </div>
     </section>
   );
 };
 
-const Message = ({ message }) => (
-  <section>
-    <p>{message}</p>
-  </section>
-);
-
 function CheckoutPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     dispatch(getUser())
@@ -95,23 +84,16 @@ function CheckoutPage() {
       })
       .catch((err) => console.error(err));
 
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-
-    if (query.get("success")) {
-      dispatch(getPurchase());
-      setMessage("Order placed! You will receive an email confirmation.");
-    }
-
-    if (query.get("canceled")) {
-      toast.info("Order canceled");
-    }
     return () => {
       dispatch(resetPurchase());
     };
   }, [dispatch, navigate, user?.trackAllowance]);
 
-  return message ? <Message message={message} /> : <ProductDisplay />;
+  // Tracks the user has plus unspent credits; the server enforces the same cap
+  const atLimit =
+    (user?.trackCount ?? 0) + (user?.trackAllowance ?? 0) >= MAX_TRACKS;
+
+  return <ProductDisplay atLimit={atLimit} />;
 }
 
 export default CheckoutPage;

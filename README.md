@@ -4,6 +4,8 @@ Single Maximizer is a demo web app for independent artists promoting a new singl
 
 Each release uses one track credit. Credits are bought on the checkout page. **In this demo, checkout is simulated:** it adds a credit without charging a card.
 
+**Demo limits:** each account can have at most 3 singles at a time (singles plus unused credits), and each single at most 5 press photos. The API is also rate-limited per IP address: 300 requests per 15 minutes overall, 10 failed sign-ins per 15 minutes, and 5 sign-up or password-reset emails per hour.
+
 This folder holds the React frontend. The Express API it talks to is in [`../backend`](../backend), and both are run from the repository root.
 
 ## Tech stack
@@ -18,7 +20,7 @@ This folder holds the React frontend. The Express API it talks to is in [`../bac
 3. **Create a release.** On **New Release**, fill in the track details and add:
    - cover art: JPEG or PNG, up to 10 MB;
    - audio: MP3, up to 15 MB;
-   - press photos: JPEG or PNG, under 15 MB each and 20 MB in total.
+   - press photos: up to 5, JPEG or PNG, under 15 MB each and 20 MB in total.
 
    The release is saved only if every upload succeeds. Otherwise it's removed and the credit is returned.
 4. **Delivery.** Every day at 12:00 server time, the server emails the press package for each release whose delivery date has arrived, then marks it delivered.

@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Track = require("../models/trackModel");
 const User = require("../models/userModel");
+const { MAX_TRACKS } = require("../config/limits");
 
 // Track metadata a user may set; owner, delivery, and file fields stay server-side
 const TRACK_FIELDS = [
@@ -63,6 +64,13 @@ const setTrack = asyncHandler(async (req, res) => {
   if (!req.body.trackTitle) {
     res.status(400);
     throw new Error("Add track title");
+  }
+
+  // Also covers accounts that hold more credits than the cap allows
+  const trackCount = await Track.countDocuments({ user: req.user.id });
+  if (trackCount >= MAX_TRACKS) {
+    res.status(403);
+    throw new Error(`Track limit reached (${MAX_TRACKS})`);
   }
 
   // Spend one track credit atomically; refunded below if the track can't be saved

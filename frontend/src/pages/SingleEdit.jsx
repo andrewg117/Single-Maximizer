@@ -132,19 +132,28 @@ function SingleEdit() {
             dispatch(updateAudio(audioData));
           }
 
-          if (newPressList.length > 0) {
-            let pressData = new FormData();
-            newPressList.forEach((item) => {
-              pressData.append("Press", item);
-            });
-            pressData.append("trackID", id);
-            pressData.append("section", "press");
-            dispatch(postPress(pressData));
-          }
-          if (deletePressList.length > 0) {
-            deletePressList.forEach((item) => {
-              dispatch(deletePress(item._id));
-            });
+          // Delete removed photos before uploading new ones, so a swap stays
+          // within the server's press-photo limit
+          if (newPressList.length > 0 || deletePressList.length > 0) {
+            Promise.all(
+              deletePressList.map((item) =>
+                dispatch(deletePress(item._id)).unwrap()
+              )
+            )
+              .then(() => {
+                if (newPressList.length === 0) return;
+
+                let pressData = new FormData();
+                newPressList.forEach((item) => {
+                  pressData.append("Press", item);
+                });
+                pressData.append("trackID", id);
+                pressData.append("section", "press");
+                return dispatch(postPress(pressData)).unwrap();
+              })
+              .catch((error) =>
+                toast.error(`Press photos not saved: ${error}`)
+              );
           }
 
           toast.success("Update Successful");

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Track = require("../models/trackModel");
 const { generateToken } = require("../utils/generateToken.js");
 const { sendMail } = require("../utils/mailer");
 const EMAILUSER = process.env.EMAILUSER;
@@ -227,12 +228,10 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  try {
-    res.json(req.user);
-  } catch (error) {
-    // res.status(401)
-    throw new Error("Login Expired");
-  }
+  // The count lets the client show the track limit without fetching every track
+  const trackCount = await Track.countDocuments({ user: req.user.id });
+
+  res.json({ ...req.user.toObject(), trackCount });
 });
 
 // @desc    Update user data

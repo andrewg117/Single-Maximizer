@@ -10,29 +10,26 @@ const {
   deletePress,
 } = require("../controllers/imageController");
 const { protect } = require("../middleware/authMiddleware");
-const multer = require("multer");
-
-const storage = multer.memoryStorage();
-// MongoDB caps documents at 16 MB, and files are stored inside them
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 15 * 1024 * 1024 },
-});
+const {
+  uploadSingle,
+  uploadArray,
+} = require("../middleware/uploadMiddleware");
+const { MAX_PRESS } = require("../config/limits");
 
 router
   .route("/")
   .post(protect)
-  .post(upload.single("Image"), uploadImage)
+  .post(uploadSingle("Image"), uploadImage)
   .get(protect, getImage);
 router
   .route("/:id")
   .put(protect)
-  .put(upload.single("Image"), updateImage)
+  .put(uploadSingle("Image"), updateImage)
   .delete(protect, deleteImage);
 router
   .route("/press")
   .post(protect)
-  .post(upload.array("Press"), uploadPress)
+  .post(uploadArray("Press", MAX_PRESS), uploadPress)
   .get(protect, getPress);
 router.route("/press/:id").delete(protect, deletePress);
 

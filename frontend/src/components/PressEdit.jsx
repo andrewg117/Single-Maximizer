@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { FaRegWindowClose } from "react-icons/fa";
+import { MAX_PRESS } from "../config/limits";
 import styles from "../css/new_release_style.module.css";
 
 const ImageFrame = ({ blob, id, removePress }) => {
@@ -45,12 +46,23 @@ const NewImageFrame = ({ blob, id, removePress }) => {
 
 function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
   const [listSize, setListSize] = useState();
+  const pressCount = trackPress.length + newPressList.length;
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/jpeg": [".jpeg", ".png"],
     },
+    maxFiles: 1,
     onDrop: async (acceptedFiles) => {
+      if (acceptedFiles.length === 0) {
+        toast.error("Add one JPEG or PNG photo at a time");
+        return;
+      }
+      if (pressCount >= MAX_PRESS) {
+        toast.error(`Up to ${MAX_PRESS} press photos per single`);
+        return;
+      }
+
       let formData = new FormData();
       formData.append("Press", acceptedFiles[0]);
       let megBytes =
@@ -136,15 +148,20 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }) {
               );
             })
           : []}
-        <div
-          id={styles.add_press}
-          {...getRootProps()}
-        >
-          <input {...getInputProps()} />
-          <div>Add Photo</div>
-        </div>
+        {pressCount < MAX_PRESS && (
+          <div
+            id={styles.add_press}
+            {...getRootProps()}
+          >
+            <input {...getInputProps()} />
+            <div>Add Photo</div>
+          </div>
+        )}
       </div>
-      <p>Size Limit: {listSize} / 20 MB</p>
+      <p>
+        Photos: {pressCount} / {MAX_PRESS} &middot; Size Limit: {listSize} / 20
+        MB
+      </p>
     </>
   );
 }
